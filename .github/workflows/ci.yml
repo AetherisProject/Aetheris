@@ -111,7 +111,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: taiki-e/install-action@cargo-tarpaulin
       - run: cargo tarpaulin --all-features --timeout 120 --out Xml --out Html
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v7
         with:
           file: ./cobertura.xml
           fail_ci_if_error: false
