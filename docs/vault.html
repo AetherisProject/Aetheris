@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#6366f1">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="assets/icons/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Vault — Aetheris</title>
+</head>
+<body><div class="docs-wrapper">
+<main class="content"><div class="content-inner"><h1 id="vault">Vault</h1>
+<p>The Aetheris Vault is a zero-knowledge encrypted store for all your secrets: passwords, SSH keys, API keys, notes, cards, and identities.</p>
+<h2 id="item-types">Item Types</h2>
+<h3 id="password">Password</h3>
+<p>Website credentials with username, password, URL, TOTP, and custom fields. Breach-monitored, strength-rated, auto-changeable.</p>
+<h3 id="ssh-key">SSH Key</h3>
+<p>Private key stored encrypted. Never written to disk unencrypted. Supports Ed25519, RSA, ECDSA. Passphrase-protected.</p>
+<h3 id="ssh-connection">SSH Connection</h3>
+<p>Connection configuration (host, port, username, auth method, key reference, jump host, port forwards). Health-monitored.</p>
+<h3 id="api-key">API Key</h3>
+<p>Provider-aware key with rotation policy, health monitoring, and env var injection. Supports 30+ providers.</p>
+<h3 id="note">Note</h3>
+<p>Encrypted text note with title and body.</p>
+<h3 id="card">Card</h3>
+<p>Credit/debit card with number, expiry, CVV, and cardholder name.</p>
+<h3 id="identity">Identity</h3>
+<p>Personal information (name, address, phone, email) for autofill forms.</p>
+<h2 id="security">Security</h2>
+<ul>
+<li>All items encrypted individually with XChaCha20-Poly1305</li>
+<li>Each item has a unique nonce</li>
+<li>Items are never written to disk unencrypted</li>
+<li>Clipboard is cleared after configurable timeout</li>
+<li>Auto-lock after inactivity</li>
+</ul>
+<h2 id="operations">Operations</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Add an item</span>
+aeth<span class="w"> </span>vault<span class="w"> </span>add<span class="w"> </span>--type<span class="w"> </span>password<span class="w"> </span>--title<span class="w"> </span><span class="s2">"GitHub"</span><span class="w"> </span>--username<span class="w"> </span><span class="s2">"you@example.com"</span>
+
+<span class="c1"># Get an item</span>
+aeth<span class="w"> </span>vault<span class="w"> </span>get<span class="w"> </span>--title<span class="w"> </span><span class="s2">"GitHub"</span><span class="w"> </span>--field<span class="w"> </span>password
+
+<span class="c1"># List items</span>
+aeth<span class="w"> </span>vault<span class="w"> </span>list<span class="w"> </span>--type<span class="w"> </span>password
+
+<span class="c1"># Update an item</span>
+aeth<span class="w"> </span>vault<span class="w"> </span>update<span class="w"> </span>--title<span class="w"> </span><span class="s2">"GitHub"</span><span class="w"> </span>--field<span class="w"> </span>password
+
+<span class="c1"># Delete an item</span>
+aeth<span class="w"> </span>vault<span class="w"> </span>delete<span class="w"> </span>--title<span class="w"> </span><span class="s2">"GitHub"</span>
+
+<span class="c1"># Search</span>
+aeth<span class="w"> </span>vault<span class="w"> </span>search<span class="w"> </span>--query<span class="w"> </span><span class="s2">"github"</span>
+</code></pre></div>
+
+<h2 id="password-generator">Password Generator</h2>
+<p>Built-in password generator with configurable length and character sets.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Generate a 32-character password</span>
+aeth<span class="w"> </span>vault<span class="w"> </span>generate<span class="w"> </span>--length<span class="w"> </span><span class="m">32</span>
+
+<span class="c1"># Generate with custom symbols</span>
+aeth<span class="w"> </span>vault<span class="w"> </span>generate<span class="w"> </span>--length<span class="w"> </span><span class="m">32</span><span class="w"> </span>--symbols<span class="w"> </span><span class="s2">"!@#</span>$<span class="s2">%"</span>
+</code></pre></div>
+
+<h2 id="security-dashboard">Security Dashboard</h2>
+<p>View breached, weak, reused, and old passwords at a glance. One-click fixes.</p></div></main>
+
+</div>
+<footer class="footer">
+<p>&copy; 2026 Aetheris. MIT License.</p>
+<p><a href="https://github.com/merlin-tribukait/Aetheris">GitHub</a> | <a href="security.html">Security</a></p>
+</footer>
+<script src="script.js"></script>
+</body></html>

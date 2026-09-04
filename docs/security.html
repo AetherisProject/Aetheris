@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#6366f1">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="assets/icons/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Security Model — Aetheris</title>
+</head>
+<body><div class="docs-wrapper">
+<main class="content"><div class="content-inner"><h1 id="security-model">Security Model</h1>
+<p>Aetheris uses a zero-knowledge architecture: the server never sees your plaintext data or master password. All encryption and decryption happens client-side.</p>
+<h2 id="security-layers">Security Layers</h2>
+<h3 id="layer-1-something-you-know">Layer 1: Something You Know</h3>
+<ul>
+<li><strong>Master password</strong> — Argon2id-derived key (never stored, never transmitted)</li>
+<li><strong>PIN</strong> — Quick unlock, derived from master key</li>
+</ul>
+<h3 id="layer-2-something-you-have">Layer 2: Something You Have</h3>
+<ul>
+<li><strong>Hardware key</strong> — YubiKey 5, FIDO2, WebAuthn</li>
+<li><strong>Trusted device</strong> — Device-specific certificate</li>
+<li><strong>Recovery codes</strong> — Generated at setup, stored offline</li>
+</ul>
+<h3 id="layer-3-something-you-are">Layer 3: Something You Are</h3>
+<ul>
+<li><strong>Biometric</strong> — Face ID, Touch ID, Windows Hello, Android Biometric</li>
+<li><strong>Behavioral</strong> — Typing pattern (optional, privacy-safe)</li>
+</ul>
+<h3 id="layer-4-someone-you-trust">Layer 4: Someone You Trust</h3>
+<ul>
+<li><strong>Social recovery</strong> — N-of-M trusted contacts must approve recovery</li>
+<li><strong>Organization recovery</strong> — Admin recovery for enterprise teams</li>
+</ul>
+<h3 id="layer-5-time">Layer 5: Time</h3>
+<ul>
+<li><strong>Time-locked recovery</strong> — Configurable delay before recovery completes</li>
+<li><strong>Rate limiting</strong> — Exponential backoff, anti-brute force</li>
+</ul>
+<h3 id="layer-6-plausible-deniability">Layer 6: Plausible Deniability</h3>
+<ul>
+<li><strong>Hidden volumes</strong> — Hidden vault within your vault</li>
+<li><strong>Duress password</strong> — Silently unlocks decoy vault</li>
+<li><strong>Decoy entries</strong> — Fake entries that look real</li>
+</ul>
+<h2 id="key-derivation">Key Derivation</h2>
+<div class="codehilite"><pre><span></span><code>Master Password + Hardware Challenge
+        │
+        ▼
+    Argon2id (t=3, m=64MB, p=4)
+        │
+        ▼
+    Master Key (32 bytes, never leaves secure memory)
+        │
+        ├──► Vault Key (HKDF-SHA256, context="vault")
+        ├──► Sync Key (HKDF-SHA256, context="sync")
+        ├──► Auth Key (HKDF-SHA256, context="auth")
+        ├──► Backup Key (HKDF-SHA256, context="backup")
+        └──► Recovery Key (HKDF-SHA256, context="recovery")
+</code></pre></div>
+
+<h2 id="encryption">Encryption</h2>
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Use</th>
+<th>Key Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>XChaCha20-Poly1305</td>
+<td>AEAD encryption</td>
+<td>256-bit</td>
+</tr>
+<tr>
+<td>Argon2id</td>
+<td>Key derivation</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Ed25519</td>
+<td>Signing</td>
+<td>256-bit</td>
+</tr>
+<tr>
+<td>X25519</td>
+<td>Key exchange</td>
+<td>256-bit</td>
+</tr>
+<tr>
+<td>HKDF-SHA256</td>
+<td>Key derivation</td>
+<td>256-bit</td>
+</tr>
+<tr>
+<td>HMAC-SHA256</td>
+<td>Integrity</td>
+<td>256-bit</td>
+</tr>
+<tr>
+<td>CRYSTALS-Kyber-1024</td>
+<td>Post-quantum KEM</td>
+<td>1024-byte</td>
+</tr>
+<tr>
+<td>CRYSTALS-Dilithium-5</td>
+<td>Post-quantum signing</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="shamir-secret-sharing">Shamir Secret Sharing</h2>
+<p>Split the master key into N shares (threshold M). Any M shares can reconstruct the master key. Fewer than M shares reveal nothing.</p>
+<p>Example: 5 shares, threshold 3. Distribute to spouse, parent, best friend, lawyer, safe deposit box. Any 3 can recover.</p>
+<h2 id="plausible-deniability">Plausible Deniability</h2>
+<div class="codehilite"><pre><span></span><code><span class="nv">Outer</span><span class="w"> </span><span class="nv">Vault</span><span class="w"> </span><span class="ss">(</span><span class="nv">decoy</span><span class="ss">)</span>
+├──<span class="w"> </span><span class="nv">Normal</span><span class="o">-</span><span class="nv">looking</span><span class="w"> </span><span class="nv">passwords</span>
+├──<span class="w"> </span><span class="nv">Normal</span><span class="o">-</span><span class="nv">looking</span><span class="w"> </span><span class="nv">API</span><span class="w"> </span><span class="nv">keys</span>
+└──<span class="w"> </span><span class="nv">Hidden</span><span class="w"> </span><span class="nv">Volume</span><span class="w"> </span><span class="ss">(</span><span class="nv">indistinguishable</span><span class="w"> </span><span class="nv">from</span><span class="w"> </span><span class="k">random</span><span class="w"> </span><span class="nv">padding</span><span class="ss">)</span>
+<span class="w">    </span>├──<span class="w"> </span><span class="nv">Real</span><span class="w"> </span><span class="nv">passwords</span>
+<span class="w">    </span>├──<span class="w"> </span><span class="nv">Real</span><span class="w"> </span><span class="nv">API</span><span class="w"> </span><span class="nv">keys</span>
+<span class="w">    </span>└──<span class="w"> </span><span class="nv">Real</span><span class="w"> </span><span class="nv">SSH</span><span class="w"> </span><span class="nv">keys</span>
+
+<span class="nv">Duress</span><span class="w"> </span><span class="nv">Password</span><span class="w"> </span>→<span class="w"> </span><span class="nv">Unlocks</span><span class="w"> </span><span class="nv">Outer</span><span class="w"> </span><span class="nv">Vault</span><span class="w"> </span><span class="nv">only</span>
+<span class="nv">Real</span><span class="w"> </span><span class="nv">Password</span><span class="w"> </span>→<span class="w"> </span><span class="nv">Unlocks</span><span class="w"> </span><span class="nv">both</span>
+</code></pre></div>
+
+<h2 id="multi-device-consensus">Multi-Device Consensus</h2>
+<p>Sensitive operations (master password change, vault export, recovery) require approval from N trusted devices. This prevents a single compromised device from being catastrophic.</p>
+<h2 id="security-comparison">Security Comparison</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th style="text-align: center;">1Password</th>
+<th style="text-align: center;">Bitwarden</th>
+<th style="text-align: center;">Aetheris</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zero-knowledge</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Hardware key</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Biometric</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>TOTP built-in</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Breach monitoring</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Auto-password change</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Shamir sharing</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Plausible deniability</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Duress mode</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Post-quantum</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Memory encryption</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Multi-device consensus</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Social recovery</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+</tr>
+</tbody>
+</table>
+<h2 id="reporting-vulnerabilities">Reporting Vulnerabilities</h2>
+<p>See <a href="../SECURITY.md">SECURITY.md</a> for our vulnerability disclosure policy.</p></div></main>
+
+</div>
+<footer class="footer">
+<p>&copy; 2026 Aetheris. MIT License.</p>
+<p><a href="https://github.com/merlin-tribukait/Aetheris">GitHub</a> | <a href="security.html">Security</a></p>
+</footer>
+<script src="script.js"></script>
+</body></html>

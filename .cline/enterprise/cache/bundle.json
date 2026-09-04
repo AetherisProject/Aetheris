@@ -1,0 +1,30 @@
+{
+  "source": "cline-account",
+  "version": "org-01KR7EQJC94FHMAGMJEM7H0CZW",
+  "remoteConfig": {
+    "version": "v1",
+    "providerSettings": {
+      "Cline": {}
+    },
+    "telemetryEnabled": true,
+    "kanbanEnabled": false,
+    "mcpMarketplaceEnabled": true,
+    "yoloModeAllowed": true,
+    "openTelemetryEnabled": false,
+    "openTelemetryOtlpInsecure": false,
+    "enterpriseTelemetry": {
+      "promptUploading": {}
+    }
+  },
+  "metadata": {
+    "paths": {
+      "pluginName": "enterprise",
+      "pluginPath": "C:\\Users\\HACK\\Desktop\\aetheris_omni_agent\\aetheris\\.cline\\enterprise",
+      "workflowsPath": "C:\\Users\\HACK\\Desktop\\aetheris_omni_agent\\aetheris\\.cline\\enterprise\\workflows",
+      "skillsPath": "C:\\Users\\HACK\\Desktop\\aetheris_omni_agent\\aetheris\\.cline\\enterprise\\skills",
+      "bundleCachePath": "C:\\Users\\HACK\\Desktop\\aetheris_omni_agent\\aetheris\\.cline\\enterprise\\cache\\bundle.json",
+      "manifestPath": "C:\\Users\\HACK\\Desktop\\aetheris_omni_agent\\aetheris\\.cline\\enterprise\\managed.json",
+      "rulesFilePath": "C:\\Users\\HACK\\Desktop\\aetheris_omni_agent\\aetheris\\.cline\\enterprise\\rules.md"
+    }
+  }
+}

@@ -1,0 +1,1 @@
+//! vault module for Aetheris.nnpub mod vault;nn// TODO: Implement vault module

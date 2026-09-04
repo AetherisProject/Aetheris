@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#6366f1">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="assets/icons/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Getting Started — Aetheris</title>
+</head>
+<body><div class="docs-wrapper">
+<main class="content"><div class="content-inner"><h1 id="getting-started">Getting Started</h1>
+<h2 id="quick-start">Quick Start</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Clone the repository</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/merlin-tribukait/Aetheris.git
+<span class="nb">cd</span><span class="w"> </span>Aetheris
+
+<span class="c1"># Build the project</span>
+cargo<span class="w"> </span>build<span class="w"> </span>--release
+
+<span class="c1"># Run the CLI</span>
+./target/release/aeth<span class="w"> </span>--help
+
+<span class="c1"># Initialize your vault</span>
+./target/release/aeth<span class="w"> </span>vault<span class="w"> </span>init
+
+<span class="c1"># Add your first password</span>
+./target/release/aeth<span class="w"> </span>vault<span class="w"> </span>add<span class="w"> </span>--type<span class="w"> </span>password<span class="w"> </span>--title<span class="w"> </span><span class="s2">"GitHub"</span><span class="w"> </span>--username<span class="w"> </span><span class="s2">"you@example.com"</span>
+
+<span class="c1"># List your vault items</span>
+./target/release/aeth<span class="w"> </span>vault<span class="w"> </span>list
+
+<span class="c1"># Connect via SSH</span>
+./target/release/aeth<span class="w"> </span>ssh<span class="w"> </span>connect<span class="w"> </span>--host<span class="w"> </span>example.com<span class="w"> </span>--user<span class="w"> </span>admin
+</code></pre></div>
+
+<h2 id="installation">Installation</h2>
+<h3 id="from-source">From Source</h3>
+<p>Requirements:
+- Rust 1.70+ (install via <a href="https://rustup.rs">rustup</a>)
+- For desktop: Node.js 18+ (for React frontend)
+- For mobile: Flutter SDK 3.0+</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Build CLI only</span>
+cargo<span class="w"> </span>build<span class="w"> </span>--release
+
+<span class="c1"># Build with all features</span>
+cargo<span class="w"> </span>build<span class="w"> </span>--release<span class="w"> </span>--features<span class="w"> </span>full
+
+<span class="c1"># Build desktop (requires Node.js)</span>
+<span class="nb">cd</span><span class="w"> </span>src-tauri<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>npm<span class="w"> </span>install<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>npm<span class="w"> </span>run<span class="w"> </span>build
+
+<span class="c1"># Build mobile (requires Flutter)</span>
+<span class="nb">cd</span><span class="w"> </span>flutter<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>flutter<span class="w"> </span>build
+</code></pre></div>
+
+<h3 id="from-package-manager">From Package Manager</h3>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Homebrew (macOS/Linux)</span>
+brew<span class="w"> </span>install<span class="w"> </span>aetheris
+
+<span class="c1"># Cargo</span>
+cargo<span class="w"> </span>install<span class="w"> </span>aetheris
+
+<span class="c1"># Windows (winget)</span>
+winget<span class="w"> </span>install<span class="w"> </span>Aetheris
+</code></pre></div>
+
+<h2 id="configuration">Configuration</h2>
+<p>Copy <code>.env.example</code> to <code>.env</code> and configure:</p>
+<div class="codehilite"><pre><span></span><code>cp<span class="w"> </span>.env.example<span class="w"> </span>.env
+</code></pre></div>
+
+<p>Edit <code>.env</code> with your settings. See <a href="configuration.html">Configuration</a> for all options.</p>
+<h2 id="first-steps">First Steps</h2>
+<ol>
+<li><strong>Initialize your vault</strong> — Set a strong master password</li>
+<li><strong>Add your first item</strong> — Password, SSH key, or API key</li>
+<li><strong>Set up sync</strong> — Configure S3/Backblaze for cloud sync</li>
+<li><strong>Install the browser extension</strong> — For password and API key autofill</li>
+<li><strong>Download mobile app</strong> — For on-the-go access</li>
+</ol>
+<h2 id="next-steps">Next Steps</h2>
+<ul>
+<li>Read the <a href="terminal.html">Terminal</a> guide for SSH connections</li>
+<li>Read the <a href="vault.html">Vault</a> guide for password management</li>
+<li>Read the <a href="api-keys.html">API Keys</a> guide for key rotation</li>
+<li>Read the <a href="sync.html">Sync</a> guide for multi-device sync</li>
+<li>Read the <a href="security.html">Security</a> guide for the security model</li>
+</ul></div></main>
+
+</div>
+<footer class="footer">
+<p>&copy; 2026 Aetheris. MIT License.</p>
+<p><a href="https://github.com/merlin-tribukait/Aetheris">GitHub</a> | <a href="security.html">Security</a></p>
+</footer>
+<script src="script.js"></script>
+</body></html>

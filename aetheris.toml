@@ -1,0 +1,161 @@
+# =============================================================================
+# Aetheris Runtime Configuration
+# =============================================================================
+
+[application]
+name = "Aetheris"
+version = "0.1.0"
+environment = "development"
+
+[vault]
+# Local encrypted storage
+store_path = "~/.aetheris/vault.db"
+# Auto-lock after inactivity (seconds, 0 = disabled)
+auto_lock_seconds = 300
+# Clipboard clear after copy (seconds, 0 = disabled)
+clipboard_clear_seconds = 30
+# Password generator default length
+password_length = 32
+# Password generator character sets
+password_use_uppercase = true
+password_use_lowercase = true
+password_use_digits = true
+password_use_symbols = true
+password_custom_symbols = "!@#$%^&*"
+
+[crypto]
+# Argon2id parameters
+argon2_time_cost = 3
+argon2_memory_cost = 65536
+argon2_parallelism = 4
+# Post-quantum hybrid mode
+post_quantum_enabled = false
+# Memory encryption in RAM
+memory_encryption_enabled = true
+# Shamir Secret Sharing
+shamir_shares = 5
+shamir_threshold = 3
+
+[sync]
+enabled = false
+provider = "s3"
+bucket = "aetheris-vault"
+region = "us-east-1"
+object_key = "vault/blob.enc"
+interval_seconds = 300
+# End-to-end encryption
+e2e_encrypted = true
+# Offline-first mode
+offline_first = true
+# CRDT merge strategy
+crdt_strategy = "last-writer-wins"
+
+[backup]
+enabled = true
+schedule = "daily"
+retention_days = 30
+location = "~/.aetheris/backups"
+
+[ssh]
+timeout_seconds = 30
+keepalive_seconds = 60
+max_sessions = 10
+key_type = "ed25519"
+key_bits = 256
+# Connection health monitoring
+health_check_enabled = true
+health_check_interval_seconds = 60
+
+[api_keys]
+# Health check interval
+health_check_interval_hours = 6
+# Auto-rotation settings
+auto_rotation_enabled = true
+rotation_days_before_expiry = 7
+# Provider definitions
+providers = [
+    "openai",
+    "anthropic",
+    "google",
+    "aws",
+    "github",
+    "gitlab",
+    "azure",
+    "nvidia",
+    "huggingface",
+    "mistral",
+    "openrouter",
+    "groq",
+    "cohere",
+    "stability",
+]
+
+[proactive]
+enabled = true
+# Task schedules (hours)
+rotation_check_hours = 6
+breach_check_hours = 24
+monitor_interval_minutes = 30
+backup_days = 1
+cleanup_weeks = 1
+
+[web]
+enabled = false
+host = "127.0.0.1"
+port = 18080
+cors_origins = ["http://localhost:3000"]
+
+[browser_relay]
+enabled = false
+host = "127.0.0.1"
+port = 18081
+token = "auto-generated-on-startup"
+
+[auth]
+mode = "local"
+jwt_secret = "change-me-in-production"
+jwt_expiry_hours = 24
+registration_enabled = true
+mfa_required = false
+
+[logging]
+level = "info"
+file = "aetheris.log"
+max_size_mb = 50
+max_files = 5
+json_format = false
+
+[i18n]
+default_locale = "en"
+fallback_locale = "en"
+locale_dir = "./locales"
+supported_locales = [
+    "en", "de", "fr", "es", "pt", "it", "nl", "pl", "ru",
+    "ja", "ko", "zh-CN", "zh-TW", "ar", "he", "hi",
+    "tr", "sv", "da", "fi", "nb", "cs", "hu", "ro",
+    "bg", "hr", "sk", "sl", "et", "lv", "lt", "uk",
+    "el", "th", "vi", "id", "ms", "tl", "sw", "af",
+    "bn", "ta", "te", "mr", "ur", "fa",
+]
+
+[theme]
+mode = "dark"
+# Built-in themes: dark, light, high-contrast, oled, midnight-blue, forest-green, sunset-orange
+custom_theme_path = ""
+
+[terminal]
+font_family = "JetBrains Mono"
+font_size = 14
+line_height = 1.2
+scrollback_lines = 10000
+cursor_style = "block"
+cursor_blink = true
+# Bell notification
+bell_sound = false
+bell_visual = true
+
+[debug]
+enabled = false
+ui_enabled = false
+metrics_enabled = false
+metrics_port = 9090

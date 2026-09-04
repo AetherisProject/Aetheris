@@ -1,0 +1,1 @@
+//! i18n module for Aetheris.nnpub mod i18n;nn// TODO: Implement i18n module

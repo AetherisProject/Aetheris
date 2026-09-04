@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#6366f1">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="assets/icons/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Terminal — Aetheris</title>
+</head>
+<body><div class="docs-wrapper">
+<main class="content"><div class="content-inner"><h1 id="terminal">Terminal</h1>
+<p>Aetheris Terminal is a Termius-grade SSH client built with xterm.js and the Rust russh library. It features vault-integrated connections, AI-powered command suggestions, session recording, collaborative sessions, and more.</p>
+<h2 id="features">Features</h2>
+<h3 id="vault-integrated-connections">Vault-Integrated Connections</h3>
+<p>SSH connections are vault items — encrypted, synced, and autofillable. No <code>~/.ssh/config</code> needed. Keys never touch disk unencrypted.</p>
+<h3 id="xtermjs-rendering">xterm.js Rendering</h3>
+<p>GPU-accelerated terminal with 256-color support, themes, split panes, search, and clickable links.</p>
+<h3 id="ai-powered-suggestions">AI-Powered Suggestions</h3>
+<p>Context-aware command suggestions based on current directory, history, and server type. Runs entirely locally — no cloud, no data leaves your device.</p>
+<h3 id="session-management">Session Management</h3>
+<ul>
+<li>Tabbed sessions</li>
+<li>Split panes (vertical, horizontal, grid)</li>
+<li>Session recording and playback</li>
+<li>Collaborative sessions (pair programming)</li>
+<li>Session resurrection after crash/disconnect</li>
+</ul>
+<h3 id="smart-snippets">Smart Snippets</h3>
+<p>Variable snippets like <code>ssh {{user}}@{{host}} -p {{port}}</code>. Contextual snippets per server type. Team snippet library. Snippet marketplace.</p>
+<h3 id="integrated-sftp">Integrated SFTP</h3>
+<p>Visual file browser alongside the terminal. Drag-and-drop upload/download. Directory sync. Built-in editor.</p>
+<h3 id="port-forwarding">Port Forwarding</h3>
+<p>Visual port map showing all forwards at a glance. One-click forwarding. Multi-hop forwarding. Health indicators.</p>
+<h3 id="connection-health">Connection Health</h3>
+<p>Real-time latency monitoring, uptime tracking, resource monitoring (CPU, RAM, disk). Alerts on issues.</p>
+<h2 id="quick-start">Quick Start</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Connect to a server</span>
+aeth<span class="w"> </span>ssh<span class="w"> </span>connect<span class="w"> </span>--host<span class="w"> </span>example.com<span class="w"> </span>--user<span class="w"> </span>admin
+
+<span class="c1"># Connect with a specific key</span>
+aeth<span class="w"> </span>ssh<span class="w"> </span>connect<span class="w"> </span>--host<span class="w"> </span>example.com<span class="w"> </span>--user<span class="w"> </span>admin<span class="w"> </span>--key<span class="w"> </span>~/.ssh/id_ed25519
+
+<span class="c1"># List saved connections</span>
+aeth<span class="w"> </span>ssh<span class="w"> </span>list
+
+<span class="c1"># Start a collaborative session</span>
+aeth<span class="w"> </span>ssh<span class="w"> </span>share<span class="w"> </span>--session-id<span class="w"> </span>abc123
+</code></pre></div>
+
+<h2 id="key-bindings">Key Bindings</h2>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ctrl+Shift+T</code></td>
+<td>New tab</td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+D</code></td>
+<td>Split vertically</td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+W</code></td>
+<td>Close tab/pane</td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+F</code></td>
+<td>Search</td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+C</code></td>
+<td>Copy</td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+V</code></td>
+<td>Paste</td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+P</code></td>
+<td>Command palette</td>
+</tr>
+<tr>
+<td><code>Ctrl+Shift+,</code></td>
+<td>Settings</td>
+</tr>
+</tbody>
+</table>
+<h2 id="themes">Themes</h2>
+<p>50+ built-in themes including popular terminal themes (Dracula, Nord, Solarized, Gruvbox, etc.). Per-connection themes. Theme marketplace for community themes.</p></div></main>
+
+</div>
+<footer class="footer">
+<p>&copy; 2026 Aetheris. MIT License.</p>
+<p><a href="https://github.com/merlin-tribukait/Aetheris">GitHub</a> | <a href="security.html">Security</a></p>
+</footer>
+<script src="script.js"></script>
+</body></html>

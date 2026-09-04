@@ -1,0 +1,1 @@
+//! auth module for Aetheris.nnpub mod auth;nn// TODO: Implement auth module

@@ -1,0 +1,1 @@
+//! Auth tests for Aetheris.nn#[test]nfn test_placeholder_auth() {{n    // TODO: Implement auth testsn    assert_eq!(2 + 2, 4);n}}n

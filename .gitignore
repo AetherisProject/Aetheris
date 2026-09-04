@@ -1,0 +1,98 @@
+# Rust build artifacts
+/target/
+**/*.rs.bk
+*.pdb
+Cargo.lock
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Build outputs
+/dist/
+/build/
+/out/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# WASM
+/pkg/
+*.wasm
+
+# Node (for web frontend)
+/node_modules/
+/package-lock.json
+/yarn.lock
+pnpm-lock.yaml
+
+# Tauri
+/src-tauri/target/
+/src-tauri/Cargo.lock
+
+# Flutter
+/flutter/.dart_tool/
+/flutter/.packages
+/flutter/.flutter-plugins
+/flutter/.flutter-plugins-dependencies
+/flutter/build/
+/flutter/android/app/debug/
+/flutter/android/app/profile/
+/flutter/android/app/release/
+/flutter/ios/Flutter/Flutter.framework
+/flutter/ios/Flutter/App.framework
+/flutter/ios/Pods/
+/flutter/.dart_tool/
+
+# Local vault data (NEVER commit)
+/vault/
+/data/
+*.vault
+*.enc
+*.key
+*.secret
+
+# Logs
+*.log
+/logs/
+
+# Test coverage
+/coverage/
+/tarpaulin-report.html
+*.profraw
+
+# Docs build
+/docs/_build/
+/site/
+
+# Temporary
+/tmp/
+/temp/
+*.tmp
+*.temp
+
+# Secrets scan
+.gitleaks.toml
+
+# Keys (never commit!)
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+id_ed25519
+id_rsa
+id_ecdsa
+.ssh/

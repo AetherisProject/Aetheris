@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#6366f1">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="assets/icons/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Aetheris — Aetheris</title>
+</head>
+<body><div class="docs-wrapper">
+<main class="content"><div class="content-inner"><h1 id="aetheris">Aetheris</h1>
+<p><strong>The Secrets Operating System</strong></p>
+<p>A unified SSH terminal, password vault, API key manager, and zero-knowledge sync platform — all in one tool.</p>
+<h2 id="why-aetheris">Why Aetheris?</h2>
+<p>Developers juggle dozens of secrets: passwords, SSH keys, API keys, tokens. They end up duplicated across devices, expire without notice, and live in disconnected tools. Aetheris gives you <strong>one encrypted vault</strong> that syncs everywhere and <strong>maintains itself</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th style="text-align: center;">SSH Terminal</th>
+<th style="text-align: center;">Password Vault</th>
+<th style="text-align: center;">API Key Manager</th>
+<th style="text-align: center;">Browser</th>
+<th style="text-align: center;">Mobile</th>
+<th style="text-align: center;">Zero-Knowledge</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Termius</strong></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+</tr>
+<tr>
+<td><strong>1Password</strong></td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td><strong>Bitwarden</strong></td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td><strong>Aetheris</strong></td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+</tbody>
+</table>
+<h2 id="key-features">Key Features</h2>
+<ul>
+<li><strong>SSH Terminal</strong> — Termius-grade terminal with xterm.js, vault-integrated keys, snippets, port forwarding, SFTP</li>
+<li><strong>Password Vault</strong> — Zero-knowledge encryption, breach monitoring, auto-change, TOTP built-in</li>
+<li><strong>API Key Manager</strong> — 30+ providers, auto-rotation, health monitoring, auto-injection</li>
+<li><strong>Browser Extension</strong> — Autofill passwords AND API keys, provider dashboard detection</li>
+<li><strong>Mobile</strong> — Native iOS/Android with biometric unlock, autofill services, QR sync</li>
+<li><strong>Web App</strong> — Full vault management, security dashboard, admin interface</li>
+<li><strong>Proactive Engine</strong> — Auto-rotates, auto-changes, auto-monitors, auto-syncs, auto-backs up</li>
+</ul>
+<h2 id="security">Security</h2>
+<ul>
+<li><strong>Zero-knowledge</strong> — The server sees only encrypted blobs</li>
+<li><strong>Shamir Secret Sharing</strong> — M-of-N master key recovery</li>
+<li><strong>Plausible deniability</strong> — Hidden volumes, duress mode, decoy entries</li>
+<li><strong>Post-quantum</strong> — Optional CRYSTALS-Kyber/Dilithium hybrid</li>
+<li><strong>Memory encryption</strong> — Keys encrypted even in RAM</li>
+<li><strong>Multi-device consensus</strong> — N-device approval for sensitive ops</li>
+<li><strong>Social recovery</strong> — Trusted contacts can help you recover</li>
+</ul>
+<h2 id="quick-start">Quick Start</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Install from source</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/merlin-tribukait/Aetheris.git
+<span class="nb">cd</span><span class="w"> </span>Aetheris
+cargo<span class="w"> </span>build<span class="w"> </span>--release
+
+<span class="c1"># Run the CLI</span>
+./target/release/aeth<span class="w"> </span>--help
+
+<span class="c1"># Initialize your vault</span>
+./target/release/aeth<span class="w"> </span>vault<span class="w"> </span>init
+
+<span class="c1"># Add a password</span>
+./target/release/aeth<span class="w"> </span>vault<span class="w"> </span>add<span class="w"> </span>--type<span class="w"> </span>password<span class="w"> </span>--title<span class="w"> </span><span class="s2">"GitHub"</span>
+
+<span class="c1"># Connect via SSH</span>
+./target/release/aeth<span class="w"> </span>ssh<span class="w"> </span>connect<span class="w"> </span>--host<span class="w"> </span>example.com<span class="w"> </span>--user<span class="w"> </span>admin
+</code></pre></div>
+
+<h2 id="platforms">Platforms</h2>
+<ul>
+<li><strong>Desktop</strong> — Windows, macOS, Linux (Tauri + React + xterm.js)</li>
+<li><strong>Browser</strong> — Chrome, Firefox, Safari, Edge, Brave (WebExtension + WASM)</li>
+<li><strong>Mobile</strong> — iOS, Android (Flutter + Rust FFI)</li>
+<li><strong>Web</strong> — Any browser (React + Rust API)</li>
+<li><strong>CLI</strong> — Any platform (ratatui)</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<p>Aetheris is built around a Rust core (VaultEngine) that compiles to native code for desktop/mobile/CLI and WASM for browsers. Every frontend binds to the same core, ensuring consistent behavior and security everywhere.</p>
+<div class="codehilite"><pre><span></span><code>VaultEngine (Rust)
+    ├── Desktop (Tauri + React)
+    ├── Browser (WebExtension + WASM)
+    ├── Mobile (Flutter + FFI)
+    ├── Web (React + HTTP API)
+    └── CLI (ratatui)
+</code></pre></div>
+
+<h2 id="license">License</h2>
+<p>MIT License — see <a href="../LICENSE">LICENSE</a> for details.</p></div></main>
+
+</div>
+<footer class="footer">
+<p>&copy; 2026 Aetheris. MIT License.</p>
+<p><a href="https://github.com/merlin-tribukait/Aetheris">GitHub</a> | <a href="security.html">Security</a></p>
+</footer>
+<script src="script.js"></script>
+</body></html>

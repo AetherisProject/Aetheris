@@ -1,0 +1,1 @@
+//! Sync tests for Aetheris.nn#[test]nfn test_placeholder_sync() {{n    // TODO: Implement sync testsn    assert_eq!(2 + 2, 4);n}}n

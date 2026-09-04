@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#6366f1">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="assets/icons/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>API Keys — Aetheris</title>
+</head>
+<body><div class="docs-wrapper">
+<main class="content"><div class="content-inner"><h1 id="api-keys">API Keys</h1>
+<p>The API Key Manager handles all your API keys with provider-aware rotation, health monitoring, and auto-injection.</p>
+<h2 id="supported-providers">Supported Providers</h2>
+<ul>
+<li>OpenAI, Anthropic, Google, AWS, GitHub, GitLab, Azure</li>
+<li>NVIDIA, HuggingFace, Mistral, OpenRouter, Groq, Cohere, Stability</li>
+<li>And 15+ more — with a plugin system for custom providers</li>
+</ul>
+<h2 id="features">Features</h2>
+<h3 id="auto-rotation">Auto-Rotation</h3>
+<p>Rotate API keys before expiry. Provider-specific rotation logic. One-click manual rotation when auto isn't possible.</p>
+<h3 id="health-monitoring">Health Monitoring</h3>
+<p>Periodic ping to detect expired or revoked keys. Alerts on failures.</p>
+<h3 id="auto-injection">Auto-Injection</h3>
+<p>Map keys to environment variables, config files, or API calls.</p>
+<h3 id="rotation-calendar">Rotation Calendar</h3>
+<p>View upcoming rotations at a glance. Configurable policies per provider.</p>
+<h2 id="usage">Usage</h2>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Add an API key</span>
+aeth<span class="w"> </span>apikey<span class="w"> </span>add<span class="w"> </span>--provider<span class="w"> </span>openai<span class="w"> </span>--key<span class="w"> </span>sk-xxx
+
+<span class="c1"># Rotate a key</span>
+aeth<span class="w"> </span>apikey<span class="w"> </span>rotate<span class="w"> </span>--provider<span class="w"> </span>openai
+
+<span class="c1"># Check health</span>
+aeth<span class="w"> </span>apikey<span class="w"> </span>health
+
+<span class="c1"># List keys</span>
+aeth<span class="w"> </span>apikey<span class="w"> </span>list
+</code></pre></div>
+
+<h2 id="provider-configuration">Provider Configuration</h2>
+<p>Each provider defines:
+- Key format (regex validation)
+- Rotation API endpoint
+- Health check endpoint
+- Injection targets
+- Scopes and permissions</p></div></main>
+
+</div>
+<footer class="footer">
+<p>&copy; 2026 Aetheris. MIT License.</p>
+<p><a href="https://github.com/merlin-tribukait/Aetheris">GitHub</a> | <a href="security.html">Security</a></p>
+</footer>
+<script src="script.js"></script>
+</body></html>

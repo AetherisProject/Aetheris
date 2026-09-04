@@ -1,0 +1,107 @@
+{
+  "mcpServers": {
+    "aetheris-vault": {
+      "command": "cargo",
+      "args": ["run", "--bin", "aeth", "--features", "web", "--", "mcp-server"],
+      "env": {
+        "AETH_ENV": "development",
+        "AETH_LOG_LEVEL": "info"
+      },
+      "description": "Aetheris Vault MCP server for secrets management"
+    },
+    "aetheris-ssh": {
+      "command": "cargo",
+      "args": ["run", "--bin", "aeth", "--", "mcp-ssh"],
+      "env": {
+        "AETH_ENV": "development"
+      },
+      "description": "Aetheris SSH MCP server for terminal connections"
+    },
+    "aetheris-sync": {
+      "command": "cargo",
+      "args": ["run", "--bin", "aeth", "--", "mcp-sync"],
+      "env": {
+        "AETH_ENV": "development"
+      },
+      "description": "Aetheris Sync MCP server for vault synchronization"
+    },
+    "aetheris-browser": {
+      "command": "cargo",
+      "args": ["run", "--bin", "aeth", "--", "mcp-browser"],
+      "env": {
+        "AETH_ENV": "development"
+      },
+      "description": "Aetheris Browser MCP server for extension relay"
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": ""
+      },
+      "description": "GitHub MCP server for repository management"
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem"],
+      "env": {},
+      "args_extra": ["C:\\Users\\HACK\\Desktop\\aetheris_omni_agent\\aetheris"],
+      "description": "Filesystem MCP server for local file access"
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "env": {},
+      "description": "Memory MCP server for persistent memory"
+    },
+    "fetch": {
+      "command": "npx",
+      "args": ["-y", "@anthropic-ai/mcp-fetch"],
+      "env": {},
+      "description": "Fetch MCP server for HTTP requests"
+    },
+    "sqlite": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sqlite"],
+      "env": {},
+      "args_extra": ["--db-path", "C:\\Users\\HACK\\Desktop\\aetheris_omni_agent\\aetheris\\aetheris.db"],
+      "description": "SQLite MCP server for database operations"
+    },
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "POSTGRES_CONNECTION_STRING": "postgresql://localhost:5432/aetheris"
+      },
+      "description": "PostgreSQL MCP server for cloud database"
+    },
+    "redis": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-redis"],
+      "env": {
+        "REDIS_URL": "redis://localhost:6379"
+      },
+      "description": "Redis MCP server for caching"
+    },
+    "docker": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-docker"],
+      "env": {},
+      "description": "Docker MCP server for container management"
+    },
+    "kubernetes": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-kubernetes"],
+      "env": {},
+      "description": "Kubernetes MCP server for cluster management"
+    },
+    "aws": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-aws"],
+      "env": {
+        "AWS_PROFILE": "default"
+      },
+      "description": "AWS MCP server for cloud operations"
+    }
+  }
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#6366f1">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="assets/icons/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Authentication — Aetheris</title>
+</head>
+<body><div class="docs-wrapper">
+<main class="content"><div class="content-inner"><h1 id="authentication">Authentication</h1>
+<h2 id="modes">Modes</h2>
+<ul>
+<li><strong>Local</strong> — No accounts, vault lives only on your device</li>
+<li><strong>Cloud</strong> — Aetheris-hosted auth servers (default)</li>
+<li><strong>Self-hosted</strong> — Enterprise runs their own auth server</li>
+</ul>
+<h2 id="methods">Methods</h2>
+<ul>
+<li>Email + password</li>
+<li>OAuth (Google, Apple, GitHub, GitLab)</li>
+<li>SSO / SAML (enterprise)</li>
+<li>WebAuthn / FIDO2 (hardware keys)</li>
+</ul>
+<h2 id="mfa">MFA</h2>
+<ul>
+<li>TOTP (RFC 6238)</li>
+<li>WebAuthn / FIDO2 (YubiKey)</li>
+<li>Recovery codes (generated at setup)</li>
+<li>Social recovery (trusted contacts)</li>
+</ul>
+<h2 id="password-flows">Password Flows</h2>
+<ul>
+<li>Change password (verify current → set new → re-encrypt vault)</li>
+<li>Forgot password (email + TOTP/recovery → reset)</li>
+<li>Master password rotation (re-derive all keys)</li>
+</ul>
+<h2 id="sessions">Sessions</h2>
+<ul>
+<li>JWT with 24h expiry</li>
+<li>Refresh tokens with rotation</li>
+<li>Session revocation per device</li>
+<li>Multi-device session management</li>
+</ul></div></main>
+
+</div>
+<footer class="footer">
+<p>&copy; 2026 Aetheris. MIT License.</p>
+<p><a href="https://github.com/merlin-tribukait/Aetheris">GitHub</a> | <a href="security.html">Security</a></p>
+</footer>
+<script src="script.js"></script>
+</body></html>

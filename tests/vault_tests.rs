@@ -1,0 +1,1 @@
+//! Vault tests for Aetheris.nn#[test]nfn test_placeholder_vault() {{n    // TODO: Implement vault testsn    assert_eq!(2 + 2, 4);n}}n
