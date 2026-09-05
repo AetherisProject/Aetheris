@@ -2,8 +2,6 @@
 pub mod item;
 pub mod store;
 
-use anyhow::Result;
-use uuid::Uuid;
 pub use item::*;
 pub use store::VaultStore;
 

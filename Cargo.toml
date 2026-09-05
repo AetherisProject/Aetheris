@@ -41,7 +41,7 @@ path = "src/main.rs"
 [features]
 default = ["cli"]
 cli = ["dep:ratatui", "dep:crossterm"]
-desktop = ["cli", "tauri"]
+desktop = ["cli"]
 web = ["dep:axum", "dep:tower-http"]
 wasm = ["dep:wasm-bindgen", "dep:js-sys", "dep:web-sys"]
 mobile = []
@@ -95,7 +95,7 @@ js-sys = { version = "0.3", optional = true }
 web-sys = { version = "0.3", optional = true }
 
 # CLI parsing
-clap = { version = "4", features = ["derive", "env", "complete"] }
+clap = { version = "4", features = ["derive", "env"] }
 
 # Error handling
 anyhow = "1"
@@ -179,4 +179,3 @@ lto = "thin"
 [workspace]
 members = []
 resolver = "2"
-
