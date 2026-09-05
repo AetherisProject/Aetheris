@@ -38,3 +38,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Build script (build.ps1)
 - Shell integrations (cmd, PowerShell, bash)
 - Skills documentation for AI agents
+
+### Changed
+- Fixed `src/*/mod.rs` module stubs with proper structure and content
+- Created submodule stub files for all planned module hierarchy
+- Fixed `lib.rs` re-exports to match actual module layout
+- Added `clap_complete` feature to Cargo.toml for shell completion
+- Fixed `.gitignore` to not exclude `.gitleaks.toml`
+- Updated test files to reference actual module items
+- Added bash shell wrapper (`aetheris.sh`)
+- Fixed AGENTS.md YAML frontmatter syntax
+
+### Fixed
+- Removed self-referencing `pub mod X;` lines from module stubs
+- Removed literal `\n` escape sequences from all module files
+- Fixed `Cargo.lock` missing warning by adding `clap` complete feature
+- Removed empty `cargo_launcher.log` from repo

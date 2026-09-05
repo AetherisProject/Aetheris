@@ -1,1 +1,24 @@
-//! vault module for Aetheris.nnpub mod vault;nn// TODO: Implement vault module
+//! Encrypted vault store for Aetheris.
+pub mod item;
+pub mod store;
+
+use anyhow::Result;
+use uuid::Uuid;
+pub use item::*;
+pub use store::VaultStore;
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_vault_item_type() {
+        let item = VaultItem::Password(PasswordItem::new("Test".to_string(), "user".to_string()));
+        assert_eq!(item.item_type(), "password");
+    }
+
+    #[test]
+    fn test_vault_store_new() {
+        let _store = VaultStore::new(":memory:").unwrap();
+    }
+}

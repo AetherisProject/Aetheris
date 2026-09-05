@@ -95,7 +95,7 @@ js-sys = { version = "0.3", optional = true }
 web-sys = { version = "0.3", optional = true }
 
 # CLI parsing
-clap = { version = "4", features = ["derive", "env"] }
+clap = { version = "4", features = ["derive", "env", "complete"] }
 
 # Error handling
 anyhow = "1"

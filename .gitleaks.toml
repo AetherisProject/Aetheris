@@ -1,0 +1,51 @@
+title = "Aetheris Gitleaks Configuration"
+
+[allowlist]
+  description = "Global allowlist"
+  paths = [
+    '''gitleaks\.toml''',
+    '''\.env\.example''',
+    '''Cargo\.lock''',
+    '''Cargo\.toml''',
+    '''tests/fixtures/.*''',
+    '''docs/.*\.md''',
+  ]
+  regexes = [
+    '''http://localhost''',
+    '''https://example\.com''',
+    '''127\.0\.0\.1''',
+    '''0\.0\.0\.0''',
+    '''fake-secret-for-testing''',
+    '''test-only-key''',
+  ]
+
+# Custom rules for Aetheris-specific secrets
+[[rules]]
+  id = "aetheris-master-key"
+  description = "Aetheris Master Key"
+  regex = '''(?i)(aetheris[_-]?master[_-]?key|master[_-]?password|vault[_-]?key)\s*[:=]\s*['"]?([a-zA-Z0-9]{16,})['"]?'''
+  tags = ["aetheris", "master-key"]
+
+[[rules]]
+  id = "aetheris-jwt-secret"
+  description = "Aetheris JWT Secret"
+  regex = '''(?i)(jwt[_-]?secret|auth[_-]?secret)\s*[:=]\s*['"]?([a-zA-Z0-9]{32,})['"]?'''
+  tags = ["aetheris", "jwt"]
+
+[[rules]]
+  id = "aetheris-recovery-code"
+  description = "Aetheris Recovery Code"
+  regex = '''(?i)(recovery[_-]?code|shamir[_-]?share)\s*[:=]\s*['"]?([a-zA-Z0-9-]{16,})['"]?'''
+  tags = ["aetheris", "recovery"]
+
+[[rules]]
+  id = "totp-secret"
+  description = "TOTP Secret Key"
+  regex = '''(?i)(otpauth|totp[_-]?secret|2fa[_-]?secret)\s*[:=]\s*['"]?([A-Z2-7]{16,}=*)['"]?'''
+  tags = ["totp", "mfa"]
+
+[[rules]]
+  id = "yubikey-private"
+  description = "YubiKey Private Key"
+  regex = '''(?i)(yubikey[_-]?private|fido2[_-]?key)\s*[:=]\s*['"]?([a-zA-Z0-9/+=]{40,})['"]?'''
+  tags = ["hardware-key"]

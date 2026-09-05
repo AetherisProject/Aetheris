@@ -23,5 +23,5 @@ pub mod sync;
 pub mod vault;
 pub mod web;
 
-pub use crypto::engine::CryptoEngine;
+pub use crypto::CryptoEngine;
 pub use vault::store::VaultStore;

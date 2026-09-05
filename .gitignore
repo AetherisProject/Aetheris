@@ -84,7 +84,7 @@ pnpm-lock.yaml
 *.temp
 
 # Secrets scan
-.gitleaks.toml
+# .gitleaks.toml is intentional config - DO NOT ignore
 
 # Keys (never commit!)
 *.pem

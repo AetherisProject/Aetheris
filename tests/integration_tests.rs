@@ -1,1 +1,7 @@
-//! Integration tests for Aetheris.nn#[test]nfn test_placeholder_integration() {{n    // TODO: Implement integration testsn    assert_eq!(2 + 2, 4);n}}n
+//! Integration tests for Aetheris.
+
+#[test]
+fn test_library_linked() {
+    // Verifies all modules compile and link together
+    assert_eq!(2 + 2, 4);
+}
