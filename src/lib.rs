@@ -18,10 +18,12 @@ pub mod debug;
 pub mod design;
 pub mod i18n;
 pub mod proactive;
+pub mod security;
 pub mod ssh;
 pub mod sync;
 pub mod vault;
 pub mod web;
 
 pub use crypto::CryptoEngine;
+pub use security::{SecureCompare, SecureString, SecureVec};
 pub use vault::store::VaultStore;
