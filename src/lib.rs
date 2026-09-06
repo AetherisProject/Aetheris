@@ -17,6 +17,7 @@ pub mod crypto;
 pub mod debug;
 pub mod design;
 pub mod i18n;
+pub mod password;
 pub mod proactive;
 pub mod security;
 pub mod ssh;

@@ -14,31 +14,75 @@ pub struct SshConfig {
     pub host: String,
     pub port: u16,
     pub username: String,
+    pub password: Option<String>,
+    pub private_key_path: Option<String>,
+    pub connect_timeout: u64, // seconds
+    pub keep_alive: u64, // seconds
 }
 
-/// SSH client for managing connections.
-pub struct SshClient;
-
-impl SshClient {
-    pub fn new() -> Self { Self }
-    pub fn connect(&self, _config: &SshConfig) -> Result<SshSession> {
-        unimplemented!("connect not yet implemented")
+impl Default for SshConfig {
+    fn default() -> Self {
+        Self {
+            host: String::new(),
+            port: 22,
+            username: String::new(),
+            password: None,
+            private_key_path: None,
+            connect_timeout: 30,
+            keep_alive: 60,
+        }
     }
 }
 
-impl Default for SshClient {
-    fn default() -> Self { Self::new() }
+/// Authentication method for SSH connections.
+#[derive(Debug, Clone)]
+pub enum Authentication {
+    Password(String),
+    PrivateKey(String), // Path to private key file
+}
+
+/// SSH client for managing connections.
+#[derive(Default)]
+pub struct SshClient {
+    config: SshConfig,
+    authentication: Option<Authentication>,
+}
+
+impl SshClient {
+    pub fn new() -> Self {
+        Self {
+            config: SshConfig::default(),
+            authentication: None,
+        }
+    }
+
+    pub fn with_config(config: SshConfig) -> Self {
+        Self {
+            config,
+            authentication: None,
+        }
+    }
 }
 
 /// An active SSH session.
 pub struct SshSession;
 
 impl SshSession {
-    pub fn exec(&self, _cmd: &str) -> Result<String> {
-        unimplemented!("exec not yet implemented")
+    pub fn new() -> Self {
+        Self {}
     }
+
+    pub fn exec(&self, _cmd: &str) -> Result<String> {
+        unimplemented!("SSH exec functionality requires russh async runtime - TODO")
+    }
+    
     pub fn close(&mut self) -> Result<()> {
-        unimplemented!("close not yet implemented")
+        Ok(())
+    }
+    
+    /// Check if the session is still active.
+    pub fn is_connected(&self) -> bool {
+        false // TODO: implement proper connection status
     }
 }
 
@@ -49,7 +93,12 @@ mod tests {
     fn test_ssh_client_new() { let _c = SshClient::new(); }
     #[test]
     fn test_ssh_config() {
-        let config = SshConfig { host: "example.com".into(), port: 22, username: "admin".into() };
+        let config = SshConfig { host: "example.com".into(), port: 22, username: "admin".into(), ..Default::default() };
         assert_eq!(config.host, "example.com");
+    }
+    #[test]
+    fn test_ssh_session() {
+        let session = SshSession::new();
+        assert!(!session.is_connected());
     }
 }

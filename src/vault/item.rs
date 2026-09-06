@@ -68,14 +68,20 @@ pub struct SshConnectionItem {
 pub struct ApiKeyItem {
     pub id: Uuid,
     pub title: String,
-    pub provider: String,
-    pub key: String,
+    pub provider: crate::apikey::Provider,
+    pub api_key: String,
+    pub api_secret: Option<String>,
     pub scopes: Vec<String>,
-    pub expires_at: Option<DateTime<Utc>>,
-    pub last_rotated: Option<DateTime<Utc>>,
+    pub rotation_strategy: crate::apikey::RotationStrategy,
+    pub last_used: Option<DateTime<Utc>>,
+    pub usage_count: u64,
+    pub max_usage: Option<u64>,
+    pub notes: String,
+    pub disabled: bool,
     pub tags: Vec<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+    pub expires_at: Option<DateTime<Utc>>,
 }
 
 /// Encrypted note item.
