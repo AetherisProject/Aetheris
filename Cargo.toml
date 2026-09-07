@@ -138,7 +138,7 @@ pin-project = "1"
 
 # Concurrency
 parking_lot = "0.12"
-dashmap = "5"
+dashmap = "6"
 
 # TOTP / MFA
 totp-rs = { version = "5", features = ["otpauth", "gen_secret"] }
