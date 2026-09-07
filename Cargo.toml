@@ -76,7 +76,7 @@ secrecy = "0.8"
 
 # SSH
 russh = "0.43"
-russh-keys = "0.43"
+russh-keys = "0.49"
 
 # AWS SDK / S3 Sync
 aws-config = { version = "1", default-features = false, features = ["rt-tokio", "credentials-process", "sso", "behavior-version-latest"] }
