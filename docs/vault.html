@@ -5,10 +5,54 @@
 <meta name="theme-color" content="#6366f1">
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" href="assets/icons/favicon.svg">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <title>Vault — Aetheris</title>
 </head>
 <body><div class="docs-wrapper">
+
+<nav class="sidebar">
+    <div class="sidebar-header">
+        <a href="index.html" class="logo">
+            <img src="assets/icons/logo.svg" alt="Aetheris" class="logo-icon">
+            <span class="logo-text">Aetheris</span>
+        </a>
+        <div style="margin-top: 0.5rem;">
+            <a href="brand.html" style="display:inline-block;font-size:0.75rem;padding:0.2rem 0.5rem;border-radius:9999px;background:rgba(6,182,212,0.15);border:1px solid rgba(6,182,212,0.3);color:#06b6d4;text-decoration:none;font-family:'JetBrains Mono',monospace;">Brand Portal &rarr;</a>
+        </div>
+    </div>
+    <div class="sidebar-search">
+        <input type="search" placeholder="Search docs..." id="search">
+    </div>
+    <ul class="nav-section"><li class="nav-section-title">Brand &amp; System</li>
+        <li><a href="brand.html">Web Brand Showcase</a></li>
+        <li><a href="design-system.html">Design Tokens &amp; Spec</a></li></ul>
+    <ul class="nav-section"><li class="nav-section-title">Getting Started</li>
+        <li><a href="getting-started.html">Quick Start</a></li></ul>
+    <ul class="nav-section"><li class="nav-section-title">Architecture</li>
+        <li><a href="architecture.html">Overview</a></li>
+        <li><a href="security.html">Security</a></li>
+        <li><a href="features.html">Features</a></li></ul>
+    <ul class="nav-section"><li class="nav-section-title">Platform</li>
+        <li><a href="terminal.html">Terminal</a></li>
+        <li><a href="vault.html">Vault</a></li>
+        <li><a href="api-keys.html">API Keys</a></li>
+        <li><a href="sync.html">Sync</a></li>
+        <li><a href="authentication.html">Auth</a></li></ul>
+    <ul class="nav-section"><li class="nav-section-title">Client</li>
+        <li><a href="browser-extension.html">Browser</a></li>
+        <li><a href="mobile.html">Mobile</a></li>
+        <li><a href="web-app.html">Web App</a></li></ul>
+    <ul class="nav-section"><li class="nav-section-title">Advanced</li>
+        <li><a href="proactive-engine.html">Proactive</a></li>
+        <li><a href="api-reference.html">API Ref</a></li>
+        <li><a href="configuration.html">Config</a></li>
+        <li><a href="i18n.html">i18n</a></li></ul>
+    <ul class="nav-section"><li class="nav-section-title">Dev</li>
+        <li><a href="development.html">Setup</a></li>
+        <li><a href="debugging.html">Debug</a></li>
+        <li><a href="deployment.html">Deploy</a></li></ul>
+</nav>
+
 <main class="content"><div class="content-inner"><h1 id="vault">Vault</h1>
 <p>The Aetheris Vault is a zero-knowledge encrypted store for all your secrets: passwords, SSH keys, API keys, notes, cards, and identities.</p>
 <h2 id="item-types">Item Types</h2>
@@ -36,22 +80,22 @@
 </ul>
 <h2 id="operations">Operations</h2>
 <div class="codehilite"><pre><span></span><code><span class="c1"># Add an item</span>
-aeth<span class="w"> </span>vault<span class="w"> </span>add<span class="w"> </span>--type<span class="w"> </span>password<span class="w"> </span>--title<span class="w"> </span><span class="s2">"GitHub"</span><span class="w"> </span>--username<span class="w"> </span><span class="s2">"you@example.com"</span>
+aeth<span class="w"> </span>vault<span class="w"> </span>add<span class="w"> </span>--type<span class="w"> </span>password<span class="w"> </span>--title<span class="w"> </span><span class="s2">&quot;GitHub&quot;</span><span class="w"> </span>--username<span class="w"> </span><span class="s2">&quot;you@example.com&quot;</span>
 
 <span class="c1"># Get an item</span>
-aeth<span class="w"> </span>vault<span class="w"> </span>get<span class="w"> </span>--title<span class="w"> </span><span class="s2">"GitHub"</span><span class="w"> </span>--field<span class="w"> </span>password
+aeth<span class="w"> </span>vault<span class="w"> </span>get<span class="w"> </span>--title<span class="w"> </span><span class="s2">&quot;GitHub&quot;</span><span class="w"> </span>--field<span class="w"> </span>password
 
 <span class="c1"># List items</span>
 aeth<span class="w"> </span>vault<span class="w"> </span>list<span class="w"> </span>--type<span class="w"> </span>password
 
 <span class="c1"># Update an item</span>
-aeth<span class="w"> </span>vault<span class="w"> </span>update<span class="w"> </span>--title<span class="w"> </span><span class="s2">"GitHub"</span><span class="w"> </span>--field<span class="w"> </span>password
+aeth<span class="w"> </span>vault<span class="w"> </span>update<span class="w"> </span>--title<span class="w"> </span><span class="s2">&quot;GitHub&quot;</span><span class="w"> </span>--field<span class="w"> </span>password
 
 <span class="c1"># Delete an item</span>
-aeth<span class="w"> </span>vault<span class="w"> </span>delete<span class="w"> </span>--title<span class="w"> </span><span class="s2">"GitHub"</span>
+aeth<span class="w"> </span>vault<span class="w"> </span>delete<span class="w"> </span>--title<span class="w"> </span><span class="s2">&quot;GitHub&quot;</span>
 
 <span class="c1"># Search</span>
-aeth<span class="w"> </span>vault<span class="w"> </span>search<span class="w"> </span>--query<span class="w"> </span><span class="s2">"github"</span>
+aeth<span class="w"> </span>vault<span class="w"> </span>search<span class="w"> </span>--query<span class="w"> </span><span class="s2">&quot;github&quot;</span>
 </code></pre></div>
 
 <h2 id="password-generator">Password Generator</h2>
@@ -60,7 +104,7 @@ aeth<span class="w"> </span>vault<span class="w"> </span>search<span class="w"> 
 aeth<span class="w"> </span>vault<span class="w"> </span>generate<span class="w"> </span>--length<span class="w"> </span><span class="m">32</span>
 
 <span class="c1"># Generate with custom symbols</span>
-aeth<span class="w"> </span>vault<span class="w"> </span>generate<span class="w"> </span>--length<span class="w"> </span><span class="m">32</span><span class="w"> </span>--symbols<span class="w"> </span><span class="s2">"!@#</span>$<span class="s2">%"</span>
+aeth<span class="w"> </span>vault<span class="w"> </span>generate<span class="w"> </span>--length<span class="w"> </span><span class="m">32</span><span class="w"> </span>--symbols<span class="w"> </span><span class="s2">&quot;!@#</span>$<span class="s2">%&quot;</span>
 </code></pre></div>
 
 <h2 id="security-dashboard">Security Dashboard</h2>
@@ -68,8 +112,8 @@ aeth<span class="w"> </span>vault<span class="w"> </span>generate<span class="w"
 
 </div>
 <footer class="footer">
-<p>&copy; 2026 Aetheris. MIT License.</p>
-<p><a href="https://github.com/merlin-tribukait/Aetheris">GitHub</a> | <a href="security.html">Security</a></p>
+<p>&copy; 2026 Aetheris (Merlin Tribukait). Published on <a href="https://aether.merlin-tribukait.com">aether.merlin-tribukait.com</a> under MIT License.</p>
+<p><a href="https://github.com/merlin-tribukait/Aetheris">GitHub</a> | <a href="brand.html">Brand Portal</a> | <a href="security.html">Security</a></p>
 </footer>
 <script src="script.js"></script>
 </body></html>
