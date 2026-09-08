@@ -1,5 +1,14 @@
 name: Mobile CI
-on: [push, pull_request]
+on:
+  push:
+    branches: [main, develop, "release/**"]
+  pull_request:
+    branches: [main, develop]
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   mobile-build:
     runs-on: ubuntu-latest

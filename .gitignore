@@ -57,6 +57,7 @@ Thumbs.db
 **/package-lock.json
 **/yarn.lock
 **/pnpm-lock.yaml
+!web/package-lock.json
 **/.npm/
 **/.pnpm/
 **/bower_components/

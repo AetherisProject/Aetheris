@@ -1,5 +1,14 @@
 name: Desktop CI
-on: [push, pull_request]
+on:
+  push:
+    branches: [main, develop, "release/**"]
+  pull_request:
+    branches: [main, develop]
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   desktop-build:
     runs-on: ubuntu-latest
