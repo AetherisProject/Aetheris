@@ -62,7 +62,7 @@ export default function LandingPage() {
       Register, login, change password, reset — shared across CLI (ratatui), Desktop (Tauri + React), Mobile (Flutter + FFI), Web, and Browser Extension. All passwords hashed with Argon2id; master password never stored or logged; Zeroize on drop.</p>
   </section>
   <footer style={{ textAlign: 'center', padding: spacing.xlarge, color: colors.textDisabled, fontSize: 14 }}>
-        Aetheris — Unified secrets management. Zero-knowledge. Cross-platform.
+        Aetheris — Tool Landing (https://aetheris.merlin-tribukait.com). Zero-knowledge. Cross-platform.
       </footer>
     </div>
   );
