@@ -148,4 +148,5 @@ id_ecdsa
 **/id_ecdsa
 
 # Memory / local state (optional — keep if tracking)
-# .memory/  
+.github/runner/
+scripts/check-runners.sh
