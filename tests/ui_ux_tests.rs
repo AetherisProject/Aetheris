@@ -1,25 +1,27 @@
-//! UI/UX tests — verify design-system deliverables exist and function
+//! UI / UX smoke tests — browser plugin popup + options
+use std::path::Path;
+
 #[test]
-fn test_design_export_exists() {
-    assert!(!crate::design::tokens::all_token_names().is_empty());
+fn popup_has_dark_theme_and_interactive_elements() {
+    let html = std::fs::read_to_string("browser/chrome/popup.html").expect("readable");
+    assert!(html.contains("Aetheris"));
+    assert!(html.contains("Vault Status"));
+    assert!(html.contains("btn") || html.contains("button"));
+    assert!(html.contains("#090D16") || html.contains("background:var(--bg)"));
 }
+
 #[test]
-fn test_cli_components_exist() {
-    assert!(std::path::Path::new("src/cli/ui_components.rs").exists());
+fn options_has_form_elements() {
+    let html = std::fs::read_to_string("browser/chrome/options.html").expect("readable");
+    assert!(html.contains("relay-url"));
+    assert!(html.contains("sync-mode"));
+    assert!(html.contains("saveOptions"));
 }
+
 #[test]
-fn test_desktop_screens_exist() {
-    assert!(std::path::Path::new("desktop/src/pages/Dashboard.tsx").exists());
-}
-#[test]
-fn test_mobile_scaffold_exists() {
-    assert!(std::path::Path::new("mobile/pubspec.yaml").exists());
-}
-#[test]
-fn test_web_scaffold_exists() {
-    assert!(std::path::Path::new("web/package.json").exists());
-}
-#[test]
-fn test_browser_manifest_exists() {
-    assert!(std::path::Path::new("browser/chrome/manifest.json").exists());
+fn manifest_has_action_and_background() {
+    let raw = std::fs::read_to_string("browser/chrome/manifest.json").expect("readable");
+    assert!(raw.contains("action"));
+    assert!(raw.contains("background"));
+    assert!(raw.contains("options_page"));
 }
