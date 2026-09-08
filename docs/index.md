@@ -2,7 +2,7 @@
 
 **The Secrets Operating System**
 
-A unified SSH terminal, password vault, API key manager, and zero-knowledge sync platform — all in one tool. Published under **[aether.merlin-tribukait.com](https://aether.merlin-tribukait.com)**.
+A unified SSH terminal, password vault, API key manager, and zero-knowledge sync platform — all in one tool. Published under **[aetheris.merlin-tribukait.com](https://aetheris.merlin-tribukait.com)**.
 
 > 🎨 **New:** Explore the official **[Aetheris Brand Identity & Web Design Portal](brand.html)** and **[Design System Specifications](design-system.html)**.
 
@@ -81,4 +81,4 @@ VaultEngine (Rust)
 
 ## License
 
-MIT License — see [LICENSE](../LICENSE) for details. Published under [aether.merlin-tribukait.com](https://aether.merlin-tribukait.com).
+MIT License — see [LICENSE](../LICENSE) for details. Published under [aetheris.merlin-tribukait.com](https://aetheris.merlin-tribukait.com).

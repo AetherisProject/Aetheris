@@ -1,6 +1,6 @@
 # Brand & Design System
 
-Welcome to the official **Aetheris Web Design Brand & Token System**, published for [aether.merlin-tribukait.com](https://aether.merlin-tribukait.com).
+Welcome to the official **Aetheris Web Design Brand & Token System**, published for [aetheris.merlin-tribukait.com](https://aetheris.merlin-tribukait.com).
 
 Explore the interactive web brand experience directly on the [Aetheris Brand Portal](brand.html).
 
@@ -48,7 +48,7 @@ Aetheris is engineered as **The Secrets Operating System** — combining the sli
 
 ## UI Components
 
-1. **Brand Hero & Lockup:** Icon shield badge with inset portal circle, bold brandmark typography, and live custom domain badge `aether.merlin-tribukait.com`.
+1. **Brand Hero & Lockup:** Icon shield badge with inset portal circle, bold brandmark typography, and live custom domain badge `aetheris.merlin-tribukait.com`.
 2. **Terminal Shell Preview:** Termius-grade live window showing real-time Zero-Knowledge initialization and memory injection.
 3. **Card Glassmorphism:** Elevated dark surface containers with subtle border highlights on hover.
 
