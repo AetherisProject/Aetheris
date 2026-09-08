@@ -1,6 +1,6 @@
 //! Key Derivation Function implementations using Argon2id and HKDF.
 
-use anyhow::{Result};
+use anyhow::Result;
 use argon2::{self, password_hash::SaltString};
 use argon2::{Algorithm, Argon2, Params, PasswordHash, PasswordHasher, PasswordVerifier, Version};
 use hkdf::Hkdf;
@@ -38,23 +38,25 @@ pub fn generate_salt() -> Vec<u8> {
 }
 
 /// Generate a derived key from a password using Argon2id.
-/// 
+///
 /// Uses security compliant parameters: t=3, m=64MB, p=4
 /// Returns the derived key as a byte vector.
 pub fn derive_key_from_password(password: &[u8], salt: &[u8]) -> Result<Vec<u8>> {
     let argon2 = Argon2::new(Algorithm::Argon2id, Version::V0x13, argon2_params().clone());
-    
+
     let salt_string = SaltString::encode_b64(salt)
         .map_err(|e| anyhow::anyhow!("Failed to encode salt for Argon2id: {}", e))?;
-    
+
     let password_hash = argon2
         .hash_password(password, &salt_string)
         .map_err(|e| anyhow::anyhow!("Argon2id hashing failed: {}", e))?;
-    
-    let hash_bytes = password_hash.hash.ok_or_else(|| {
-        anyhow::anyhow!("Argon2id hashing produced no output")
-    })?.as_bytes().to_vec();
-    
+
+    let hash_bytes = password_hash
+        .hash
+        .ok_or_else(|| anyhow::anyhow!("Argon2id hashing produced no output"))?
+        .as_bytes()
+        .to_vec();
+
     Ok(hash_bytes[..ARGON2_OUTPUT_LENGTH.min(hash_bytes.len())].to_vec())
 }
 
@@ -125,13 +127,13 @@ mod tests {
     fn test_hkdf_derivation() {
         let master_key = vec![0x42u8; 32]; // 32-byte master key
         let context = b"test_context";
-        
+
         let derived = derive_key(&master_key, context, 32).unwrap();
         assert_eq!(derived.len(), 32);
-        
+
         let derived2 = derive_key(&master_key, context, 32).unwrap();
         assert_eq!(derived, derived2);
-        
+
         let derived3 = derive_key(&master_key, b"different_context", 32).unwrap();
         assert_ne!(derived, derived3);
     }

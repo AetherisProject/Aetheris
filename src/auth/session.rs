@@ -25,14 +25,21 @@ pub struct SessionStore {
 }
 
 impl SessionStore {
-    pub fn new() -> Self { Self { sessions: HashMap::new() } }
+    pub fn new() -> Self {
+        Self {
+            sessions: HashMap::new(),
+        }
+    }
 
     pub fn create(&mut self, user_id: &str) -> Result<SessionToken> {
         let token_str = CryptoEngine::generate_token()?;
         let session = SessionToken {
             token: token_str.clone(),
             user_id: user_id.to_string(),
-            created: std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_secs(),
+            created: std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap()
+                .as_secs(),
             expires: None,
         };
         self.sessions.insert(token_str, session.clone());

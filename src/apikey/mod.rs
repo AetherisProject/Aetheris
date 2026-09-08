@@ -11,8 +11,8 @@ use std::collections::HashMap;
 use std::time::Duration;
 use uuid::Uuid;
 
-use crate::vault::VaultItem;
 use crate::crypto::EncryptionKey;
+use crate::vault::VaultItem;
 
 /// Supported API key providers.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
@@ -165,7 +165,8 @@ impl ApiKeyConfig {
                 let now = Utc::now();
                 let duration_since_usage = now.signed_duration_since(last_used);
                 // Convert chrono::Duration to std::time::Duration for comparison
-                let std_duration = std::time::Duration::from_secs(duration_since_usage.num_seconds() as u64);
+                let std_duration =
+                    std::time::Duration::from_secs(duration_since_usage.num_seconds() as u64);
                 std_duration >= *interval
             }
             RotationStrategy::UsageThreshold(threshold) => self.usage_count >= *threshold,
@@ -218,7 +219,8 @@ impl ApiKeyManager {
 
     /// List all API keys for a specific provider.
     pub fn list_keys_by_provider(&self, provider: &Provider) -> Vec<&ApiKeyConfig> {
-        self.keys.values()
+        self.keys
+            .values()
             .filter(|config| &config.provider == provider)
             .collect()
     }
@@ -230,7 +232,9 @@ impl ApiKeyManager {
 
     /// Check the health of an API key.
     pub fn check_health(&self, id: &Uuid) -> Result<HealthStatus> {
-        let config = self.keys.get(id)
+        let config = self
+            .keys
+            .get(id)
             .ok_or_else(|| anyhow::anyhow!("API key not found"))?;
 
         if !config.enabled {
@@ -255,21 +259,23 @@ impl ApiKeyManager {
 
     /// Rotate an API key (generate new key and replace old one).
     pub fn rotate(&mut self, id: &Uuid) -> Result<String> {
-        let mut config = self.keys.remove(id)
+        let mut config = self
+            .keys
+            .remove(id)
             .ok_or_else(|| anyhow::anyhow!("API key not found"))?;
 
         // Generate new key (placeholder - in reality this would call the provider's API)
         let new_key = self.generate_key_for_provider(&config.provider)?;
-        
+
         // Update the key
         config.key = new_key.clone();
         config.last_used = Some(Utc::now());
         config.usage_count = 0;
         config.created_at = Utc::now();
-        
+
         // Put the config back
         self.keys.insert(id.clone(), config);
-        
+
         Ok(new_key)
     }
 
@@ -279,7 +285,7 @@ impl ApiKeyManager {
         // to generate new keys. For now, we'll generate a mock key.
         use rand::Rng;
         let mut rng = rand::thread_rng();
-        
+
         let prefix = match provider {
             Provider::Openai => "sk-",
             Provider::Anthropic => "sk-",
@@ -297,13 +303,16 @@ impl ApiKeyManager {
             Provider::Stability => "stability-",
             Provider::Custom(name) => &format!("{}-", name.to_lowercase()),
         };
-        
-        let random_suffix: String = (0..32).map(|_| {
-            const CHARSET: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            let idx = rng.gen_range(0..CHARSET.len());
-            CHARSET[idx] as char
-        }).collect();
-        
+
+        let random_suffix: String = (0..32)
+            .map(|_| {
+                const CHARSET: &[u8] =
+                    b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                let idx = rng.gen_range(0..CHARSET.len());
+                CHARSET[idx] as char
+            })
+            .collect();
+
         Ok(format!("{}{}", prefix, random_suffix))
     }
 
@@ -324,22 +333,24 @@ impl ApiKeyManager {
     /// Get all keys as environment variables.
     pub fn get_all_keys_as_env(&self) -> HashMap<String, String> {
         let mut env_vars = HashMap::new();
-        
+
         for config in self.list_all_keys() {
             if !config.enabled {
                 continue;
             }
-            
+
             let var_name = format!("{}_API_KEY", config.provider.to_string().to_uppercase());
             env_vars.insert(var_name, config.key.clone());
         }
-        
+
         env_vars
     }
 
     /// Increment usage count for an API key.
     pub fn increment_usage(&mut self, id: &Uuid) -> Result<()> {
-        let config = self.keys.get_mut(id)
+        let config = self
+            .keys
+            .get_mut(id)
             .ok_or_else(|| anyhow::anyhow!("API key not found"))?;
         config.usage_count += 1;
         config.last_used = Some(Utc::now());
@@ -349,7 +360,7 @@ impl ApiKeyManager {
     /// Load API keys from a vault store.
     pub fn load_from_vault(&mut self, vault_store: &crate::vault::store::VaultStore) -> Result<()> {
         let items = vault_store.list()?;
-        
+
         for item in items {
             if let VaultItem::ApiKey(api_key_item) = item {
                 let config = ApiKeyConfig {
@@ -367,11 +378,11 @@ impl ApiKeyManager {
                     tags: api_key_item.tags.clone(),
                     enabled: !api_key_item.disabled,
                 };
-                
+
                 self.keys.insert(config.id, config);
             }
         }
-        
+
         Ok(())
     }
 
@@ -396,22 +407,26 @@ impl ApiKeyManager {
                 updated_at: Utc::now(),
                 expires_at: config.expires_at,
             };
-            
+
             let item = VaultItem::ApiKey(api_key_item);
             vault_store.insert(item)?;
         }
-        
+
         Ok(())
     }
 }
 
 impl Default for ApiKeyManager {
-    fn default() -> Self { Self::new() }
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     #[test]
-    fn test_api_key_manager_new() { let _m = ApiKeyManager::new(); }
+    fn test_api_key_manager_new() {
+        let _m = ApiKeyManager::new();
+    }
 }

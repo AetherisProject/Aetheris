@@ -1,6 +1,6 @@
 //! Authenticated encryption using XChaCha20-Poly1305.
 
-use anyhow::{Result};
+use anyhow::Result;
 use chacha20poly1305::{
     aead::{Aead, KeyInit},
     XChaCha20Poly1305, XNonce,
@@ -101,18 +101,18 @@ impl From<Ciphertext> for Vec<u8> {
 }
 
 /// Encrypt plaintext using XChaCha20-Poly1305.
-/// 
+///
 /// Uses authenticated encryption (AEAD) with the provided nonce.
 /// The nonce should be unique for each encryption operation.
 pub fn encrypt(plaintext: &[u8], key: &EncryptionKey, nonce: &[u8]) -> Result<Ciphertext> {
     let cipher = XChaCha20Poly1305::new_from_slice(key.as_bytes())
         .map_err(|e| anyhow::anyhow!("Failed to create cipher: {}", e))?;
-    
+
     let nonce = XNonce::from_slice(nonce);
     let ciphertext = cipher
         .encrypt(nonce, plaintext)
         .map_err(|e| anyhow::anyhow!("Encryption failed: {}", e))?;
-    
+
     Ok(Ciphertext::new(ciphertext))
 }
 
@@ -123,17 +123,17 @@ pub fn encrypt(plaintext: &[u8], key: &EncryptionKey, nonce: &[u8]) -> Result<Ci
 pub fn decrypt(ciphertext: &Ciphertext, key: &EncryptionKey, nonce: &[u8]) -> Result<Vec<u8>> {
     let cipher = XChaCha20Poly1305::new_from_slice(key.as_bytes())
         .map_err(|e| anyhow::anyhow!("Failed to create cipher: {}", e))?;
-    
+
     let nonce = XNonce::from_slice(nonce);
     let plaintext = cipher
         .decrypt(nonce, ciphertext.as_bytes())
         .map_err(|e| anyhow::anyhow!("Decryption failed: {}", e))?;
-    
+
     Ok(plaintext)
 }
 
 /// Generate a new random nonce for XChaCha20-Poly1305.
-/// 
+///
 /// The nonce is 24 bytes (192 bits) and must be unique for each encryption.
 pub fn generate_nonce() -> Vec<u8> {
     let mut nonce = vec![0u8; NONCE_SIZE];
@@ -143,7 +143,7 @@ pub fn generate_nonce() -> Vec<u8> {
 }
 
 /// Encrypt plaintext with a randomly generated nonce.
-/// 
+///
 /// Returns the ciphertext and the nonce used.
 pub fn encrypt_with_random_nonce(
     plaintext: &[u8],
@@ -155,7 +155,7 @@ pub fn encrypt_with_random_nonce(
 }
 
 /// Simple encryption/decryption with managed nonce handling.
-/// 
+///
 /// For cases where nonce management is not critical.
 pub fn encrypt_simple(plaintext: &[u8], key: &EncryptionKey) -> Result<(Ciphertext, Vec<u8>)> {
     encrypt_with_random_nonce(plaintext, key)
@@ -262,7 +262,7 @@ mod tests {
     fn test_ciphertext_conversions() {
         let data = vec![1, 2, 3, 4, 5];
         let ciphertext = Ciphertext::new(data.clone());
-        
+
         assert_eq!(ciphertext.as_bytes(), data.as_slice());
         assert_eq!(Vec::<u8>::from(ciphertext.clone()), data);
         assert_eq!(ciphertext.into_bytes(), data);

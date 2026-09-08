@@ -69,7 +69,10 @@ impl SshClient {
         }
 
         // Validate that an authentication method exists
-        if self.auth.is_none() && self.config.password.is_none() && self.config.private_key_path.is_none() {
+        if self.auth.is_none()
+            && self.config.password.is_none()
+            && self.config.private_key_path.is_none()
+        {
             bail!("No SSH authentication method specified (password or key required)");
         }
 

@@ -1,16 +1,18 @@
 //! Aetheris CLI — The Secrets Operating System
 use aetheris::apikey::{ApiKeyManager, Provider};
 use aetheris::crypto::{generate_master_key, EncryptionKey};
-use aetheris::ssh::{
-    probe_ssh_endpoint, PortForward, SshClient, SshConfig, SshKeypair,
-};
+use aetheris::ssh::{probe_ssh_endpoint, PortForward, SshClient, SshConfig, SshKeypair};
 use aetheris::sync::SyncClient;
 use aetheris::vault::{PasswordItem, VaultItem, VaultStore};
 use anyhow::Result;
 use clap::Parser;
 use std::time::Duration;
 #[derive(Parser)]
-#[command(name = "aeth", version, about = "Aetheris: The Secrets Operating System")]
+#[command(
+    name = "aeth",
+    version,
+    about = "Aetheris: The Secrets Operating System"
+)]
 struct Cli {
     #[arg(long, default_value = "aetheris.toml")]
     config: String,
@@ -46,13 +48,38 @@ enum Commands {
 
 #[derive(clap::Subcommand)]
 enum VaultAction {
-    List { #[arg(long)] item_type: Option<String> },
-    Get { title: String, #[arg(long)] field: Option<String> },
-    Add { #[arg(long)] item_type: String, #[arg(long)] title: String, #[arg(long)] username: Option<String> },
-    Update { title: String, #[arg(long)] field: String },
-    Delete { title: String },
-    Search { query: String },
-    Generate { #[arg(long, default_value = "32")] length: usize },
+    List {
+        #[arg(long)]
+        item_type: Option<String>,
+    },
+    Get {
+        title: String,
+        #[arg(long)]
+        field: Option<String>,
+    },
+    Add {
+        #[arg(long)]
+        item_type: String,
+        #[arg(long)]
+        title: String,
+        #[arg(long)]
+        username: Option<String>,
+    },
+    Update {
+        title: String,
+        #[arg(long)]
+        field: String,
+    },
+    Delete {
+        title: String,
+    },
+    Search {
+        query: String,
+    },
+    Generate {
+        #[arg(long, default_value = "32")]
+        length: usize,
+    },
 }
 
 #[derive(clap::Subcommand)]
@@ -101,8 +128,14 @@ enum SshAction {
 #[derive(clap::Subcommand)]
 enum ApiKeyAction {
     List,
-    Add { #[arg(long)] provider: String, key: String },
-    Rotate { provider: String },
+    Add {
+        #[arg(long)]
+        provider: String,
+        key: String,
+    },
+    Rotate {
+        provider: String,
+    },
     Health,
 }
 
@@ -117,7 +150,11 @@ enum SyncAction {
 async fn main() -> Result<()> {
     let cli = Cli::parse();
     let subscriber = tracing_subscriber::fmt()
-        .with_env_filter(if cli.debug { "aetheris=debug" } else { "aetheris=info" })
+        .with_env_filter(if cli.debug {
+            "aetheris=debug"
+        } else {
+            "aetheris=info"
+        })
         .with_writer(std::io::stderr)
         .finish();
     tracing::subscriber::set_global_default(subscriber)?;
@@ -166,10 +203,15 @@ async fn main() -> Result<()> {
                         println!("Item not found: {title}");
                     }
                 }
-                VaultAction::Add { item_type, title, username } => {
+                VaultAction::Add {
+                    item_type,
+                    title,
+                    username,
+                } => {
                     let item = match item_type.as_str() {
                         "password" => {
-                            let mut pwd = PasswordItem::new(title.clone(), username.unwrap_or_default());
+                            let mut pwd =
+                                PasswordItem::new(title.clone(), username.unwrap_or_default());
                             pwd.password = rpassword::prompt_password("Enter password: ")?;
                             VaultItem::Password(pwd)
                         }
@@ -232,7 +274,13 @@ async fn main() -> Result<()> {
                     println!("  - {}", item.id());
                 }
             }
-            SshAction::Connect { host, user, port, key, inject_env } => {
+            SshAction::Connect {
+                host,
+                user,
+                port,
+                key,
+                inject_env,
+            } => {
                 let port_num = port.unwrap_or(22);
                 println!("Connecting to {user}@{host}:{port_num}...");
                 let config = SshConfig {
@@ -252,7 +300,10 @@ async fn main() -> Result<()> {
                                 println!("⚡ Injected secret environment variable '{k}' directly into memory");
                             }
                         }
-                        println!("✔ Connected to {} (Session ID: {})", session.host, session.session_id);
+                        println!(
+                            "✔ Connected to {} (Session ID: {})",
+                            session.host, session.session_id
+                        );
                         println!("Session active. (Press Ctrl+C to terminate)");
                     }
                     Err(e) => eprintln!("Failed to connect: {e}"),
@@ -260,7 +311,11 @@ async fn main() -> Result<()> {
             }
             SshAction::Add { title, host, user } => {
                 let mut store = VaultStore::new("aetheris_vault")?;
-                let conn = aetheris::vault::SshConnectionItem::new(title.clone(), host.clone(), user.clone());
+                let conn = aetheris::vault::SshConnectionItem::new(
+                    title.clone(),
+                    host.clone(),
+                    user.clone(),
+                );
                 store.insert(VaultItem::SshConnection(conn))?;
                 println!("✔ Added connection: {title} ({user}@{host}) to secure vault.");
             }
@@ -283,7 +338,11 @@ async fn main() -> Result<()> {
                     println!("Error: {err}");
                 }
             }
-            SshAction::Tunnel { local_port, remote_host, remote_port } => {
+            SshAction::Tunnel {
+                local_port,
+                remote_host,
+                remote_port,
+            } => {
                 let mut tunnel = PortForward::local(local_port, remote_host.clone(), remote_port);
                 tunnel.activate();
                 println!("✔ Tunnel active: 127.0.0.1:{local_port} -> {remote_host}:{remote_port}");
@@ -296,7 +355,12 @@ async fn main() -> Result<()> {
                     let keys = manager.list_all_keys();
                     println!("API keys ({}):", keys.len());
                     for key in keys {
-                        println!("  - [{}] {} (enabled: {})", key.id, key.provider.to_string(), key.enabled);
+                        println!(
+                            "  - [{}] {} (enabled: {})",
+                            key.id,
+                            key.provider.to_string(),
+                            key.enabled
+                        );
                     }
                 }
                 ApiKeyAction::Add { provider, key } => {
@@ -339,7 +403,8 @@ async fn main() -> Result<()> {
                         "stability" => Provider::Stability,
                         _ => Provider::Custom(provider.clone()),
                     };
-                    let key_ids: Vec<_> = manager.list_keys_by_provider(&provider_enum)
+                    let key_ids: Vec<_> = manager
+                        .list_keys_by_provider(&provider_enum)
                         .iter()
                         .map(|k| k.id)
                         .collect();
@@ -351,10 +416,7 @@ async fn main() -> Result<()> {
                     }
                 }
                 ApiKeyAction::Health => {
-                    let key_ids: Vec<_> = manager.list_all_keys()
-                        .iter()
-                        .map(|k| k.id)
-                        .collect();
+                    let key_ids: Vec<_> = manager.list_all_keys().iter().map(|k| k.id).collect();
                     println!("API key health ({}):", key_ids.len());
                     for key_id in key_ids {
                         let health = manager.check_health(&key_id)?;

@@ -1,8 +1,8 @@
 //! Comprehensive SSH Subsystem Integration Tests for Aetheris.
 
 use aetheris::ssh::{
-    probe_ssh_endpoint, ForwardType, HealthStatus, KeyType, PortForward, SshClient,
-    SshConfig, SshKeypair,
+    probe_ssh_endpoint, ForwardType, HealthStatus, KeyType, PortForward, SshClient, SshConfig,
+    SshKeypair,
 };
 use std::time::Duration;
 
@@ -42,7 +42,10 @@ async fn test_ssh_client_authenticated_session() {
     // Verify secret env injection in memory
     session.inject_secret_env("OPENAI_API_KEY", "sk-proj-test-12345");
     assert_eq!(
-        session.injected_env.get("OPENAI_API_KEY").map(String::as_str),
+        session
+            .injected_env
+            .get("OPENAI_API_KEY")
+            .map(String::as_str),
         Some("sk-proj-test-12345")
     );
 

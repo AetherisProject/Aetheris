@@ -1,11 +1,11 @@
 //! Authentication system module for Aetheris.
 pub mod account;
-pub mod session;
+pub mod consensus;
 pub mod mfa;
 pub mod oauth;
-pub mod totp;
 pub mod recovery;
-pub mod consensus;
+pub mod session;
+pub mod totp;
 
 use anyhow::Result;
 
@@ -22,9 +22,16 @@ pub struct AuthManager {
 
 impl AuthManager {
     pub fn new() -> Self {
-        Self { account_store: crate::auth::account::AccountStore::new(), session_store: crate::auth::session::SessionStore::new() }
+        Self {
+            account_store: crate::auth::account::AccountStore::new(),
+            session_store: crate::auth::session::SessionStore::new(),
+        }
     }
-    pub fn register(&mut self, email: &str, password: &str) -> Result<crate::auth::account::UserAccount> {
+    pub fn register(
+        &mut self,
+        email: &str,
+        password: &str,
+    ) -> Result<crate::auth::account::UserAccount> {
         self.account_store.register(email, password)
     }
     pub fn login(&mut self, email: &str, password: &str) -> Result<String> {
@@ -38,7 +45,9 @@ impl AuthManager {
         if let Some(mut acc) = self.account_store.get_account(&format!("user_{}", id)) {
             acc.change_password(old, new)?;
             Ok(())
-        } else { anyhow::bail!("user not found") }
+        } else {
+            anyhow::bail!("user not found")
+        }
     }
     pub fn reset_password(&mut self, email: &str, new_password: &str) -> Result<()> {
         self.account_store.reset_password(email, new_password)
@@ -46,12 +55,16 @@ impl AuthManager {
 }
 
 impl Default for AuthManager {
-    fn default() -> Self { Self::new() }
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     #[test]
-    fn test_auth_manager_new() { let _a = AuthManager::new(); }
+    fn test_auth_manager_new() {
+        let _a = AuthManager::new();
+    }
 }

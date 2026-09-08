@@ -2,13 +2,13 @@
 //! Provides responsive design tokens, themes, components, and icons for desktop, tablet, and mobile.
 pub mod components;
 pub mod icons;
-pub mod tokens;
 pub mod themes;
+pub mod tokens;
 
 pub use components::{Device, Layout, ResponsiveDesign};
 pub use icons::{Icon, IconSize};
 pub use themes::{ColorPalette, Theme};
-pub use tokens::{Breakpoint, BorderRadius, Duration, Shadow, Spacing, Typography, ZIndex};
+pub use tokens::{BorderRadius, Breakpoint, Duration, Shadow, Spacing, Typography, ZIndex};
 
 /// Main design system entry point
 pub struct DesignSystem {
@@ -23,28 +23,28 @@ impl DesignSystem {
             responsive: ResponsiveDesign::desktop(),
         }
     }
-    
+
     pub fn with_theme(theme: Theme) -> Self {
         Self {
             theme,
             responsive: ResponsiveDesign::desktop(),
         }
     }
-    
+
     pub fn with_device(device: Device) -> Self {
         Self {
             theme: Theme::dark_cyber(),
             responsive: ResponsiveDesign::for_device(device),
         }
     }
-    
+
     pub fn with_width(width: u32) -> Self {
         Self {
             theme: Theme::dark_cyber(),
             responsive: ResponsiveDesign::for_width(width),
         }
     }
-    
+
     pub fn load_theme(&mut self, name: &str) {
         self.theme = match name.to_lowercase().as_str() {
             "dark" | "dark-cyber" => Theme::dark_cyber(),
@@ -53,43 +53,45 @@ impl DesignSystem {
             _ => Theme::dark_cyber(),
         };
     }
-    
+
     pub fn set_device(&mut self, device: Device) {
         self.responsive = ResponsiveDesign::for_device(device);
     }
-    
+
     pub fn update_for_width(&mut self, width: u32) {
         self.responsive = ResponsiveDesign::for_width(width);
     }
 }
 
 impl Default for DesignSystem {
-    fn default() -> Self { Self::new() }
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_design_system_new() {
         let ds = DesignSystem::new();
         assert_eq!(ds.theme.name, "Dark Cyber");
         assert_eq!(ds.responsive.device, Device::Desktop);
     }
-    
+
     #[test]
     fn test_design_system_with_theme() {
         let ds = DesignSystem::with_theme(Theme::light_cyber());
         assert_eq!(ds.theme.name, "Light Cyber");
     }
-    
+
     #[test]
     fn test_design_system_with_device() {
         let ds = DesignSystem::with_device(Device::Mobile);
         assert_eq!(ds.responsive.device, Device::Mobile);
     }
-    
+
     #[test]
     fn test_load_theme() {
         let mut ds = DesignSystem::new();
@@ -97,4 +99,3 @@ mod tests {
         assert_eq!(ds.theme.name, "Light Cyber");
     }
 }
-

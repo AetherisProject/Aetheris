@@ -5,9 +5,9 @@ use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::vault::{VaultStore, VaultItem, PasswordItem};
 use crate::crypto::{CryptoEngine, EncryptionKey};
 use crate::security::SecureString;
+use crate::vault::{PasswordItem, VaultItem, VaultStore};
 
 /// Password strength level.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -54,7 +54,7 @@ impl PasswordGenerator {
     /// Generate a new password string.
     pub fn generate_password_string(&self) -> String {
         use passwords::PasswordGenerator as PwGen;
-        
+
         let gen = PwGen::default()
             .length(self.length as usize)
             .numbers(self.use_numbers)
@@ -62,8 +62,9 @@ impl PasswordGenerator {
             .uppercase_letters(self.use_uppercase)
             .symbols(self.use_symbols)
             .exclude_similar_characters(self.exclude_similar);
-        
-        gen.generate_one().unwrap_or_else(|_| "fallback_password_123".to_string())
+
+        gen.generate_one()
+            .unwrap_or_else(|_| "fallback_password_123".to_string())
     }
 
     /// Estimate password strength.
@@ -73,10 +74,12 @@ impl PasswordGenerator {
         let has_lower = password.chars().any(|c| c.is_lowercase());
         let has_number = password.chars().any(|c| c.is_numeric());
         let has_symbol = password.chars().any(|c| !c.is_alphanumeric());
-        
+
         let criteria_count = [len >= 12, has_upper, has_lower, has_number, has_symbol]
-            .iter().filter(|&&x| x).count();
-        
+            .iter()
+            .filter(|&&x| x)
+            .count();
+
         match criteria_count {
             5 => PasswordStrength::VeryStrong,
             4 => PasswordStrength::Strong,
@@ -103,7 +106,11 @@ impl PasswordManager {
     }
 
     /// Initialize with a vault store and master key.
-    pub fn initialize_with_vault(&mut self, vault_store: VaultStore, master_key: EncryptionKey) -> Result<()> {
+    pub fn initialize_with_vault(
+        &mut self,
+        vault_store: VaultStore,
+        master_key: EncryptionKey,
+    ) -> Result<()> {
         self.vault_store = Some(vault_store);
         self.master_key = Some(master_key);
         Ok(())
@@ -120,29 +127,39 @@ impl PasswordManager {
     }
 
     /// Add a new password entry to the vault.
-    pub fn add_password(&mut self, title: String, username: String, password: SecureString, urls: Vec<String>) -> Result<Uuid> {
-        let vault_store = self.vault_store.as_mut()
+    pub fn add_password(
+        &mut self,
+        title: String,
+        username: String,
+        password: SecureString,
+        urls: Vec<String>,
+    ) -> Result<Uuid> {
+        let vault_store = self
+            .vault_store
+            .as_mut()
             .ok_or_else(|| anyhow::anyhow!("Vault store not initialized"))?;
 
         let mut password_item = PasswordItem::new(title, username);
         password_item.password = password.expose().to_string();
         password_item.urls = urls;
-        
+
         let id = password_item.id;
         let item = VaultItem::Password(password_item);
-        
+
         vault_store.insert(item)?;
-        
+
         Ok(id)
     }
 
     /// Get a password by ID.
     pub fn get_password(&self, id: &Uuid) -> Result<Option<SecureString>> {
-        let vault_store = self.vault_store.as_ref()
+        let vault_store = self
+            .vault_store
+            .as_ref()
             .ok_or_else(|| anyhow::anyhow!("Vault store not initialized"))?;
 
         let item = vault_store.get(id)?;
-        
+
         match item {
             Some(VaultItem::Password(password_item)) => {
                 let secure_password = SecureString::from_str(&password_item.password);
@@ -154,18 +171,20 @@ impl PasswordManager {
 
     /// Search for passwords by title or username.
     pub fn search_passwords(&self, query: &str) -> Result<Vec<(Uuid, String, String)>> {
-        let vault_store = self.vault_store.as_ref()
+        let vault_store = self
+            .vault_store
+            .as_ref()
             .ok_or_else(|| anyhow::anyhow!("Vault store not initialized"))?;
 
         let all_items = vault_store.list()?;
         let mut results = Vec::new();
-        
+
         for item in all_items {
             if let VaultItem::Password(password_item) = item {
                 let query_lower = query.to_lowercase();
                 let title_lower = password_item.title.to_lowercase();
                 let username_lower = password_item.username.to_lowercase();
-                
+
                 if title_lower.contains(&query_lower) || username_lower.contains(&query_lower) {
                     results.push((
                         password_item.id,
@@ -175,18 +194,28 @@ impl PasswordManager {
                 }
             }
         }
-        
+
         Ok(results)
     }
 
     /// Update a password entry.
-    pub fn update_password(&mut self, id: Uuid, title: String, username: String, password: SecureString, urls: Vec<String>) -> Result<()> {
-        let vault_store = self.vault_store.as_mut()
+    pub fn update_password(
+        &mut self,
+        id: Uuid,
+        title: String,
+        username: String,
+        password: SecureString,
+        urls: Vec<String>,
+    ) -> Result<()> {
+        let vault_store = self
+            .vault_store
+            .as_mut()
             .ok_or_else(|| anyhow::anyhow!("Vault store not initialized"))?;
 
-        let existing_item = vault_store.get(&id)?
+        let existing_item = vault_store
+            .get(&id)?
             .ok_or_else(|| anyhow::anyhow!("Password not found"))?;
-        
+
         if let VaultItem::Password(mut existing_password) = existing_item {
             let mut updated_password = existing_password;
             updated_password.title = title;
@@ -194,20 +223,22 @@ impl PasswordManager {
             updated_password.password = password.expose().to_string();
             updated_password.urls = urls;
             updated_password.updated_at = Utc::now();
-            
+
             vault_store.update(VaultItem::Password(updated_password))?;
         }
-        
+
         Ok(())
     }
 
     /// Delete a password by ID.
     pub fn delete_password(&mut self, id: &Uuid) -> Result<()> {
-        let vault_store = self.vault_store.as_mut()
+        let vault_store = self
+            .vault_store
+            .as_mut()
             .ok_or_else(|| anyhow::anyhow!("Vault store not initialized"))?;
 
         vault_store.delete(id)?;
-        
+
         Ok(())
     }
 
@@ -238,35 +269,43 @@ impl PasswordManager {
 }
 
 impl Default for PasswordManager {
-    fn default() -> Self { Self::new() }
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
-    fn test_password_manager_new() { 
+    fn test_password_manager_new() {
         let _manager = PasswordManager::new();
         assert!(true);
     }
-    
+
     #[test]
-    fn test_password_generator() { 
+    fn test_password_generator() {
         let generator = PasswordGenerator::default();
         let password = generator.generate_password_string();
         assert!(password.len() >= 12);
     }
-    
+
     #[test]
-    fn test_password_strength_estimation() { 
+    fn test_password_strength_estimation() {
         let generator = PasswordGenerator::default();
         let weak_pw = "password123";
         let strong_pw = "MyStr0ng!P@ssw0rd202";
         let very_strong_pw = "XyZ!987@Lmn98OpQr56#StUvWx12";
-        
+
         assert_eq!(generator.estimate_strength(weak_pw), PasswordStrength::Weak);
-        assert_eq!(generator.estimate_strength(strong_pw), PasswordStrength::VeryStrong);
-        assert_eq!(generator.estimate_strength(very_strong_pw), PasswordStrength::VeryStrong);
+        assert_eq!(
+            generator.estimate_strength(strong_pw),
+            PasswordStrength::VeryStrong
+        );
+        assert_eq!(
+            generator.estimate_strength(very_strong_pw),
+            PasswordStrength::VeryStrong
+        );
     }
 }

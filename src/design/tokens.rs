@@ -253,8 +253,13 @@ pub fn generate_all_tokens() -> HashMap<String, serde_json::Value> {
         Spacing::XLarge,
         Spacing::XXLarge,
         Spacing::XXXLarge,
-    ].iter() {
-        map.insert(format!("spacing.base"), serde_json::Value::Number(variant.as_px().into()));
+    ]
+    .iter()
+    {
+        map.insert(
+            format!("spacing.base"),
+            serde_json::Value::Number(variant.as_px().into()),
+        );
     }
 
     // Typography tokens (weights and sizes)
@@ -264,8 +269,13 @@ pub fn generate_all_tokens() -> HashMap<String, serde_json::Value> {
         Typography::Semibold600,
         Typography::Bold700,
         Typography::ExtraBold800,
-    ].iter() {
-        map.insert(format!("typography.weight.regular400"), serde_json::Value::Number(variant.weight().into()));
+    ]
+    .iter()
+    {
+        map.insert(
+            format!("typography.weight.regular400"),
+            serde_json::Value::Number(variant.weight().into()),
+        );
     }
     for variant in [
         Typography::Caption10,
@@ -277,8 +287,13 @@ pub fn generate_all_tokens() -> HashMap<String, serde_json::Value> {
         Typography::Heading24,
         Typography::Display32,
         Typography::Hero48,
-    ].iter() {
-        map.insert(format!("typography.size.body16"), serde_json::Value::Number(variant.size_px().into()));
+    ]
+    .iter()
+    {
+        map.insert(
+            format!("typography.size.body16"),
+            serde_json::Value::Number(variant.size_px().into()),
+        );
     }
 
     // Border radius tokens
@@ -288,8 +303,13 @@ pub fn generate_all_tokens() -> HashMap<String, serde_json::Value> {
         BorderRadius::Rounded,
         BorderRadius::Pill,
         BorderRadius::Circle,
-    ].iter() {
-        map.insert(format!("border_radius.{}", variant), serde_json::Value::Number(variant.as_px().into()));
+    ]
+    .iter()
+    {
+        map.insert(
+            format!("border_radius.{}", variant),
+            serde_json::Value::Number(variant.as_px().into()),
+        );
     }
 
     // Breakpoint tokens
@@ -300,8 +320,13 @@ pub fn generate_all_tokens() -> HashMap<String, serde_json::Value> {
         Breakpoint::TabletLandscape,
         Breakpoint::Desktop,
         Breakpoint::WideDesktop,
-    ].iter() {
-        map.insert(format!("breakpoint.{}", variant), serde_json::Value::Number(variant.width_px().into()));
+    ]
+    .iter()
+    {
+        map.insert(
+            format!("breakpoint.{}", variant),
+            serde_json::Value::Number(variant.width_px().into()),
+        );
     }
 
     // Duration tokens
@@ -313,8 +338,13 @@ pub fn generate_all_tokens() -> HashMap<String, serde_json::Value> {
         Duration::Lingering,
         Duration::Extended,
         Duration::DrawnOut,
-    ].iter() {
-        map.insert(format!("duration.{}", variant), serde_json::Value::Number(variant.as_ms().into()));
+    ]
+    .iter()
+    {
+        map.insert(
+            format!("duration.{}", variant),
+            serde_json::Value::Number(variant.as_ms().into()),
+        );
     }
 
     // Shadow tokens
@@ -326,8 +356,13 @@ pub fn generate_all_tokens() -> HashMap<String, serde_json::Value> {
         Shadow::High,
         Shadow::Floating,
         Shadow::Overlay,
-    ].iter() {
-        map.insert(format!("shadow.{}", variant), serde_json::Value::Number(variant.depth_px().into()));
+    ]
+    .iter()
+    {
+        map.insert(
+            format!("shadow.{}", variant),
+            serde_json::Value::Number(variant.depth_px().into()),
+        );
     }
 
     // Z-index tokens
@@ -342,8 +377,13 @@ pub fn generate_all_tokens() -> HashMap<String, serde_json::Value> {
         ZIndex::Toast,
         ZIndex::SystemOverlay,
         ZIndex::FullscreenModal,
-    ].iter() {
-        map.insert(format!("z_index.{}", variant), serde_json::Value::Number(variant.value().into()));
+    ]
+    .iter()
+    {
+        map.insert(
+            format!("z_index.{}", variant),
+            serde_json::Value::Number(variant.value().into()),
+        );
     }
 
     map
@@ -450,7 +490,10 @@ pub fn export_to_dart() -> String {
             serde_json::Value::Bool(b) => b.to_string(),
             _ => "0".to_string(),
         };
-        dart.push_str(&format!("  static const int {} = {};\n", dart_key, value_str));
+        dart.push_str(&format!(
+            "  static const int {} = {};\n",
+            dart_key, value_str
+        ));
     }
 
     dart.push_str("}\n\n");
@@ -624,7 +667,9 @@ pub fn export_to_css_in_js() -> String {
     css.push_str("  typography: {\n");
     css.push_str("    fontFamily: \"'Plus Jakarta Sans', 'Inter', sans-serif\",\n");
     css.push_str("    fontFamilyMono: \"'JetBrains Mono', monospace\",\n");
-    css.push_str("    weights: { regular: 400, medium: 500, semibold: 600, bold: 700, extraBold: 800 },\n");
+    css.push_str(
+        "    weights: { regular: 400, medium: 500, semibold: 600, bold: 700, extraBold: 800 },\n",
+    );
     css.push_str("  },\n");
     css.push_str("  borderRadius: {\n");
     css.push_str("    sharp: '0px',\n");

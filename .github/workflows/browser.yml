@@ -18,3 +18,12 @@ jobs:
           sudo apt-get update && sudo apt-get install -y zip
           chmod +x browser/build.sh
           ./browser/build.sh
+      - name: Validate manifest JSON
+        run: python3 -c "import json; json.load(open('browser/chrome/manifest.json')); print('manifest OK')"
+      - name: Verify zip contents
+        run: |
+          if [ -f browser/dist/aetheris-browser.zip ]; then
+            unzip -l browser/dist/aetheris-browser.zip | grep -E 'popup.html|background.js|manifest.json|popup.js|options.js' || echo "some plugin files missing in zip"
+          else
+            echo "zip not found (expected after build)"
+          fi

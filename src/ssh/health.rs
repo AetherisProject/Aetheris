@@ -30,7 +30,11 @@ pub struct SshHealthReport {
 }
 
 /// Probe the TCP connectivity and latency of an SSH endpoint.
-pub async fn probe_ssh_endpoint(host: &str, port: u16, timeout_duration: Duration) -> SshHealthReport {
+pub async fn probe_ssh_endpoint(
+    host: &str,
+    port: u16,
+    timeout_duration: Duration,
+) -> SshHealthReport {
     let addr = format!("{}:{}", host, port);
     let start = std::time::Instant::now();
     let checked_at = Utc::now();

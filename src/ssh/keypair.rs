@@ -65,7 +65,10 @@ impl SshKeypair {
         let mut hasher = Sha256::new();
         hasher.update(&self.public_key_bytes);
         let hash = hasher.finalize();
-        format!("SHA256:{}", base64::Engine::encode(&base64::engine::general_purpose::STANDARD_NO_PAD, hash))
+        format!(
+            "SHA256:{}",
+            base64::Engine::encode(&base64::engine::general_purpose::STANDARD_NO_PAD, hash)
+        )
     }
 
     /// Export the public key in standard OpenSSH format (`ssh-ed25519 AAAA... comment`).

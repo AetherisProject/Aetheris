@@ -11,4 +11,3 @@ fn test_crypto_engine_new() {
 fn test_crypto_engine_default() {
     let _engine: CryptoEngine = Default::default();
 }
-

@@ -370,7 +370,10 @@ pub mod secure_cmp {
 
 /// Token bucket rate limiter for protecting against brute force attacks.
 pub mod rate_limiter {
-    use std::sync::{Arc, atomic::{AtomicU32, AtomicU64, Ordering}};
+    use std::sync::{
+        atomic::{AtomicU32, AtomicU64, Ordering},
+        Arc,
+    };
     use std::time::{Duration, Instant};
 
     /// A token bucket rate limiter.
@@ -447,7 +450,8 @@ pub mod rate_limiter {
         /// Reset the rate limiter to full capacity.
         pub fn reset(&self) {
             self.tokens.store(self.max_tokens, Ordering::Release);
-            self.last_refill.store(Self::current_nanos(), Ordering::Release);
+            self.last_refill
+                .store(Self::current_nanos(), Ordering::Release);
         }
 
         fn refill(&self) {
@@ -587,7 +591,10 @@ pub mod input {
 
         /// Validate password meets complexity requirements.
         /// Requirements: min_length, at least one uppercase, one lowercase, one digit.
-        pub fn password_complexity(input: &str, min_length: usize) -> Result<&str, Vec<ValidationError>> {
+        pub fn password_complexity(
+            input: &str,
+            min_length: usize,
+        ) -> Result<&str, Vec<ValidationError>> {
             let mut errors = Vec::new();
             if input.len() < min_length {
                 errors.push(ValidationError::TooShort {

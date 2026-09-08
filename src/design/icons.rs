@@ -6,15 +6,17 @@ use serde::{Deserialize, Serialize};
 /// Icon size scale
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum IconSize {
-    Xs = 16,   // 16px
-    Sm = 20,   // 20px
-    Md = 24,   // 24px
-    Lg = 32,   // 32px
-    Xl = 48,   // 48px
+    Xs = 16, // 16px
+    Sm = 20, // 20px
+    Md = 24, // 24px
+    Lg = 32, // 32px
+    Xl = 48, // 48px
 }
 
 impl IconSize {
-    pub fn as_px(self) -> u32 { self as u32 }
+    pub fn as_px(self) -> u32 {
+        self as u32
+    }
 }
 
 /// Icon names for Aetheris
@@ -26,19 +28,19 @@ pub enum Icon {
     Lock,
     Unlock,
     Vault,
-    
+
     // SSH icons
     Terminal,
     Server,
     Network,
     Tunnel,
-    
+
     // API key icons
     Api,
     Cloud,
     Sync,
     Refresh,
-    
+
     // Navigation
     Home,
     Search,
@@ -49,7 +51,7 @@ pub enum Icon {
     ChevronRight,
     ChevronUp,
     ChevronDown,
-    
+
     // Actions
     Add,
     Edit,
@@ -58,13 +60,13 @@ pub enum Icon {
     Paste,
     Download,
     Upload,
-    
+
     // Status
     Check,
     Warning,
     Error,
     Info,
-    
+
     // Brand
     Logo,
     Crest,
@@ -112,7 +114,7 @@ impl Icon {
             Icon::Crown => "crown",
         }
     }
-    
+
     pub fn svg_path(&self) -> &str {
         // Simplified SVG paths for demo purposes
         match self {
@@ -159,13 +161,13 @@ impl Icon {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_icon_names() {
         assert_eq!(Icon::Shield.name(), "shield");
         assert_eq!(Icon::Key.name(), "key");
     }
-    
+
     #[test]
     fn test_icon_sizes() {
         assert_eq!(IconSize::Sm.as_px(), 20);

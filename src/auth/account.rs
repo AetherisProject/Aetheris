@@ -52,7 +52,11 @@ pub struct AccountStore {
 }
 
 impl AccountStore {
-    pub fn new() -> Self { Self { accounts: HashMap::new() } }
+    pub fn new() -> Self {
+        Self {
+            accounts: HashMap::new(),
+        }
+    }
 
     pub fn register(&mut self, email: &str, password: &str) -> Result<UserAccount> {
         if self.accounts.values().any(|a| a.email == email) {
@@ -65,7 +69,9 @@ impl AccountStore {
     }
 
     pub fn login(&mut self, email: &str, password: &str) -> Result<String> {
-        let account = self.accounts.values()
+        let account = self
+            .accounts
+            .values()
             .find(|a| a.email == email)
             .ok_or_else(|| anyhow::anyhow!("invalid credentials"))?;
         if !account.verify_password(password) {
@@ -76,14 +82,18 @@ impl AccountStore {
     }
 
     pub fn reset_password(&mut self, email: &str, new_password: &str) -> Result<()> {
-        let acc = self.accounts.values_mut()
+        let acc = self
+            .accounts
+            .values_mut()
             .find(|a| a.email == email)
             .ok_or_else(|| anyhow::anyhow!("email not found"))?;
         acc.password_hash = CryptoEngine::hash_password(new_password)?;
         Ok(())
     }
 
-    pub fn get_account(&self, id: &str) -> Option<UserAccount> { self.accounts.get(id).cloned() }
+    pub fn get_account(&self, id: &str) -> Option<UserAccount> {
+        self.accounts.get(id).cloned()
+    }
 }
 
 #[cfg(test)]

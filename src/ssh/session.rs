@@ -105,7 +105,10 @@ mod tests {
         let mut session = SshSession::new("test.host".into(), 22, "admin".into());
         assert!(session.is_connected());
         session.inject_secret_env("API_KEY", "secret123");
-        assert_eq!(session.injected_env.get("API_KEY").map(String::as_str), Some("secret123"));
+        assert_eq!(
+            session.injected_env.get("API_KEY").map(String::as_str),
+            Some("secret123")
+        );
 
         session.record_transfer(1024, 2048);
         let metrics = session.metrics();

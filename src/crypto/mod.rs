@@ -13,9 +13,9 @@ pub mod post_quantum;
 pub mod shamir;
 
 // Re-export commonly used types from submodules
-pub use cipher::{generate_nonce, Ciphertext, EncryptionKey, NONCE_SIZE};
-pub use kdf::{generate_salt, generate_master_key, derive_key_from_password, derive_key, contexts};
 use crate::security::secure_cmp::SecureCompare;
+pub use cipher::{generate_nonce, Ciphertext, EncryptionKey, NONCE_SIZE};
+pub use kdf::{contexts, derive_key, derive_key_from_password, generate_master_key, generate_salt};
 
 use anyhow::Result;
 use hmac::{Hmac, Mac};
@@ -48,12 +48,22 @@ impl CryptoEngine {
     }
 
     /// Encrypt data using XChaCha20-Poly1305.
-    pub fn encrypt(&self, plaintext: &[u8], key: &EncryptionKey, nonce: &[u8]) -> Result<Ciphertext> {
+    pub fn encrypt(
+        &self,
+        plaintext: &[u8],
+        key: &EncryptionKey,
+        nonce: &[u8],
+    ) -> Result<Ciphertext> {
         cipher::encrypt(plaintext, key, nonce)
     }
 
     /// Decrypt data using XChaCha20-Poly1305.
-    pub fn decrypt(&self, ciphertext: &Ciphertext, key: &EncryptionKey, nonce: &[u8]) -> Result<Vec<u8>> {
+    pub fn decrypt(
+        &self,
+        ciphertext: &Ciphertext,
+        key: &EncryptionKey,
+        nonce: &[u8],
+    ) -> Result<Vec<u8>> {
         cipher::decrypt(ciphertext, key, nonce)
     }
 

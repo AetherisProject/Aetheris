@@ -2,8 +2,8 @@
 //! Demonstrates responsive design tokens, themes, and components for desktop, tablet, and mobile.
 
 use aetheris::design::{
-    DesignSystem, Device, Icon, IconSize, Layout, ResponsiveDesign, Theme,
-    BorderRadius, Breakpoint, Shadow, Spacing, Typography, ZIndex,
+    BorderRadius, Breakpoint, DesignSystem, Device, Icon, IconSize, Layout, ResponsiveDesign,
+    Shadow, Spacing, Theme, Typography, ZIndex,
 };
 
 fn main() {
@@ -28,7 +28,7 @@ fn main() {
     // Component configurations
     println!("\n--- Component Configurations ---");
     demo_components();
-    
+
     // Design system API demonstration
     demo_design_system_api();
 }
@@ -102,10 +102,26 @@ fn demo_design_tokens() {
     println!("  Xxl: {}px", Spacing::Xxl.as_px());
 
     println!("\nTypography Scale:");
-    println!("  Display XL: {}px (line-height: {:.1})", Typography::DisplayXl.font_size(), Typography::DisplayXl.line_height());
-    println!("  H1: {}px (line-height: {:.1})", Typography::H1.font_size(), Typography::H1.line_height());
-    println!("  H2: {}px (line-height: {:.1})", Typography::H2.font_size(), Typography::H2.line_height());
-    println!("  Body: {}px (line-height: {:.1})", Typography::Body.font_size(), Typography::Body.line_height());
+    println!(
+        "  Display XL: {}px (line-height: {:.1})",
+        Typography::DisplayXl.font_size(),
+        Typography::DisplayXl.line_height()
+    );
+    println!(
+        "  H1: {}px (line-height: {:.1})",
+        Typography::H1.font_size(),
+        Typography::H1.line_height()
+    );
+    println!(
+        "  H2: {}px (line-height: {:.1})",
+        Typography::H2.font_size(),
+        Typography::H2.line_height()
+    );
+    println!(
+        "  Body: {}px (line-height: {:.1})",
+        Typography::Body.font_size(),
+        Typography::Body.line_height()
+    );
 
     println!("\nBorder Radius:");
     println!("  Sm: {}px", BorderRadius::Sm.as_px());
@@ -136,49 +152,109 @@ fn demo_icons() {
     println!("  Xl: {}px", IconSize::Xl.as_px());
 
     println!("\nCore Icons:");
-    println!("  Shield: {} (path: {})", Icon::Shield.name(), Icon::Shield.svg_path());
-    println!("  Key: {} (path: {})", Icon::Key.name(), Icon::Key.svg_path());
-    println!("  Lock: {} (path: {})", Icon::Lock.name(), Icon::Lock.svg_path());
-    println!("  Vault: {} (path: {})", Icon::Vault.name(), Icon::Vault.svg_path());
+    println!(
+        "  Shield: {} (path: {})",
+        Icon::Shield.name(),
+        Icon::Shield.svg_path()
+    );
+    println!(
+        "  Key: {} (path: {})",
+        Icon::Key.name(),
+        Icon::Key.svg_path()
+    );
+    println!(
+        "  Lock: {} (path: {})",
+        Icon::Lock.name(),
+        Icon::Lock.svg_path()
+    );
+    println!(
+        "  Vault: {} (path: {})",
+        Icon::Vault.name(),
+        Icon::Vault.svg_path()
+    );
 
     println!("\nSSH Icons:");
-    println!("  Terminal: {} (path: {})", Icon::Terminal.name(), Icon::Terminal.svg_path());
-    println!("  Server: {} (path: {})", Icon::Server.name(), Icon::Server.svg_path());
-    println!("  Network: {} (path: {})", Icon::Network.name(), Icon::Network.svg_path());
+    println!(
+        "  Terminal: {} (path: {})",
+        Icon::Terminal.name(),
+        Icon::Terminal.svg_path()
+    );
+    println!(
+        "  Server: {} (path: {})",
+        Icon::Server.name(),
+        Icon::Server.svg_path()
+    );
+    println!(
+        "  Network: {} (path: {})",
+        Icon::Network.name(),
+        Icon::Network.svg_path()
+    );
 
     println!("\nAPI Key Icons:");
-    println!("  Api: {} (path: {})", Icon::Api.name(), Icon::Api.svg_path());
-    println!("  Cloud: {} (path: {})", Icon::Cloud.name(), Icon::Cloud.svg_path());
-    println!("  Sync: {} (path: {})", Icon::Sync.name(), Icon::Sync.svg_path());
+    println!(
+        "  Api: {} (path: {})",
+        Icon::Api.name(),
+        Icon::Api.svg_path()
+    );
+    println!(
+        "  Cloud: {} (path: {})",
+        Icon::Cloud.name(),
+        Icon::Cloud.svg_path()
+    );
+    println!(
+        "  Sync: {} (path: {})",
+        Icon::Sync.name(),
+        Icon::Sync.svg_path()
+    );
 }
 
 fn demo_components() {
     let mobile = ResponsiveDesign::mobile();
     println!("Mobile Components:");
-    println!("  Button: {}x{} padding, {}px radius, {}px font", 
-        mobile.button.padding_x, mobile.button.padding_y, 
-        mobile.button.border_radius, mobile.button.font_size);
-    println!("  Input: {}x{} padding, {}px radius, {}px height",
-        mobile.input.padding_x, mobile.input.padding_y,
-        mobile.input.border_radius, mobile.input.height);
-    println!("  Modal: max-width {}px, padding {}px",
-        mobile.modal.max_width, mobile.modal.padding);
+    println!(
+        "  Button: {}x{} padding, {}px radius, {}px font",
+        mobile.button.padding_x,
+        mobile.button.padding_y,
+        mobile.button.border_radius,
+        mobile.button.font_size
+    );
+    println!(
+        "  Input: {}x{} padding, {}px radius, {}px height",
+        mobile.input.padding_x,
+        mobile.input.padding_y,
+        mobile.input.border_radius,
+        mobile.input.height
+    );
+    println!(
+        "  Modal: max-width {}px, padding {}px",
+        mobile.modal.max_width, mobile.modal.padding
+    );
 
     let desktop = ResponsiveDesign::desktop();
     println!("\nDesktop Components:");
-    println!("  Button: {}x{} padding, {}px radius, {}px font",
-        desktop.button.padding_x, desktop.button.padding_y,
-        desktop.button.border_radius, desktop.button.font_size);
-    println!("  Input: {}x{} padding, {}px radius, {}px height",
-        desktop.input.padding_x, desktop.input.padding_y,
-        desktop.input.border_radius, desktop.input.height);
-    println!("  Modal: max-width {}px, padding {}px",
-        desktop.modal.max_width, desktop.modal.padding);
+    println!(
+        "  Button: {}x{} padding, {}px radius, {}px font",
+        desktop.button.padding_x,
+        desktop.button.padding_y,
+        desktop.button.border_radius,
+        desktop.button.font_size
+    );
+    println!(
+        "  Input: {}x{} padding, {}px radius, {}px height",
+        desktop.input.padding_x,
+        desktop.input.padding_y,
+        desktop.input.border_radius,
+        desktop.input.height
+    );
+    println!(
+        "  Modal: max-width {}px, padding {}px",
+        desktop.modal.max_width, desktop.modal.padding
+    );
 }
 
 fn demo_design_system_api() {
     println!("\n--- Design System API ---");
-    
+
     // Create design system with defaults
     let mut ds = DesignSystem::new();
     println!("Default Design System:");
