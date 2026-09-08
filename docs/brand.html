@@ -8,28 +8,26 @@
   <link rel="icon" href="assets/icons/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-canvas: #090d16;
-      --bg-surface: #0f172a;
-      --bg-surface-elevated: #1e293b;
-      --bg-surface-glass: rgba(15, 23, 42, 0.75);
+      --bg-canvas: #08080c;
+      --bg-surface: #0f131d;
+      --bg-surface-elevated: #161b29;
+      --bg-surface-glass: rgba(15, 19, 29, 0.85);
       --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-prominent: rgba(99, 102, 241, 0.35);
+      --border-prominent: rgba(6, 182, 212, 0.35);
 
       --color-primary: #6366f1;
       --color-primary-light: #818cf8;
-      --color-primary-dark: #4338ca;
       --color-secondary: #a855f7;
       --color-cyan: #06b6d4;
+      --color-cyan-glow: #00f0ff;
       --color-emerald: #10b981;
       --color-amber: #f59e0b;
-      --color-rose: #f43f5e;
 
-      --grad-aurora: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #06b6d4 100%);
-      --grad-surface: linear-gradient(180deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%);
-      --grad-glow: radial-gradient(circle at top center, rgba(99, 102, 241, 0.22) 0%, transparent 70%);
+      --grad-aurora: linear-gradient(135deg, #00f0ff 0%, #6366f1 50%, #a855f7 100%);
+      --grad-shield: linear-gradient(135deg, #ffffff 0%, #94a3b8 40%, #1e293b 100%);
 
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
@@ -42,8 +40,8 @@
       --radius-lg: 20px;
       --radius-full: 9999px;
 
-      --shadow-subtle: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
-      --shadow-glow: 0 0 35px rgba(99, 102, 241, 0.3);
+      --shadow-subtle: 0 10px 30px -5px rgba(0, 0, 0, 0.7);
+      --shadow-glow: 0 0 45px rgba(6, 182, 212, 0.25);
     }
 
     * {
@@ -55,9 +53,9 @@
     body {
       background-color: var(--bg-canvas);
       background-image: 
-        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.25), transparent),
-        radial-gradient(circle at 100% 40%, rgba(168, 85, 247, 0.12), transparent 40%),
-        radial-gradient(circle at 0% 80%, rgba(6, 182, 212, 0.1), transparent 40%);
+        radial-gradient(ellipse 70% 40% at 50% -15%, rgba(99, 102, 241, 0.25), transparent),
+        radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.12), transparent 45%),
+        radial-gradient(circle at 15% 70%, rgba(6, 182, 212, 0.1), transparent 45%);
       color: var(--text-main);
       font-family: var(--font-sans);
       line-height: 1.6;
@@ -88,29 +86,46 @@
     .brand-lockup {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
+      gap: 1rem;
       text-decoration: none;
       color: var(--text-main);
     }
 
-    .brand-logo-badge {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    .brand-logo-crest {
+      width: 44px;
+      height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+      filter: drop-shadow(0 0 12px rgba(6, 182, 212, 0.4));
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .brand-logo-crest:hover {
+      transform: scale(1.08);
+    }
+
+    .brand-title-wrap {
+      display: flex;
+      flex-direction: column;
     }
 
     .brand-title {
       font-size: 1.35rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      background: linear-gradient(to right, #ffffff, #cbd5e1);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: linear-gradient(to right, #ffffff, #94a3b8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+    }
+
+    .brand-subtitle {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--color-cyan);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
     }
 
     .brand-domain-tag {
@@ -119,7 +134,7 @@
       color: var(--color-cyan);
       background: rgba(6, 182, 212, 0.12);
       border: 1px solid rgba(6, 182, 212, 0.3);
-      padding: 0.2rem 0.6rem;
+      padding: 0.25rem 0.75rem;
       border-radius: var(--radius-full);
       font-weight: 500;
     }
@@ -148,8 +163,8 @@
       justify-content: center;
       gap: 0.5rem;
       font-size: 0.9rem;
-      font-weight: 600;
-      padding: 0.65rem 1.25rem;
+      font-weight: 700;
+      padding: 0.65rem 1.35rem;
       border-radius: var(--radius-sm);
       text-decoration: none;
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -159,55 +174,65 @@
 
     .btn-primary {
       background: var(--grad-aurora);
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+      color: #08080c;
+      font-weight: 800;
+      box-shadow: 0 4px 16px rgba(0, 240, 255, 0.35);
     }
 
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(99, 102, 241, 0.5);
+      box-shadow: 0 6px 28px rgba(0, 240, 255, 0.55);
     }
 
     .btn-outline {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.04);
       color: var(--text-main);
       border: 1px solid var(--border-subtle);
     }
 
     .btn-outline:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(6, 182, 212, 0.4);
     }
 
     /* Hero Section */
     .hero {
       max-width: 1240px;
       margin: 0 auto;
-      padding: 5rem 2rem 4rem;
-      text-align: center;
-      position: relative;
+      padding: 4.5rem 2rem 3rem;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      align-items: center;
+      gap: 3rem;
+    }
+
+    .hero-content {
+      text-align: left;
     }
 
     .hero-badge {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      background: rgba(99, 102, 241, 0.12);
+      gap: 0.6rem;
+      background: rgba(6, 182, 212, 0.1);
       border: 1px solid var(--border-prominent);
-      padding: 0.4rem 1rem;
+      padding: 0.4rem 1.1rem;
       border-radius: var(--radius-full);
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--color-primary-light);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--color-cyan);
       margin-bottom: 1.75rem;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
 
     .hero-badge .dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: var(--color-cyan);
-      box-shadow: 0 0 10px var(--color-cyan);
+      background: var(--color-cyan-glow);
+      box-shadow: 0 0 10px var(--color-cyan-glow);
       display: inline-block;
       animation: pulse 2s infinite ease-in-out;
     }
@@ -218,8 +243,8 @@
     }
 
     .hero h1 {
-      font-size: clamp(2.5rem, 5vw, 4.2rem);
-      font-weight: 800;
+      font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+      font-weight: 900;
       line-height: 1.15;
       letter-spacing: -0.035em;
       margin-bottom: 1.5rem;
@@ -232,51 +257,106 @@
     }
 
     .hero p.lead {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       color: var(--text-muted);
-      max-width: 720px;
-      margin: 0 auto 2.5rem;
+      margin-bottom: 2.25rem;
       font-weight: 400;
+      max-width: 580px;
     }
 
     .hero-actions {
       display: flex;
       gap: 1rem;
-      justify-content: center;
       flex-wrap: wrap;
+    }
+
+    /* Hero Crest Showcase Card */
+    .hero-crest-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .crest-card-3d {
+      background: linear-gradient(180deg, #161b29 0%, #0d1017 100%);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      box-shadow: var(--shadow-subtle), var(--shadow-glow);
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.4s ease, border-color 0.4s ease;
+    }
+
+    .crest-card-3d:hover {
+      transform: translateY(-6px);
+      border-color: rgba(0, 240, 255, 0.6);
+    }
+
+    .crest-card-3d img {
+      width: 100%;
+      max-width: 340px;
+      height: auto;
+      filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.8));
+    }
+
+    .crest-caption {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+
+    .crest-caption .title {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--color-cyan);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .crest-caption .desc {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-top: 0.25rem;
     }
 
     /* Container for sections */
     .container {
       max-width: 1240px;
       margin: 0 auto;
-      padding: 3rem 2rem;
+      padding: 4rem 2rem;
     }
 
     .section-header {
-      margin-bottom: 2.5rem;
+      margin-bottom: 2.75rem;
     }
 
     .section-header .tag {
       font-family: var(--font-mono);
       font-size: 0.8rem;
-      color: var(--color-primary-light);
+      color: var(--color-cyan);
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      font-weight: 600;
+      letter-spacing: 0.12em;
+      font-weight: 700;
       display: block;
       margin-bottom: 0.5rem;
     }
 
     .section-header h2 {
-      font-size: 2.1rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
     }
 
     .section-header p {
       color: var(--text-muted);
-      margin-top: 0.4rem;
+      margin-top: 0.5rem;
       font-size: 1.05rem;
     }
 
@@ -291,21 +371,20 @@
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 2rem;
+      padding: 2.25rem;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
-      overflow: hidden;
     }
 
     .brand-card:hover {
-      border-color: rgba(99, 102, 241, 0.4);
+      border-color: rgba(6, 182, 212, 0.4);
       transform: translateY(-4px);
-      box-shadow: var(--shadow-subtle), var(--shadow-glow);
+      box-shadow: var(--shadow-subtle), 0 0 35px rgba(6, 182, 212, 0.15);
     }
 
     .card-icon {
-      width: 48px;
-      height: 48px;
+      width: 50px;
+      height: 50px;
       border-radius: 12px;
       display: flex;
       align-items: center;
@@ -314,27 +393,64 @@
       font-size: 1.5rem;
     }
 
-    .icon-indigo { background: rgba(99, 102, 241, 0.15); color: var(--color-primary-light); }
-    .icon-purple { background: rgba(168, 85, 247, 0.15); color: var(--color-secondary); }
     .icon-cyan { background: rgba(6, 182, 212, 0.15); color: var(--color-cyan); }
+    .icon-purple { background: rgba(168, 85, 247, 0.15); color: var(--color-secondary); }
+    .icon-indigo { background: rgba(99, 102, 241, 0.15); color: var(--color-primary-light); }
     .icon-emerald { background: rgba(16, 185, 129, 0.15); color: var(--color-emerald); }
 
     .brand-card h3 {
       font-size: 1.3rem;
-      font-weight: 700;
+      font-weight: 800;
       margin-bottom: 0.75rem;
     }
 
     .brand-card p {
       color: var(--text-muted);
       font-size: 0.95rem;
+      line-height: 1.65;
+    }
+
+    /* Feature Breakdown Matrix of the Logo */
+    .feature-matrix {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 3rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+    }
+
+    .matrix-node {
+      border-left: 2px solid var(--border-prominent);
+      padding-left: 1.25rem;
+    }
+
+    .matrix-node .node-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--color-cyan);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .matrix-node h4 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 0.4rem 0 0.5rem;
+    }
+
+    .matrix-node p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
       line-height: 1.6;
     }
 
     /* Color Palette Section */
     .color-swatch-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
       gap: 1.25rem;
     }
 
@@ -346,12 +462,12 @@
     }
 
     .swatch-preview {
-      height: 100px;
+      height: 95px;
       width: 100%;
     }
 
     .swatch-details {
-      padding: 1rem 1.2rem;
+      padding: 1rem 1.15rem;
     }
 
     .swatch-name {
@@ -372,50 +488,19 @@
       margin-top: 0.35rem;
     }
 
-    /* Typography Showcase */
-    .type-showcase {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 2.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-
-    .type-row {
-      display: grid;
-      grid-template-columns: 200px 1fr;
-      align-items: baseline;
-      gap: 2rem;
-      border-bottom: 1px solid var(--border-subtle);
-      padding-bottom: 1.5rem;
-    }
-
-    .type-row:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .type-meta {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--text-dim);
-    }
-
     /* Interactive Terminal Demo */
     .terminal-window {
-      background: #06090f;
+      background: #05070c;
       border: 1px solid var(--border-prominent);
       border-radius: var(--radius-md);
-      box-shadow: var(--shadow-subtle), 0 0 40px rgba(99, 102, 241, 0.15);
+      box-shadow: var(--shadow-subtle), 0 0 45px rgba(6, 182, 212, 0.18);
       overflow: hidden;
-      margin-top: 2rem;
+      margin-top: 1.5rem;
     }
 
     .terminal-bar {
-      background: #0d121f;
-      padding: 0.75rem 1.25rem;
+      background: #0b0f19;
+      padding: 0.8rem 1.25rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -424,7 +509,7 @@
 
     .terminal-dots {
       display: flex;
-      gap: 6px;
+      gap: 7px;
     }
 
     .t-dot {
@@ -439,15 +524,15 @@
 
     .terminal-title {
       font-family: var(--font-mono);
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       color: var(--text-dim);
     }
 
     .terminal-body {
-      padding: 1.5rem;
+      padding: 1.6rem;
       font-family: var(--font-mono);
       font-size: 0.88rem;
-      line-height: 1.7;
+      line-height: 1.75;
     }
 
     .term-prompt { color: var(--color-cyan); }
@@ -460,7 +545,7 @@
     footer.site-footer {
       border-top: 1px solid var(--border-subtle);
       background: var(--bg-surface);
-      margin-top: 5rem;
+      margin-top: 6rem;
       padding: 3.5rem 2rem 2.5rem;
     }
 
@@ -509,13 +594,17 @@
       color: var(--text-dim);
     }
 
-    @media (max-width: 768px) {
-      .type-row {
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
-      }
+    @media (max-width: 900px) {
       .hero {
-        padding: 3.5rem 1.5rem 2.5rem;
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 3.5rem 1.5rem 2rem;
+      }
+      .hero-content {
+        text-align: center;
+      }
+      .hero-actions {
+        justify-content: center;
       }
       nav.header-nav {
         display: none;
@@ -529,75 +618,133 @@
   <header class="site-header">
     <div class="nav-container">
       <a href="index.html" class="brand-lockup">
-        <div class="brand-logo-badge">
-          <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
-            <path d="M16 4L6 9.3v5.3c0 6.2 3.8 11.9 9 13.5 5.2-1.6 9-7.3 9-13.5V9.3L16 4z" fill="#ffffff"/>
-            <circle cx="16" cy="14.5" r="3.5" fill="#6366f1"/>
-          </svg>
+        <div class="brand-logo-crest">
+          <img src="assets/icons/aetheris_crest_primary.svg" alt="Aetheris Crest" style="width: 100%; height: 100%;">
         </div>
-        <span class="brand-title">Aetheris</span>
+        <div class="brand-title-wrap">
+          <span class="brand-title">Aetheris</span>
+          <span class="brand-subtitle">The Secrets OS</span>
+        </div>
         <span class="brand-domain-tag">aether.merlin-tribukait.com</span>
       </a>
 
       <nav class="header-nav">
-        <a href="#brand-identity" class="nav-link">Identity</a>
-        <a href="#palette" class="nav-link">Color Tokens</a>
-        <a href="#typography" class="nav-link">Typography</a>
-        <a href="#terminal" class="nav-link">CLI Experience</a>
-        <a href="index.html" class="nav-link">Documentation</a>
+        <a href="#crest-anatomy" class="nav-link">Crest Anatomy</a>
+        <a href="#brand-identity" class="nav-link">Principles</a>
+        <a href="#palette" class="nav-link">Palette Tokens</a>
+        <a href="#terminal" class="nav-link">CLI Architecture</a>
         <a href="https://github.com/merlin-tribukait/Aetheris" class="btn btn-primary" target="_blank">GitHub Repository</a>
       </nav>
     </div>
   </header>
 
-  <!-- Hero Section -->
+  <!-- Hero Section with Signature 3D Crest Presentation -->
   <section class="hero">
-    <div class="hero-badge">
-      <span class="dot"></span>
-      Official Brand System &amp; Portal
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Ecosystem Brand Architecture
+      </div>
+      <h1>The Secrets Operating System.<br><span class="gradient-text">Engineered for Absolute Trust.</span></h1>
+      <p class="lead">
+        Aetheris fuses high-speed SSH infrastructure, client-side zero-knowledge encryption, and autonomous API key lifecycle orchestration into one unified native client.
+      </p>
+      <div class="hero-actions">
+        <a href="assets/icons/aetheris_crest_primary.svg" class="btn btn-primary" target="_blank" download>Download Master SVG</a>
+        <a href="#crest-anatomy" class="btn btn-outline">Explore Crest Features</a>
+        <a href="#palette" class="btn btn-outline">Design Tokens</a>
+      </div>
     </div>
-    <h1>The Secrets Operating System.<br><span class="gradient-text">Engineered for Absolute Trust.</span></h1>
-    <p class="lead">
-      Aetheris unifies SSH management, zero-knowledge secret vaults, and autonomous API key lifecycle orchestration into one ultra-resilient platform.
-    </p>
-    <div class="hero-actions">
-      <a href="index.html" class="btn btn-primary">Browse System Docs</a>
-      <a href="#palette" class="btn btn-outline">Explore Brand Tokens</a>
-      <a href="getting-started.html" class="btn btn-outline">Terminal Quickstart</a>
+
+    <div class="hero-crest-stage">
+      <div class="crest-card-3d">
+        <img src="assets/icons/aetheris_crest_primary.svg" alt="Aetheris 3D Primary Crest">
+        <div class="crest-caption">
+          <div class="title">Aetheris Official 3D Crest</div>
+          <div class="desc">Merlin Tribukait Armored Cyber-Heraldic Spec</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Logo Anatomy & Unique Features Matrix -->
+  <section class="container" id="crest-anatomy">
+    <div class="section-header">
+      <span class="tag">01 / Visual Architecture</span>
+      <h2>Unique Features Embedded in the Crest</h2>
+      <p>Designed to mirror the iconic Merlin Tribukait heraldic armor crest while visually representing every functional layer of Aetheris.</p>
+    </div>
+
+    <div class="feature-matrix">
+      <div class="matrix-node">
+        <span class="node-tag">Heraldic Crest</span>
+        <h4>Beveled Titanium Armor</h4>
+        <p>A multi-layered 6-point armored shield with mechanical bolt fasteners and carbon-weave chassis, evoking military-grade physical security.</p>
+      </div>
+
+      <div class="matrix-node">
+        <span class="node-tag">Core Module A</span>
+        <h4>Cryptographic Keyhole</h4>
+        <p>The central golden vault chamber represents the zero-knowledge secret store, client-side XChaCha20-Poly1305, and Argon2id key derivation.</p>
+      </div>
+
+      <div class="matrix-node">
+        <span class="node-tag">Core Module B</span>
+        <h4>Terminal Command Chevron</h4>
+        <p>A glowing <code>&gt;_</code> cyber-cyan prompt nested beneath the vault apex symbolizes the integrated Termius-grade SSH terminal and memory injection engine.</p>
+      </div>
+
+      <div class="matrix-node">
+        <span class="node-tag">Core Module C</span>
+        <h4>Circuit Mesh Infrastructure</h4>
+        <p>Conductive trace pathways extending laterally signify the Proactive Engine's autonomous API key rotation, health monitoring, and CRDT synchronization.</p>
+      </div>
+
+      <div class="matrix-node">
+        <span class="node-tag">MT Ecosystem</span>
+        <h4>Aerospace Apex Wings</h4>
+        <p>The crowning wings and micro-crest lockup harmonize with the hallmark Merlin Tribukait / Games-Reborn design philosophy.</p>
+      </div>
+
+      <div class="matrix-node">
+        <span class="node-tag">Performance</span>
+        <h4>Pure Rust Native Core</h4>
+        <p>Precision hard-surface geometry and clean neon channels echo sub-millisecond execution velocity with zero runtime overhead.</p>
+      </div>
     </div>
   </section>
 
   <!-- Brand Pillars -->
   <section class="container" id="brand-identity">
     <div class="section-header">
-      <span class="tag">01 / Foundation</span>
-      <h2>Core Brand Principles</h2>
-      <p>The design system was constructed to evoke uncompromising security, lightning performance, and aesthetic serenity.</p>
+      <span class="tag">02 / Foundation</span>
+      <h2>Core System Pillars</h2>
+      <p>The engineering tenets powering the Secrets Operating System.</p>
     </div>
 
     <div class="grid-3">
       <div class="brand-card">
-        <div class="card-icon icon-indigo">
+        <div class="card-icon icon-cyan">
           <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
         </div>
         <h3>Zero-Knowledge Architecture</h3>
-        <p>Encrypted on client registers with XChaCha20-Poly1305 and Argon2id. The cloud layer stores only mathematically impenetrable opaque blobs.</p>
+        <p>Derived locally via Argon2id into XChaCha20-Poly1305. Master passwords and private keys are never stored on disk in plaintext or transmitted across wires unencrypted.</p>
       </div>
 
       <div class="brand-card">
         <div class="card-icon icon-purple">
           <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         </div>
-        <h3>Sub-Millisecond Velocity</h3>
-        <p>Built purely in native Rust. Instant terminal startup, minimal memory footprint, and reactive state sync without sluggish runtimes.</p>
+        <h3>Moshi-Grade Performance</h3>
+        <p>Compiled to bare-metal native binaries via Rust. Sub-millisecond terminal startup, instant key lookups, and minimal resource footprint.</p>
       </div>
 
       <div class="brand-card">
-        <div class="card-icon icon-cyan">
+        <div class="card-icon icon-indigo">
           <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
         </div>
         <h3>Autonomous Orchestration</h3>
-        <p>The Proactive Engine automatically rotates expired provider keys, validates endpoint hygiene, and manages cross-fleet deployments hands-free.</p>
+        <p>The Proactive Engine automatically monitors secret health, rotates aging provider API keys, and orchestrates zero-interaction SSH bootstrapping.</p>
       </div>
     </div>
   </section>
@@ -605,18 +752,27 @@
   <!-- Color Palette -->
   <section class="container" id="palette">
     <div class="section-header">
-      <span class="tag">02 / Chromatics</span>
+      <span class="tag">03 / Chromatics</span>
       <h2>Visual Palette &amp; Color Tokens</h2>
-      <p>Precision-calibrated dark theme inspired by deep space and vibrant neon security indicators.</p>
+      <p>Precision-calibrated dark-theme palette matched to the Merlin Tribukait cyber-armor identity.</p>
     </div>
 
     <div class="color-swatch-grid">
+      <div class="swatch-card">
+        <div class="swatch-preview" style="background: #00f0ff;"></div>
+        <div class="swatch-details">
+          <div class="swatch-name">Cyber Cyan</div>
+          <div class="swatch-hex">#00F0FF</div>
+          <div class="swatch-role">Primary Energy &amp; Terminal Chevron</div>
+        </div>
+      </div>
+
       <div class="swatch-card">
         <div class="swatch-preview" style="background: #6366f1;"></div>
         <div class="swatch-details">
           <div class="swatch-name">Aether Indigo</div>
           <div class="swatch-hex">#6366F1</div>
-          <div class="swatch-role">Primary Action / Focus / Aura</div>
+          <div class="swatch-role">Core Monogram &amp; UI Action</div>
         </div>
       </div>
 
@@ -625,86 +781,45 @@
         <div class="swatch-details">
           <div class="swatch-name">Quantum Violet</div>
           <div class="swatch-hex">#A855F7</div>
-          <div class="swatch-role">Secondary Accent / Encryption</div>
+          <div class="swatch-role">Crypto Encryption Channels</div>
         </div>
       </div>
 
       <div class="swatch-card">
-        <div class="swatch-preview" style="background: #06b6d4;"></div>
+        <div class="swatch-preview" style="background: #08080c;"></div>
         <div class="swatch-details">
-          <div class="swatch-name">Cyber Cyan</div>
-          <div class="swatch-hex">#06B6D4</div>
-          <div class="swatch-role">Telemetry / Active Terminal Nodes</div>
-        </div>
-      </div>
-
-      <div class="swatch-card">
-        <div class="swatch-preview" style="background: #090d16;"></div>
-        <div class="swatch-details">
-          <div class="swatch-name">Deep Void Canvas</div>
-          <div class="swatch-hex">#090D16</div>
+          <div class="swatch-name">Abyssal Void</div>
+          <div class="swatch-hex">#08080C</div>
           <div class="swatch-role">Root Canvas Background</div>
         </div>
       </div>
 
       <div class="swatch-card">
-        <div class="swatch-preview" style="background: #1e293b;"></div>
+        <div class="swatch-preview" style="background: #161b29;"></div>
         <div class="swatch-details">
-          <div class="swatch-name">Slate Surface</div>
-          <div class="swatch-hex">#1E293B</div>
-          <div class="swatch-role">Cards &amp; Container Elevation</div>
+          <div class="swatch-name">Titanium Slate</div>
+          <div class="swatch-hex">#161B29</div>
+          <div class="swatch-role">Chassis &amp; Elevated Surface</div>
         </div>
       </div>
 
       <div class="swatch-card">
         <div class="swatch-preview" style="background: #10b981;"></div>
         <div class="swatch-details">
-          <div class="swatch-name">Secure Emerald</div>
+          <div class="swatch-name">Verified Emerald</div>
           <div class="swatch-hex">#10B981</div>
-          <div class="swatch-role">Health / Verified Sync State</div>
+          <div class="swatch-role">Terminal Cursor &amp; Sync Health</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Typography -->
-  <section class="container" id="typography">
-    <div class="section-header">
-      <span class="tag">03 / Type System</span>
-      <h2>Typography &amp; Scale</h2>
-      <p>Geometric sans-serif for UI clarity paired with razor-sharp monospace for credentials and shell sessions.</p>
-    </div>
-
-    <div class="type-showcase">
-      <div class="type-row">
-        <div class="type-meta">Display / 800 Weight</div>
-        <div style="font-size: 2.25rem; font-weight: 800; letter-spacing: -0.03em;">The Secrets Operating System</div>
-      </div>
-      <div class="type-row">
-        <div class="type-meta">Heading / 700 Weight</div>
-        <div style="font-size: 1.5rem; font-weight: 700;">Zero-Knowledge Cryptographic Vault</div>
-      </div>
-      <div class="type-row">
-        <div class="type-meta">Body / 400 Weight</div>
-        <div style="font-size: 1rem; color: var(--text-muted);">
-          Client-side zero-knowledge architecture using XChaCha20-Poly1305 and Argon2id for local data derivation. Master passwords never touch disk in plaintext.
-        </div>
-      </div>
-      <div class="type-row">
-        <div class="type-meta">Monospace / JetBrains Mono</div>
-        <div style="font-family: var(--font-mono); font-size: 0.95rem; color: var(--color-cyan);">
-          $ aeth apikey rotate --provider openai --service prod-cluster-us-east
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CLI Interactive Visual -->
+  <!-- CLI Interactive Shell -->
   <section class="container" id="terminal">
     <div class="section-header">
       <span class="tag">04 / Shell Experience</span>
       <h2>Native Terminal Client (`aeth`)</h2>
-      <p>Termius-grade UI simplicity powered by Moshi-grade Rust performance.</p>
+      <p>Termius-grade elegance powered by Moshi-grade Rust performance.</p>
     </div>
 
     <div class="terminal-window">
@@ -740,20 +855,19 @@
     <div class="footer-container">
       <div class="footer-top">
         <div class="brand-lockup">
-          <div class="brand-logo-badge">
-            <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
-              <path d="M16 4L6 9.3v5.3c0 6.2 3.8 11.9 9 13.5 5.2-1.6 9-7.3 9-13.5V9.3L16 4z" fill="#ffffff"/>
-              <circle cx="16" cy="14.5" r="3.5" fill="#6366f1"/>
-            </svg>
+          <div class="brand-logo-crest">
+            <img src="assets/icons/aetheris_crest_primary.svg" alt="Aetheris Crest" style="width: 100%; height: 100%;">
           </div>
-          <span class="brand-title">Aetheris</span>
+          <div class="brand-title-wrap">
+            <span class="brand-title">Aetheris</span>
+            <span class="brand-subtitle">The Secrets Operating System</span>
+          </div>
         </div>
         <div class="footer-links">
-          <a href="index.html">Documentation</a>
-          <a href="architecture.html">Architecture</a>
-          <a href="security.html">Security</a>
-          <a href="api-reference.html">API Reference</a>
-          <a href="https://github.com/merlin-tribukait/Aetheris" target="_blank">GitHub</a>
+          <a href="https://github.com/merlin-tribukait/Aetheris" target="_blank">GitHub Repository</a>
+          <a href="https://merlin-tribukait.com" target="_blank">Merlin Tribukait</a>
+          <a href="#crest-anatomy">Crest Anatomy</a>
+          <a href="#palette">Design Tokens</a>
         </div>
       </div>
       <div class="footer-bottom">
