@@ -24,7 +24,7 @@ pub mod ssh;
 pub mod sync;
 pub mod vault;
 pub mod web;
-
+pub use design::{DesignSystem, Device, Icon, Layout, ResponsiveDesign, Theme};
 pub use crypto::CryptoEngine;
 pub use security::{SecureCompare, SecureString, SecureVec};
 pub use vault::store::VaultStore;

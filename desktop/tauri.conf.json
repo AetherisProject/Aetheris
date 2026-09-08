@@ -1,0 +1,8 @@
+{
+  "build": { "beforeBuildCommand": "npm run build", "beforeDevCommand": "npm run dev" },
+  "tauri": { "pattern": { "useAsExecutableName": true },
+    "bundle": { "active": true, "category": "DeveloperTool", "copyright": "Aetheris", "deb": { "depends": ["libgtk-3-0"] },
+    "macOS": { "entitlements": "entitlements.plist", "exceptionDomain": "aetheris.dev" }
+  }},
+  "window": { "fullscreen": false, "resizable": true, "label": "aetheris", "width": 1280, "height": 720, "title": "Aetheris — Secrets OS" }
+}

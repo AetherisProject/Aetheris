@@ -53,9 +53,85 @@
         <li><a href="deployment.html">Deploy</a></li></ul>
 </nav>
 
-<main class="content"><div class="content-inner"><h1 id="brand-design-system">Brand &amp; Design System</h1>
+<h1 id="brand-design-system">Brand &amp; Design System</h1>
 <p>Welcome to the official <strong>Aetheris Web Design Brand &amp; Token System</strong>, published for <a href="https://aetheris.merlin-tribukait.com">aetheris.merlin-tribukait.com</a>.</p>
 <p>Explore the interactive web brand experience directly on the <a href="brand.html">Aetheris Brand Portal</a>.</p>
+<hr />
+<section class="design-demo-section">
+  <div class="demo-controls">
+    <div class="platform-switcher">
+      <button class="platform-btn active" data-platform="desktop" onclick="switchPlatform('desktop')">Desktop</button>
+      <button class="platform-btn" data-platform="mobile" onclick="switchPlatform('mobile')">Mobile</button>
+      <button class="platform-btn" data-platform="browser" onclick="switchPlatform('browser')">Browser</button>
+      <button class="platform-btn" data-platform="tablet" onclick="switchPlatform('tablet')">Tablet</button>
+    </div>
+    <div class="theme-switcher">
+      <button class="theme-btn active" data-theme="dark" onclick="switchTheme('dark')">Dark</button>
+      <button class="theme-btn" data-theme="light" onclick="switchTheme('light')">Light</button>
+    </div>
+  </div>
+
+  <div class="demo-viewport" id="demoViewport">
+    <div class="platform-layout" id="platformLayout">
+         <div class="demo-content" id="demoContent">
+            <h2 id="platform-title">Desktop Dashboard</h2>
+            <p id="platform-desc">A high-density dashboard optimized for Windows and Linux desktops.</p>
+            <div class="demo-grid" id="demoGrid">
+              <div class="demo-card"><h3>Vault</h3><p>Secure Items</p></div>
+              <div class="demo-card"><h3>SSH</h3><p>Sessions</p></div>
+              <div class="demo-card"><h3>API Keys</h3><p>Providers</p></div>
+            </div>
+         </div>
+    </div>
+  </div>
+</section>
+
+<hr />
+
+<h2 id="brand-identity-core">Brand Identity Core</h2>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+            </div>
+            <div class="card-title">API Keys</div>
+            <div class="card-subtitle">8 providers</div>
+            <div class="card-status">● Healthy</div>
+          </div>
+        </div>
+
+        <!-- Form Demo -->
+        <div class="demo-form">
+          <div class="form-label">Add New Password</div>
+          <div class="form-input">
+            <input type="text" placeholder="Title" id="demoInput">
+          </div>
+          <button class="demo-button" id="demoButton">Add Item</button>
+        </div>
+
+        <!-- Modal Demo -->
+        <div class="demo-modal-trigger">
+          <button class="demo-button-outline" onclick="toggleModal()">Open Modal</button>
+        </div>
+      </div>
+
+      <!-- Demo Modal -->
+      <div class="demo-modal" id="demoModal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="modal-title">Confirm Action</div>
+            <button class="modal-close" onclick="toggleModal()">×</button>
+          </div>
+          <div class="modal-body">
+            <p>This is a responsive modal dialog that adapts to mobile, tablet, and desktop layouts.</p>
+          </div>
+          <div class="modal-footer">
+            <button class="demo-button-outline" onclick="toggleModal()">Cancel</button>
+            <button class="demo-button" onclick="toggleModal()">Confirm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <hr />
 <h2 id="brand-identity-core">Brand Identity Core</h2>
 <p>Aetheris is engineered as <strong>The Secrets Operating System</strong> — combining the slickness of modern terminal clients with zero-knowledge cryptography and proactive background automation.</p>
@@ -137,7 +213,7 @@
 <li><strong>Terminal Shell Preview:</strong> Termius-grade live window showing real-time Zero-Knowledge initialization and memory injection.</li>
 <li><strong>Card Glassmorphism:</strong> Elevated dark surface containers with subtle border highlights on hover.</li>
 </ol>
-<p>Visit the live <a href="brand.html">Interactive Brand Showcase</a> to see these tokens and components in action.</p></div></main>
+<p>Visit the live <a href="brand.html">Interactive Brand Showcase</a> to see these tokens and components in action.</p>
 
 </div>
 <footer class="footer">

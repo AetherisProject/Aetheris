@@ -38,6 +38,10 @@ crate-type = ["lib", "cdylib", "staticlib"]
 name = "aeth"
 path = "src/main.rs"
 
+[[example]]
+name = "design_demo"
+path = "examples/design_demo.rs"
+
 [features]
 default = ["cli"]
 cli = ["dep:ratatui", "dep:crossterm"]
@@ -46,7 +50,6 @@ web = ["dep:axum", "dep:tower-http"]
 wasm = ["dep:wasm-bindgen", "dep:js-sys", "dep:web-sys"]
 mobile = []
 full = ["cli", "desktop", "web"]
-
 [dependencies]
 # Core async runtime
 tokio = { version = "1", features = ["full"] }
@@ -150,7 +153,7 @@ unic-langid = "0.9"
 
 # Password generation
 passwords = "3"
-
+rpassword = "7"
 # Clipboard (desktop)
 arboard = { version = "3", optional = true }
 

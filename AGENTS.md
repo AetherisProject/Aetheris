@@ -38,3 +38,15 @@ It eliminates the "re-setup" nightmare by serving as an automatic deployment hub
 Run with: `cargo run`
 
 ---
+## 4. Progress Tracking (Auto-Updated)
+
+**State file:** `.memory/progress.json`
+**Generated file:** `CONTEXT.md`
+**Update script:** `scripts/update-context.sh`
+
+Run `bash scripts/update-context.sh` to regenerate CONTEXT.md from `.memory/progress.json`.
+
+**Current Phase:** Rust Design System Export (Phase 1/6) — In Progress
+**Platform Plan:** CLI (ratatui) → Desktop (Tauri 2 + React) → Mobile (Flutter) → Web (React) → Browser Extension (WebExtension MV3 + WASM)
+**Source of truth:** `src/design/` (Rust design module)
+**Design docs:** `docs/design-system.html` / `docs/design-system.md` / `docs/styles.css`

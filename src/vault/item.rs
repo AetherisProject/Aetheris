@@ -189,3 +189,22 @@ impl PasswordItem {
         }
     }
 }
+
+impl SshConnectionItem {
+    pub fn new(title: String, host: String, username: String) -> Self {
+        let now = Utc::now();
+        Self {
+            id: Uuid::new_v4(),
+            title,
+            host,
+            port: 22,
+            username,
+            key_id: None,
+            tags: Vec::new(),
+            favorite: false,
+            last_connected: None,
+            created_at: now,
+            updated_at: now,
+        }
+    }
+}
