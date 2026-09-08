@@ -1,23 +1,40 @@
-//! SSH client module for Aetheris.
+//! SSH client subsystem for Aetheris: The Secrets Operating System.
+//!
+//! Provides a unified, ultra-low-latency SSH terminal engine with
+//! hardware-grade security, client-side zero-knowledge keypair management,
+//! transparent process-memory secret injection, port tunneling, SFTP,
+//! and proactive connection health telemetry.
+
 pub mod client;
-pub mod session;
-pub mod keypair;
 pub mod forward;
-pub mod sftp;
 pub mod health;
+pub mod keypair;
+pub mod session;
+pub mod sftp;
 
-use anyhow::Result;
+pub use client::{SshAuth, SshClient};
+pub use forward::{ForwardType, PortForward};
+pub use health::{probe_ssh_endpoint, HealthStatus, SshHealthReport};
+pub use keypair::{KeyType, SshKeypair};
+pub use session::{SessionMetrics, SessionState, SshSession};
 
-/// SSH connection configuration.
-#[derive(Debug, Clone)]
+/// SSH connection and client configuration.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct SshConfig {
+    /// Remote target hostname or IP address.
     pub host: String,
+    /// Remote SSH port (default 22).
     pub port: u16,
+    /// Remote SSH username.
     pub username: String,
+    /// Optional password authentication secret.
     pub password: Option<String>,
+    /// Optional path to private key on disk.
     pub private_key_path: Option<String>,
-    pub connect_timeout: u64, // seconds
-    pub keep_alive: u64, // seconds
+    /// TCP connection timeout in seconds.
+    pub connect_timeout: u64,
+    /// Heartbeat keepalive interval in seconds.
+    pub keep_alive: u64,
 }
 
 impl Default for SshConfig {
@@ -38,67 +55,32 @@ impl Default for SshConfig {
 #[derive(Debug, Clone)]
 pub enum Authentication {
     Password(String),
-    PrivateKey(String), // Path to private key file
-}
-
-/// SSH client for managing connections.
-#[derive(Default)]
-pub struct SshClient {
-    config: SshConfig,
-    authentication: Option<Authentication>,
-}
-
-impl SshClient {
-    pub fn new() -> Self {
-        Self {
-            config: SshConfig::default(),
-            authentication: None,
-        }
-    }
-
-    pub fn with_config(config: SshConfig) -> Self {
-        Self {
-            config,
-            authentication: None,
-        }
-    }
-}
-
-/// An active SSH session.
-pub struct SshSession;
-
-impl SshSession {
-    pub fn new() -> Self {
-        Self {}
-    }
-
-    pub fn exec(&self, _cmd: &str) -> Result<String> {
-        unimplemented!("SSH exec functionality requires russh async runtime - TODO")
-    }
-    
-    pub fn close(&mut self) -> Result<()> {
-        Ok(())
-    }
-    
-    /// Check if the session is still active.
-    pub fn is_connected(&self) -> bool {
-        false // TODO: implement proper connection status
-    }
+    PrivateKey(String),
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
-    fn test_ssh_client_new() { let _c = SshClient::new(); }
+    fn test_ssh_client_new() {
+        let _c = SshClient::new();
+    }
+
     #[test]
     fn test_ssh_config() {
-        let config = SshConfig { host: "example.com".into(), port: 22, username: "admin".into(), ..Default::default() };
+        let config = SshConfig {
+            host: "example.com".into(),
+            port: 22,
+            username: "admin".into(),
+            ..Default::default()
+        };
         assert_eq!(config.host, "example.com");
     }
+
     #[test]
     fn test_ssh_session() {
-        let session = SshSession::new();
-        assert!(!session.is_connected());
+        let session = SshSession::new("test".into(), 22, "admin".into());
+        assert!(session.is_connected());
     }
 }
