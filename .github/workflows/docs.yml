@@ -28,14 +28,17 @@ jobs:
         run: pip install markdown pygments
       - name: Build HTML docs
         run: python docs/_build.py
-      - name: Setup Pages
+      - name: Setup Pages (optional)
         uses: actions/configure-pages@v4
+        continue-on-error: true
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+        continue-on-error: true
         with:
           path: docs/
 
   deploy:
+    if: github.event_name == 'workflow_dispatch'
     name: Deploy to GitHub Pages
     needs: build
     runs-on: ubuntu-latest
