@@ -1,21 +1,31 @@
 # Rust build artifacts
 /target/
+**/target/
 **/*.rs.bk
 *.pdb
 Cargo.lock
+**/Cargo.lock
 
 # Environment files
 .env
 .env.local
 .env.production
 .env.*.local
+**/.env
 
-# Database files
+# Database / vault data (NEVER commit)
 *.db
-*.conf
+*.db-journal
 *.snap.*
+*.vault
+*.enc
+*.key
+*.secret
+/vault/
+/data/
+**/.vault/
 
-# IDE
+# IDE / OS
 .idea/
 .vscode/
 *.swp
@@ -23,60 +33,88 @@ Cargo.lock
 *~
 .DS_Store
 Thumbs.db
+**/.idea/
+**/.vscode/
 
-# Build outputs
+# Build outputs — all platforms
 /dist/
 /build/
 /out/
+**/dist/
+**/build/
+**/out/
 *.exe
 *.dll
 *.so
 *.dylib
 
-# WASM
+# WASM / pkg
 /pkg/
-*.wasm
+**/*.wasm
 
-# Node (for web frontend)
-/node_modules/
-/package-lock.json
-/yarn.lock
-pnpm-lock.yaml
+# Node / web / desktop (recursive)
+**/node_modules/
+**/package-lock.json
+**/yarn.lock
+**/pnpm-lock.yaml
+**/.npm/
+**/.pnpm/
+**/bower_components/
+**/npm-debug.log
 
-# Tauri
+# Web specific
+/web/dist/
+/web/.vite/
+/web/.rollup.cache/
+**/.vite/
+**/dist/
+
+# Desktop (Vite + Tauri)
+/desktop/dist/
+/desktop/build/
+/desktop/.vite/
+/desktop/node_modules/
+/desktop/package-lock.json
 /src-tauri/target/
 /src-tauri/Cargo.lock
+**/src-tauri/target/
 
-# Flutter
-/flutter/.dart_tool/
-/flutter/.packages
-/flutter/.flutter-plugins
-/flutter/.flutter-plugins-dependencies
-/flutter/build/
-/flutter/android/app/debug/
-/flutter/android/app/profile/
-/flutter/android/app/release/
-/flutter/ios/Flutter/Flutter.framework
-/flutter/ios/Flutter/App.framework
-/flutter/ios/Pods/
-/flutter/.dart_tool/
+# Browser extension
+/browser/dist/
+/browser/build/
+/browser/*.zip
+/browser/*.crx
+/browser/*.pem
 
-# Local vault data (NEVER commit)
-/vault/
-/data/
-*.vault
-*.enc
-*.key
-*.secret
+# Mobile (Flutter)
+/mobile/.dart_tool/
+/mobile/.packages
+/mobile/.flutter-plugins
+/mobile/.flutter-plugins-dependencies
+/mobile/build/
+/mobile/android/app/debug/
+/mobile/android/app/profile/
+/mobile/android/app/release/
+/mobile/ios/Flutter/Flutter.framework
+/mobile/ios/Flutter/App.framework
+/mobile/ios/Pods/
+**/pubspec.lock
+**/.dart_tool/
+
+# CLI (ratatui / Rust)
+/cli/target/
+**/cli/target/
 
 # Logs
 *.log
 /logs/
+**/*.log
 
-# Test coverage
+# Test coverage / profraw
 /coverage/
 /tarpaulin-report.html
 *.profraw
+**/*.profraw
 
 # Docs build
 /docs/_build/
@@ -87,11 +125,10 @@ pnpm-lock.yaml
 /temp/
 *.tmp
 *.temp
+**/*.tmp
 
-# Secrets scan
-# .gitleaks.toml is intentional config - DO NOT ignore
-
-# Keys (never commit!)
+# Secrets / keys — never commit
+# .gitleaks.toml is intentional config — DO NOT ignore
 *.pem
 *.key
 *.p12
@@ -101,3 +138,13 @@ id_ed25519
 id_rsa
 id_ecdsa
 .ssh/
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+**/id_ed25519
+**/id_rsa
+**/id_ecdsa
+
+# Memory / local state (optional — keep if tracking)
+# .memory/  
