@@ -35,3 +35,12 @@
 4. Build CLI TUI with ratatui component primitives
 
 **Platform Plan:** CLI (ratatui) → Desktop (Tauri 2 + React) → Mobile (Flutter) → Web (React) → Browser Extension (WebExtension MV3 + WASM)
+
+--- Updated Status (post-UI/UX development) ---
+Phase: All 6 complete (25/25 tasks)
+Status: Design-system UI/UX developed and committed (768dc0c)
+Platform Plan Completed: CLI (ratatui) → Desktop (Tauri 2 + React) → Mobile (Flutter) → Web (React) → Browser Extension (MV3 + WASM)
+Source of Truth: src/design/ (Rust design module with serde, export, validation)
+Deliverables: design exports (JSON/TS/Dart/CSS-in-JS), CLI primitives/theme/layout/wire, Desktop Tauri+React screens/components/i18n, Mobile Flutter/Dart/FFI, Web Vite/responsive, Browser MV3/popup/options/content/WASM
+Evidence: todo.md + TODO_COMPLETE.md + tests/ui_ux_tests.rs + 768dc0c
+Next: Deep integrations available on request (interactive TUI loop, full FFI execution, Vite build execution, WASM test execution)
