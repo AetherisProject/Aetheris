@@ -1,8 +1,8 @@
 //! Vault tests for Aetheris.
 
+use aetheris::vault::item::PasswordItem;
 use aetheris::vault::item::VaultItem;
 use aetheris::vault::store::VaultStore;
-use aetheris::vault::item::PasswordItem;
 
 #[test]
 fn test_password_item_new() {
