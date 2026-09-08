@@ -29,6 +29,14 @@ Why: Most users want zero-config. Enterprises want data sovereignty.
 
 ## 2026-09-05 — Maximum Security Model
 
+## 2026-09-08 — Per-Platform CI Build System
+
+Added separate `.github/workflows/*.yml` for each platform (web, desktop, browser, mobile) plus fixed `.gitignore` for multi-subproject dependencies (`**/node_modules/`).
+
+Why separate workflows: each platform uses different build tools (npm, cargo/tauri build, zip, flutter) and needs independent failure isolation. Main CI (`ci.yml`) stays for Rust core only.
+
+Token scope note: pushing `.github/workflows/` requires `workflow` OAuth scope in addition to `repo`.
+
 All security features enabled:
 
 - Shamir Secret Sharing (M-of-N master key recovery)

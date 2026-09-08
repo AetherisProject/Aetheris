@@ -64,3 +64,4 @@ cargo clippy --all-features -- -D warnings
 ## License
 
 [MIT](LICENSE)
+[![CI](https://github.com/merlin-tribukait/Aetheris/actions/workflows/ci.yml/badge.svg)](https://github.com/merlin-tribukait/Aetheris/actions/workflows/ci.yml)
