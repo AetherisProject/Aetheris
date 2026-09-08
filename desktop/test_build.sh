@@ -1,0 +1,1 @@
+Desktop build test script

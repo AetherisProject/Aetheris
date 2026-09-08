@@ -131,3 +131,6 @@ pub fn render_dashboard_grid(f: &mut Frame, area: ratatui::prelude::Rect) {
     // SSH card (bottom left) 
     render_card(f, chunks[1], "SSH", "3 active sessions | 1 tunnel");
 }
+Keyboard nav loop
+Form validation
+Modal interaction

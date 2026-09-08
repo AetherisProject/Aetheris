@@ -80,3 +80,4 @@ pub fn apply_theme(block: &mut ratatui::widgets::Block, theme: Theme) {
         .bg(theme.surface())
         .fg(theme.text_primary()));
 }
+Theme toggle
