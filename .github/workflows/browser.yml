@@ -1,0 +1,10 @@
+name: Browser CI
+on: [push, pull_request]
+jobs:
+  browser-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          chmod +x browser/build.sh
+          ./browser/build.sh
