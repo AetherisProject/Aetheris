@@ -1,1 +1,38 @@
-Options page
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aetheris Options</title>
+<style>
+  body{font-family:system-ui,sans-serif;background:#090D16;color:#F8FAFC;padding:24px;max-width:640px;margin:auto}
+  h1{font-size:22px;font-weight:700;letter-spacing:-0.03em;margin-bottom:8px}
+  label{display:block;font-size:12px;color:#94A3B8;margin:14px 0 4px}
+  input, select{width:100%;padding:10px;background:#111827;border:1px solid #1F2937;border-radius:10px;color:#F8FAFC;font-size:14px}
+  button{padding:10px 18px;background:linear-gradient(135deg,#6366F1,#818CF8);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer;margin-top:12px}
+  .hint{font-size:11px;color:#94A3B8;margin-top:6px}
+  .section{border-top:1px solid #1F2937;padding-top:10px;margin-top:10px}
+</style>
+</head>
+<body>
+<h1>Aetheris Browser Settings</h1>
+<p style="color:#94A3B8;font-size:13px">Configure vault relay, sync, and extension behavior.</p>
+
+<label for="relay-url">Relay URL</label>
+<input id="relay-url" type="url" value="ws://localhost:8765" placeholder="ws://localhost:8765">
+<div class="hint">WebSocket endpoint used by the browser extension for live sync.</div>
+
+<label for="sync-mode">Sync Mode</label>
+<select id="sync-mode"><option>Auto (default)</option><option>Manual</option><option>Offline only</option></select>
+
+<div class="section">
+  <label><input type="checkbox" id="enable-clipboard"> Enable clipboard access for vault items</label>
+  <label><input type="checkbox" id="enable-contextmenu" checked> Enable context-menu actions</label>
+</div>
+
+<button onclick="saveOptions()">Save Settings</button>
+<div id="status" style="margin-top:10px;font-size:13px;color:#34D399"></div>
+
+<script src="options.js"></script>
+</body>
+</html>

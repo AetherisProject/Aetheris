@@ -1,2 +1,51 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><title>Aetheris Popup</title></head><body style="background:#090D16;color:#F8FAFC;"><h2 style="font-family:Plus Jakarta Sans;color:#6366F1">Aetheris</h2></body></html>
-Popup done
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aetheris Popup</title>
+<style>
+  :root{--bg:#090D16;--surface:#111827;--primary:#6366F1;--text:#F8FAFC;--muted:#94A3B8;--border:#1F2937;--radius:12px;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{width:320px;background:var(--bg);color:var(--text);font-family:"Plus Jakarta Sans",system-ui,sans-serif;padding:14px;}
+  header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .logo{width:28px;height:28px;background:linear-gradient(135deg,#6366F1,#818CF8);border-radius:8px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:14px}
+  h2{font-size:15px;font-weight:600;letter-spacing:-0.02em}
+  .tag{font-size:10px;padding:2px 6px;border-radius:999px;background:var(--surface);color:var(--muted);border:1px solid var(--border)}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px}
+  .card h3{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px}
+  .item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)}
+  .item:last-child{border-bottom:none}
+  .item .icon{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#6366F1,#818CF8);display:grid;place-items:center;color:#fff;font-size:10px}
+  .item .name{flex:1;font-size:13px;font-weight:500}
+  .item .meta{font-size:11px;color:var(--muted)}
+  button{width:100%;padding:8px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--primary),#818CF8);color:#fff;font-weight:600;font-size:13px;cursor:pointer;margin-top:4px}
+  button.secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+  .status{display:block;font-size:11px;color:#34D399;margin-top:4px}
+</style>
+</head>
+<body>
+<header><div class="logo">A</div><h2>Aetheris</h2><span class="tag">Popup</span></header>
+
+<div class="card">
+  <h3>Vault Status</h3>
+  <div class="item"><div class="icon">🔐</div><div class="name">Encrypted Vault</div><div class="meta">Locked</div></div>
+  <div class="item"><div class="icon">🔑</div><div class="name">Master Key</div><div class="meta">In memory</div></div>
+  <div class="status">✓ Zero-knowledge sync ready</div>
+</div>
+
+<div class="card">
+  <h3>Quick Actions</h3>
+  <button onclick="send('vault_unlock')">Unlock Vault</button>
+  <button class="secondary" onclick="send('copy_key')">Copy API Key</button>
+</div>
+
+<div class="card">
+  <h3>Active Sessions</h3>
+  <div class="item"><div class="icon">🖥</div><div class="name">Desktop App</div><div class="meta">Local</div></div>
+  <div class="item"><div class="icon">🌐</div><div class="name">Browser Relay</div><div class="meta">WS localhost</div></div>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>
