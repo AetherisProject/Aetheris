@@ -1,0 +1,21 @@
+name: Changelog Update
+on:
+  workflow_run:
+    workflows: ["CI", "Web CI", "Desktop CI", "Browser CI", "Mobile CI"]
+    types: [completed]
+jobs:
+  update:
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update changelog
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./scripts/update-changelog.sh
+      - name: Commit update
+        run: |
+          git config user.name "CI"
+          git config user.email "ci@aetheris.dev"
+          git add CHANGELOG.md .ci-log.md || true
+          git diff --quiet || (git commit -m "docs(ci): auto-update changelog [${{ github.event.workflow_run.conclusion }}]" && git push)

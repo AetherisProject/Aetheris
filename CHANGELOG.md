@@ -54,3 +54,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed literal `\n` escape sequences from all module files
 - Fixed `Cargo.lock` missing warning by adding `clap` complete feature
 - Removed empty `cargo_launcher.log` from repo
+
+### Added
+- Per-platform CI workflows (`web.yml`, `desktop.yml`, `browser.yml`, `mobile.yml`)
+- Multi-platform `.gitignore` (`**/node_modules/`, `**/dist/`, build outputs)
+- Build scripts: `desktop/test_build.sh`, `browser/build.sh`, `web/test.sh`, `mobile/build.sh`
+- `desktop/index.html`, `desktop/src/main.tsx`, `mobile/lib/main.dart`
+- `web/vite.config.ts`; tracked `web/package-lock.json`
+- `.github/workflows/changelog-update.yml` (auto-updatable CI log)
+
+### Fixed
+- Untracked build artifacts removed; `.gitignore` covers all subprojects
+- `Desktop CI`: added entry (`index.html` + `main.tsx`) — was missing
+- `Web CI`: valid `vite.config.ts` — was stub
+- `Mobile CI`: `main.dart` + fixed `flutter` command syntax
+- `Browser CI`: `zip` install; bundle script executable
+- All 4 new platform CI runs green on `f7ba81c`
+- Remote switched to SSH; `workflow` token scope noted
