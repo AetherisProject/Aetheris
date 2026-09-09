@@ -1,0 +1,18 @@
+[package]
+name = "aetheris-desktop"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "aetheris-desktop"
+path = "src-tauri/main.rs"
+
+[dependencies]
+aetheris-core = { path = "../../core" }
+tauri = { version = "2.0" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+
+[build-dependencies]
+tauri-build = { version = "2.0" }

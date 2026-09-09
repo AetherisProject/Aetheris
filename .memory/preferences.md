@@ -1,25 +1,36 @@
-# Aetheris Design Preferences
+# Aetheris Project Preferences
 
-## [Code Formatting]
-- **Preference**: Use `cargo fmt` for consistent code style.
-- **Rationale**: Ensures readability and maintainability across the codebase.
+## Code Style
+- **Rust**: Use `clippy` warnings as errors (`-D warnings`).
+- **Formatting**: Follow `rustfmt` defaults (edition 2021).
+- **Error Handling**: Prefer `thiserror` for library errors, `anyhow` for application errors.
 
-## [Linting]
-- **Preference**: Use `cargo clippy` for linting.
-- **Rationale**: Detects potential bugs and style issues early.
+## Architecture
+- **Core Library**: Single source of truth for vault, crypto, SSH, and sync.
+- **Platforms**: Isolated entry points (Tauri, CLI, WASM, Browser Extension).
+- **CI/CD**: Unified workflow for artifact uploads on `v*` tags.
 
-## [Security]
-- **Preference**: Use `bandit` for security scanning.
-- **Rationale**: Ensures compliance with security best practices.
+## Dependencies
+- **Core**: `oqs`, `zeroize`, `serde`, `tokio`, `tracing`, `thiserror`.
+- **Platforms**: Exclude GTK dependencies from `platforms/web` to avoid build errors.
 
-## [Performance]
-- **Preference**: Use `cargo bench` for performance benchmarking.
-- **Rationale**: Measures and optimizes critical operations.
+## Testing
+- **Unit Tests**: Every public function has a doc test.
+- **Integration Tests**: `tests/` directory for cross-module validation.
+- **Property-Based**: Use `proptest` for crypto validation.
 
-## [CI/CD Orchestration]
-- **Preference**: Use modular agents for CI/CD workflows.
-- **Rationale**: Enhances scalability and maintainability.
+## Security
+- **Master Password**: NEVER stored or logged.
+- **Keys**: NEVER written to disk unencrypted.
+- **Encryption**: Use authenticated encryption (AEAD).
+- **Randomness**: `rand::rngs::OsRng` for cryptographic operations.
 
-## [Cross-Platform Integration]
-- **Preference**: Implement platform-specific agents.
-- **Rationale**: Supports diverse platforms (web, desktop, mobile, browser) efficiently.
+## Documentation
+- **Rustdoc**: Every public API has comments.
+- **User Docs**: `docs/` for Markdown, built to HTML.
+- **Changelog**: Follow [Keep a Changelog](https://keepachangelog.com/).
+
+## Release Workflow
+- **Trigger**: On `v*` tags.
+- **Artifacts**: Upload to GitHub Releases for all platforms.
+- **Platforms**: Desktop, CLI, Web, Browser Extension.

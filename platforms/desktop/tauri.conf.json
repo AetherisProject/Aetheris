@@ -1,0 +1,40 @@
+{
+  "package": {
+    "name": "Aetheris",
+    "version": "0.1.0",
+    "authors": ["Merlin Tribukait"],
+    "description": "Unified secrets management platform"
+  },
+  "tauri": {
+    "allowlist": {
+      "all": false,
+      "shell": {
+        "open": true,
+        "scope": []
+      },
+      "fs": {
+        "readFile": true,
+        "writeFile": true,
+        "readDir": true,
+        "scope": []
+      }
+    },
+    "bundle": {
+      "active": true,
+      "targets": ["all"],
+      "identifier": "com.aetheris.desktop",
+      "icon": ["icons/icon.png"],
+      "resources": []
+    },
+    "updater": {
+      "active": false
+    }
+  },
+  "build": {
+    "beforeBuildCommand": "",
+    "beforeDevCommand": "",
+    "devPath": "http://localhost:3000",
+    "distDir": "../dist",
+    "withGlobalTauri": false
+  }
+}

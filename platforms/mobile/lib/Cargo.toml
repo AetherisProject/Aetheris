@@ -1,0 +1,17 @@
+[package]
+name = "aetheris-ffi"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "aetheris_ffi"
+crate-type = ["cdylib"]
+
+[dependencies]
+aetheris-core = { path = "../../../core" }
+flutter_rust_bridge = "1.82.0"
+jni = { version = "0.21.1", features = ["invocation"] }
+libc = "0.2"
+
+[build-dependencies]
+flutter_rust_bridge_codegen = "1.82.0"

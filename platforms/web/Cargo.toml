@@ -1,0 +1,21 @@
+[package]
+name = "aetheris-web"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "aetheris_web"
+crate-type = ["cdylib"]
+
+[dependencies]
+aetheris-core = { path = "../../core" }
+wasm-bindgen = "0.2"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[dev-dependencies]
+wasm-bindgen-test = "0.2"
+
+[profile.release]
+lto = true
+opt-level = 's'

@@ -1,24 +1,29 @@
-# Aetheris Architectural Decisions
+# Aetheris CI/CD & Release Decisions
 
-## [CI/CD Orchestration]
-- **Decision**: Use `cargo fmt` for code formatting in CI/CD workflows.
-- **Rationale**: Ensures consistent code style across all platforms.
-- **Implementation**: Created `rustfmt-module` script and integrated it into `run_platform_workflows`.
+## Core Library
+- **Dependencies**: Removed duplicate `anyhow` and excluded GTK dependencies from `platforms/web`.
+- **Structure**: `core/src/` modules are modular and re-export key types for platform integration.
 
-- **Decision**: Use `cargo clippy` for linting in CI/CD workflows.
-- **Rationale**: Detects potential bugs and style issues early.
-- **Implementation**: Created `clippy` subagent module and integrated it into `run_platform_workflows`.
+## Platforms
+- **Desktop**: Tauri for cross-platform compatibility.
+- **CLI**: `clap` for command-line subcommands.
+- **Web**: WASM bindings for lightweight crypto/vault operations.
+- **Browser Extension**: Manifest v3 for Chrome/Firefox compatibility.
 
-- **Decision**: Use `bandit` for security scanning in CI/CD workflows.
-- **Rationale**: Detects vulnerabilities and ensures security compliance.
-- **Implementation**: Created `bandit` subagent module and integrated it into `run_platform_workflows`.
+## CI/CD
+- **Unified Workflow**: `release.yml` triggers builds on `v*` tags and uploads artifacts to GitHub Releases.
+- **Tagging**: `v0.0.1` pushed and workflow verified.
 
-## [Performance Benchmarking]
-- **Decision**: Use `cargo bench` for performance benchmarking.
-- **Rationale**: Measures key generation, encryption, and vault operations for optimization.
-- **Implementation**: Created benchmark scripts (`key_benchmark.rs`, `encryption_benchmark.rs`, `vault_operation_benchmark.rs`).
+## Verification
+- **Workspace Check**: Core Rust modules compile successfully (excluding GTK dependencies).
+- **GitHub Actions**: Workflows are ready for artifact uploads.
 
-## [Cross-Platform Integration]
-- **Decision**: Use modular agents for platform-specific integration.
-- **Rationale**: Enhances scalability and maintainability.
-- **Implementation**: Defined modular agents for web, desktop, mobile, and browser platforms.
+## Next Steps
+1. Push `v0.0.1` to GitHub.
+2. Test all platforms locally.
+3. Deploy verified artifacts to GitHub Releases.
+
+## Preferences
+- **Rust-only WASM**: Excluded GTK dependencies from `platforms/web` to avoid build errors.
+- **Modular Design**: Core library abstracts platform-specific logic.
+- **Automated Releases**: Unified workflow for cross-platform artifacts.

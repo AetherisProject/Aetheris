@@ -1,0 +1,39 @@
+[package]
+name = "aetheris-core"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "aetheris_core"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+oqs = { version = "0.11.0", features = ["kyber", "dilithium"] }
+zeroize = "1.9.0"
+subtle = "2.6.1"
+secrecy = "0.8.0"
+serde = { version = "1.0", features = ["derive"] }
+bincode = "1.3.3"
+tokio = { version = "1.0", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+thiserror = "1.0"
+anyhow = "1.0"
+uuid = { version = "1.0", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+sled = "0.34"
+
+[features]
+default = []
+wasm = ["wasm-bindgen"]
+ffi = ["libc", "jni"]
+
+[target.'cfg(unix)'.dependencies]
+libc = { version = "0.2", optional = true }
+
+[target.'cfg(target_os = "android")'.dependencies]
+jni = { version = "0.21.1", optional = true }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = { version = "0.2", optional = true }
+web-sys = { version = "0.3", features = ["Window", "Document", "HtmlElement", "console"], optional = true }

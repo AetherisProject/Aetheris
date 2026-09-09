@@ -1,28 +1,20 @@
-[package]
-name = "Aetheris"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-anyhow = "9.0"
-chrono = "0.4"
-parking_lot = "0.12"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-uuid = { version = "1.0", features = ["v4"] }
-tch = "0.13"
-
-[dev-dependencies]
-proptest = "1.0"
-
 [workspace]
-members = ["src"]
+members = [
+    "core",
+    "platforms/desktop",
+    "platforms/cli",
+    "platforms/web",
+]
+resolver = "2"
 
 [profile.release]
-opt-level = "z"
+opt-level = "s"
 lto = true
 codegen-units = 1
+panic = "abort"
+strip = true
 
-[lib]
-name = "aetheris"
-path = "src/lib.rs"
+[profile.release-with-debug]
+inherits = "release"
+debug = true
+strip = false
