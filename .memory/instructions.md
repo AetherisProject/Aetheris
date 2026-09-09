@@ -78,3 +78,9 @@ These commands must be executed without being asked every turn:
    - Never commit `.env`, `.bashrc`, or `GITHUB_TOKEN` env.
    - `env -u GH_TOKEN -u GITHUB_TOKEN` before `gh` calls.
    - Token format: `ghp_...` (classic PAT, no expiration) not `gho_...` (OAuth, expires quickly).
+7. **Pipeline finish gate (MANDATORY)**
+   - Before finishing ANY prompt: probe all CI pipelines (`env -u GH_TOKEN -u GITHUB_TOKEN gh run list --repo merlin-tribukait/Aetheris --limit 6 --json ...`).
+   - If any run `status` is `completed` with `conclusion`=`failure`: fix root cause (format/clippy/test/build/error), commit, push, re-check.
+   - If any run is `queued`/`in_progress`: wait/re-check (use `sleep`; re-issue `gh` query); do NOT finish until all settled (`completed`/`success`/`skipped`).
+   - Only finish the prompt when 0 failures remain.
+   - Never yield with a pending/failing pipeline.
