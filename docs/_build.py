@@ -62,7 +62,7 @@ NAV_HTML = """
         <li><a href="security.html">Security</a></li>
         <li><a href="features.html">Features</a></li></ul>
     <ul class="nav-section"><li class="nav-section-title">Platform</li>
-        build the confidence score: 9. let me re-read to get the correct state first.
+        <li><a href="terminal.html">Terminal</a></li>
         <li><a href="vault.html">Vault</a></li>
         <li><a href="api-keys.html">API Keys</a></li>
         <li><a href="sync.html">Sync</a></li>
