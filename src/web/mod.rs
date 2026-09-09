@@ -30,3 +30,4 @@ mod tests {
         let _s = WebServer::new();
     }
 }
+pub fn serve_http() -> () {}

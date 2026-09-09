@@ -23,3 +23,4 @@ pub struct Navbar {
     pub title: String,
     pub position: String,
 }
+pub fn apply_theme() -> () {}

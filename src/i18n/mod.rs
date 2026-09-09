@@ -30,3 +30,4 @@ mod tests {
         let _e = I18nEngine::new();
     }
 }
+pub fn load_locale() -> String { "en".to_string() }

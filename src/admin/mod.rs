@@ -28,3 +28,4 @@ mod tests {
         let _e = AdminEngine::new();
     }
 }
+pub fn audit_user() -> () {}

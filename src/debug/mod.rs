@@ -31,3 +31,4 @@ mod tests {
         let _d = DebugSystem::new();
     }
 }
+pub fn log_trace() -> () {}

@@ -37,3 +37,4 @@ mod tests {
         let _e = ProactiveEngine::new();
     }
 }
+pub fn trigger_policy() -> () {}

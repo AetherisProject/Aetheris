@@ -151,3 +151,17 @@ impl VaultStore {
         Ok(filtered_items)
     }
 }
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::vault::item::VaultItem;
+    use std::fs;
+
+    #[test]
+    fn test_vault_store_new_and_insert() {
+        let tmp = "/tmp/test_vault_store";
+        let _ = fs::remove_dir_all(tmp);
+        let mut store = VaultStore::new(tmp).unwrap();
+        assert!(store.list().unwrap().is_empty());
+    }
+}
