@@ -41,3 +41,40 @@ How to behave in this project.
 - [ ] i18n: user-facing strings use `fluent`
 - [ ] Error handling: no `unwrap()` in production paths
 - [ ] Logging: appropriate `tracing` spans and events
+
+## Recurring Workflow (Auto-run)
+
+These commands must be executed without being asked every turn:
+
+1. **CI Watch / Fix cycle**
+   - `env -u GH_TOKEN -u GITHUB_TOKEN gh run list --repo merlin-tribukait/Aetheris --limit 6 --json ...`
+   - Fix formatting (`cargo fmt`) if `Format Check` fails.
+   - Push fix; verify 0 failures.
+
+2. **Issues / Milestones**
+   - `env -u GH_TOKEN -u GITHUB_TOKEN gh issue list --repo ...`
+   - Create/close/update per work completed.
+   - Keep milestones (`Phase 0-4`) accurate.
+
+3. **Todos** (`todo` tool)
+   - `op: "init"` for multi-phase work.
+   - `op: "start"` when beginning.
+   - `op: "done"` when finished (with reason).
+   - `op: "view"` before answering status.
+
+4. **Cleanup / Dead code**
+   - Check `docs/assets/`, `.vibe/subagents/`, `.memory/` leftover artifacts.
+   - Check `public/assets/icons/` for nested directories.
+   - Check no leftover `.tmp` files (`find . -name '*.tmp'`).
+
+5. **Update / Commit / Push**
+   - `git add -A src/ .github/ docs/ .gitignore` as needed.
+   - `git commit -m "type(scope): description"`.
+   - `git push origin main` always after changes.
+   - Verify `git status --short` is clean after push.
+
+6. **Auth / Token persistence (never expose)**
+   - Store only in `~/.config/gh/hosts.yml` (`chmod 600`).
+   - Never commit `.env`, `.bashrc`, or `GITHUB_TOKEN` env.
+   - `env -u GH_TOKEN -u GITHUB_TOKEN` before `gh` calls.
+   - Token format: `ghp_...` (classic PAT, no expiration) not `gho_...` (OAuth, expires quickly).
