@@ -1,0 +1,72 @@
+name: CI Build and Screenshot Capture
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [web, desktop, mobile-android]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: actions-rs/rust@v1
+        with:
+          toolchain: stable
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb scrot
+          npm install -g playwright
+          playwright install
+
+      - name: Build for ${{ matrix.platform }}
+        run: |
+          if [ "${{ matrix.platform }}" == "web" ]; then
+            cargo build --release --features web
+          else
+            cargo build --release
+          fi
+
+      - name: Capture Web Screenshot
+        if: matrix.platform == 'web'
+        run: |
+          cargo run --release --features web -- --screenshot --web
+          mkdir -p screenshots
+          cp screenshots/web_screenshot.png screenshots/
+
+      - name: Capture Desktop Screenshot
+        if: matrix.platform == 'desktop'
+        run: |
+          Xvfb :99 -screen 0 1024x768x16 & export DISPLAY=:99
+          cargo run --release --bin main -- --screenshot
+          scrot screenshots/desktop_screenshot.png
+          killall Xvfb
+
+      - name: Setup Android Emulator
+        if: matrix.platform == 'mobile-android'
+        uses: actions-configure-android-environment@v2
+        with:
+          arch: x86_64
+
+      - name: Run Android Emulator and Capture Screenshot
+        if: matrix.platform == 'mobile-android'
+        run: |
+          adb devices
+          adb shell input keyevent KEYCODE_MENU
+          adb shell screencap -p screenshots/android_screenshot.png
+
+      - name: Upload Screenshots
+        uses: actions/upload-artifact@v3
+        with:
+          name: "screenshots-${{ matrix.platform }}"
+          path: |
+            screenshots/*.png

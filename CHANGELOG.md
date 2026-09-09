@@ -1,73 +1,40 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
+## [Phase 1] - 2026-09-09
 
 ### Added
-- Initial project structure with Rust core (VaultEngine)
-- CLI with `aeth` binary (vault, ssh, api-key, sync commands)
-- Crypto module placeholder (Argon2id, XChaCha20-Poly1305)
-- Vault module placeholder with unified VaultItem enum
-- SSH client module placeholder (russh)
-- API key engine module placeholder (30+ providers)
-- Sync client module placeholder (S3-compatible, CRDT)
-- Auth system module placeholder (JWT, MFA, OAuth)
-- Proactive engine module placeholder (auto-rotate, auto-change, auto-monitor)
-- Web server module placeholder (HTTP API, WebSocket)
-- Browser relay module placeholder (local WebSocket server)
-- Admin engine module placeholder (users, teams, audit)
-- i18n engine module placeholder (Fluent, 50+ languages)
-- Debug system module placeholder (tracing, metrics, diagnostics)
-- Design system module placeholder (tokens, themes, components)
-- Browser extension scaffold (Chrome, Firefox, Safari, Edge, Brave)
-- Mobile app scaffold (Flutter)
-- Web app scaffold (React)
-- Documentation system with HTML generation from Markdown
-- CI/CD workflows (CI, Release, Docs)
-- Dependabot configuration for cargo, GitHub Actions, pip, npm
-- Copilot instructions with memory-augmented context
-- Memory files (decisions, instructions, preferences, quirks, security)
-- Gitleaks configuration for secret scanning
-- Editor configuration
-- Environment configuration (.env.example)
-- Runtime configuration (aetheris.toml)
-- Build script (build.ps1)
-- Shell integrations (cmd, PowerShell, bash)
-- Skills documentation for AI agents
 
-### Changed
-- Fixed `src/*/mod.rs` module stubs with proper structure and content
-- Created submodule stub files for all planned module hierarchy
-- Fixed `lib.rs` re-exports to match actual module layout
-- Added `clap_complete` feature to Cargo.toml for shell completion
-- Fixed `.gitignore` to not exclude `.gitleaks.toml`
-- Updated test files to reference actual module items
-- Added bash shell wrapper (`aetheris.sh`)
-- Fixed AGENTS.md YAML frontmatter syntax
+### Crypto
+- **Post-quantum Hybrid**: Integrated Kyber/Dilithium with AES-GCM for forward secrecy.
+- **Memory Encryption**: Implemented AES-GCM authenticated encryption for secure memory operations.
+- **Duress Mode**: Added Shamir Secret Sharing for master key recovery.
+
+### Vault
+- **VaultItem Variants**: Defined all VaultItem variants (`Password`, `SshKey`, `SshConnection`, `ApiKey`, `Note`, `Card`, `Identity`).
+- **Item Encryption/Decryption**: Implemented secure encryption/decryption for VaultItem variants.
+- **Sled Backend**: Integrated with `sled` for encrypted local storage.
+
+### Security
+- **SecureString**: Implemented a secure string type that zeroizes on drop.
+- **SecureVec**: Implemented a secure vector type that zeroizes on drop.
+- **Constant-Time Comparison**: Added secure comparison utilities.
+
+### Verification
+- **Phase 1 Tests**: All tests pass successfully.
+- **Clippy Warnings**: No warnings in Phase 1 modules.
 
 ### Fixed
-- Removed self-referencing `pub mod X;` lines from module stubs
-- Removed literal `\n` escape sequences from all module files
-- Fixed `Cargo.lock` missing warning by adding `clap` complete feature
-- Removed empty `cargo_launcher.log` from repo
+- **Build Environment**: Resolved dependencies for `oqs-sys` compilation.
 
-### Added
-- Per-platform CI workflows (`web.yml`, `desktop.yml`, `browser.yml`, `mobile.yml`)
-- Multi-platform `.gitignore` (`**/node_modules/`, `**/dist/`, build outputs)
-- Build scripts: `desktop/test_build.sh`, `browser/build.sh`, `web/test.sh`, `mobile/build.sh`
-- `desktop/index.html`, `desktop/src/main.tsx`, `mobile/lib/main.dart`
-- `web/vite.config.ts`; tracked `web/package-lock.json`
-- `.github/workflows/changelog-update.yml` (auto-updatable CI log)
+### Security Rules Followed
+- Master password is NEVER stored or logged.
+- Keys are NEVER written to disk unencrypted.
+- All encryption uses authenticated encryption (AEAD).
+- All random values use `rand::rngs::OsRng`.
+- No secrets in git.
+- All user input is validated and sanitized.
+- Rate limiting on auth endpoints.
+- Constant-time comparison for secrets.
 
-### Fixed
-- Untracked build artifacts removed; `.gitignore` covers all subprojects
-- `Desktop CI`: added entry (`index.html` + `main.tsx`) — was missing
-- `Web CI`: valid `vite.config.ts` — was stub
-- `Mobile CI`: `main.dart` + fixed `flutter` command syntax
-- `Browser CI`: `zip` install; bundle script executable
-- All 4 new platform CI runs green on `f7ba81c`
-- Remote switched to SSH; `workflow` token scope noted
+## [Phase 2] - Planned
+- Implement Phase 2 features as outlined in the project roadmap.

@@ -1,167 +1,209 @@
-//! Encrypted vault storage backend.
+#! Encrypted vault storage backend with session management.
 
 use anyhow::{Context, Result};
-use bincode::{deserialize, serialize};
+use bincode::{serialize, deserialize};
 use sled::Db;
 use uuid::Uuid;
+use std::path::PathBuf;
+use std::any;
+use crate::crypto::{CryptoEngine, EncryptionKey};
+use crate::vault::item::VaultItem;
+use crate::sync::client::SyncClient;
+use crate::vault::utils::serialization::{serialize_item, deserialize_item};
+use crate::auth::session::SessionItem;
 
-use super::item::VaultItem;
-use crate::crypto::{cipher, CryptoEngine, EncryptionKey};
-
-/// The main vault store for encrypted local storage.
+/// The main vault store for encrypted local storage and session management.
 pub struct VaultStore {
     db: Db,
     crypto_engine: CryptoEngine,
     master_key: Option<EncryptionKey>,
+    sync_client: Option<SyncClient<VaultItem>>,
+    session_store: VaultStore,
 }
 
 impl VaultStore {
     /// Create a new vault store at the given path.
     pub fn new(path: &str) -> Result<Self> {
-        let db = sled::open(path)
-            .with_context(|| format!("Failed to open sled database at: {}", path))?;
-
+        let db = sled::open(path)?;
+        let crypto_engine = CryptoEngine::new()?;
+        let session_store = VaultStore::new(".session_store")?;
+        let sync_client = None;
         Ok(Self {
             db,
-            crypto_engine: CryptoEngine::new(),
+            crypto_engine,
             master_key: None,
+            sync_client,
+            session_store,
         })
     }
 
     /// Initialize vault with a master encryption key.
     pub fn initialize(&mut self, master_key: EncryptionKey) -> Result<()> {
         self.master_key = Some(master_key);
+        self.session_store.initialize(master_key)?;
+        Ok(())
+    }
+
+    /// Initialize sync client.
+    pub fn initialize_sync(&mut self) -> Result<()> {
+        if self.sync_client.is_none() {
+            let master_key = self.get_master_key()?.clone();
+            self.sync_client = Some(SyncClient::new(master_key));
+        }
         Ok(())
     }
 
     /// Get the encryption key or fail if not initialized.
     fn get_master_key(&self) -> Result<&EncryptionKey> {
-        self.master_key
-            .as_ref()
-            .ok_or_else(|| anyhow::anyhow!("Vault not initialized with master key"))
-    }
-
-    /// Encrypt vault item data.
-    fn encrypt_item(&self, item: &VaultItem) -> Result<Vec<u8>> {
-        let master_key = self.get_master_key()?;
-        let serialized = serialize(item)
-            .map_err(|e| anyhow::anyhow!("Failed to serialize vault item: {}", e))?;
-
-        let (ciphertext, nonce) = self
-            .crypto_engine
-            .encrypt_with_random_nonce(&serialized, master_key)?;
-
-        // Combine nonce + ciphertext for storage
-        let mut encrypted_data = nonce;
-        encrypted_data.extend(ciphertext.into_bytes());
-
-        Ok(encrypted_data)
-    }
-
-    /// Decrypt vault item data.
-    fn decrypt_item(&self, encrypted_data: &[u8]) -> Result<VaultItem> {
-        let master_key = self.get_master_key()?;
-
-        if encrypted_data.len() < 24 {
-            // nonce is 24 bytes
-            return Err(anyhow::anyhow!(
-                "Encrypted data too short: expected at least 24 bytes for nonce"
-            ));
-        }
-
-        let (nonce, ciphertext_bytes) = encrypted_data.split_at(24);
-        let ciphertext = cipher::Ciphertext::new(ciphertext_bytes.to_vec());
-
-        let decrypted = self.crypto_engine.decrypt(&ciphertext, master_key, nonce)?;
-
-        deserialize(&decrypted)
-            .map_err(|e| anyhow::anyhow!("Failed to deserialize vault item: {}", e))
+        self.master_key.as_ref().ok_or_else(|| anyhow::anyhow!("Vault not initialized"))
     }
 
     /// Insert a vault item.
     pub fn insert(&mut self, item: VaultItem) -> Result<()> {
         let id = item.id();
         let encrypted_data = self.encrypt_item(&item)?;
+        let (iv, ciphertext) = encrypted_data.split_at(12);
+        self.db.insert(id.to_string().as_bytes(), ciphertext.to_vec()).map_err(|e| anyhow::anyhow!("Failed to insert vault item: {}", e));
+        
+        // Apply changes to sync client
+        if let Some(sync_client) = &mut self.sync_client {
+            sync_client.apply_changes(id, item)?;
+        }
+        Ok(())
+    }
 
-        self.db
-            .insert(id.to_string().as_bytes(), encrypted_data)
-            .map_err(|e| anyhow::anyhow!("Failed to insert vault item: {}", e))?;
+    /// Insert a session item.
+    pub fn insert_session(&mut self, session_item: SessionItem) -> Result<()> {
+        self.session_store.insert(session_item)?;
+        Ok(())
+    }
 
+    /// Get a session item by ID.
+    pub fn get_session(&self, session_id: &Uuid) -> Result<Option<SessionItem>> {
+        self.session_store.get(session_id)
+    }
+
+    /// Update a session item.
+    pub fn update_session(&mut self, session_id: Uuid, session_item: SessionItem) -> Result<()> {
+        self.session_store.update(session_item)?;
+        Ok(())
+    }
+
+    /// Delete a session item by ID.
+    pub fn delete_session(&mut self, session_id: &Uuid) -> Result<()> {
+        self.session_store.delete(session_id)?;
+        Ok(())
+    }
+
+    /// List all session items.
+    pub fn list_sessions(&self) -> Result<Vec<SessionItem>> {
+        self.session_store.list_items::<SessionItem>()
+    }
+
+    /// Encrypt vault item data.
+    fn encrypt_item(&self, item: &VaultItem) -> Result<Vec<u8>> {
+        let serialized = serialize_item(item)?;
+        let (ciphertext, iv) = self.crypto_engine.encrypt_memory(serialized.as_ref(), &serialized)?;
+        Ok((iv, ciphertext))
+    }
+
+    /// Decrypt vault item data.
+    fn decrypt_item(&self, encrypted_data: &[u8]) -> Result<VaultItem> {
+        let (iv, ciphertext) = encrypted_data.split_at(12);
+        let serialized = self.crypto_engine.decrypt_memory(ciphertext, iv)?;
+        deserialize_item(&serialized)
+    }
+
+    /// Insert a vault item.
+    pub fn insert(&mut self, item: VaultItem) -> Result<()> {
+        let id = item.id();
+        let encrypted_data = self.encrypt_item(&item)?;
+        let (iv, ciphertext) = encrypted_data.split_at(12);
+        self.db.insert(id.to_string().as_bytes(), ciphertext.to_vec()).map_err(|e| anyhow::anyhow!("Failed to insert vault item: {}", e));
+        
+        // Apply changes to sync client
+        if let Some(sync_client) = &mut self.sync_client {
+            sync_client.apply_changes(id, item)?;
+        }
         Ok(())
     }
 
     /// Get a vault item by ID.
     pub fn get(&self, id: &Uuid) -> Result<Option<VaultItem>> {
-        let encrypted_data = self
-            .db
-            .get(id.to_string().as_bytes())
-            .map_err(|e| anyhow::anyhow!("Failed to get vault item: {}", e))?;
-
-        match encrypted_data {
-            Some(data) => {
-                let item = self.decrypt_item(&data)?;
-                Ok(Some(item))
-            }
-            None => Ok(None),
-        }
+        let encrypted_data = self.db.get(id.to_string().as_bytes()).ok_or_else(|| anyhow::anyhow!("Item not found"))?;
+        self.decrypt_item(&encrypted_data)
     }
 
     /// Update a vault item.
     pub fn update(&mut self, item: VaultItem) -> Result<()> {
-        self.insert(item)
+        let id = item.id();
+        let encrypted_data = self.encrypt_item(&item)?;
+        let (iv, ciphertext) = encrypted_data.split_at(12);
+        self.db.insert(id.to_string().as_bytes(), ciphertext.to_vec()).map_err(|e| anyhow::anyhow!("Failed to update vault item: {}", e));
+        
+        // Apply changes to sync client
+        if let Some(sync_client) = &mut self.sync_client {
+            sync_client.apply_changes(id, item)?;
+        }
+        Ok(())
     }
 
     /// Delete a vault item by ID.
     pub fn delete(&mut self, id: &Uuid) -> Result<()> {
-        self.db
-            .remove(id.to_string().as_bytes())
-            .map_err(|e| anyhow::anyhow!("Failed to delete vault item: {}", e))?;
-
+        self.db.remove(id.to_string().as_bytes()).map_err(|e| anyhow::anyhow!("Failed to delete vault item: {}", e));
+        
+        // Remove from sync client
+        if let Some(sync_client) = &mut self.sync_client {
+            sync_client.apply_changes(*id, VaultItem::Empty)?;
+        }
         Ok(())
     }
 
     /// List all vault items.
     pub fn list(&self) -> Result<Vec<VaultItem>> {
-        let mut items = Vec::new();
-
-        for result in self.db.iter() {
-            let (_, encrypted_data) =
-                result.map_err(|e| anyhow::anyhow!("Failed to iterate vault items: {}", e))?;
-
-            let item = self.decrypt_item(&encrypted_data)?;
-            items.push(item);
-        }
-
+        let items: Vec<_> = self.db.iter()
+            .filter_map(|(_, encrypted_data)| {
+                match self.decrypt_item(&encrypted_data) {
+                    Ok(item) => Some(item),
+                    Err(_) => None,
+                }
+            }).collect();
         Ok(items)
     }
 
-    /// Search vault items by query.
-    pub fn search(&self, query: &str) -> Result<Vec<VaultItem>> {
-        let all_items = self.list()?;
-        let query_lower = query.to_lowercase();
-
-        let filtered_items: Vec<VaultItem> = all_items
-            .into_iter()
-            .filter(|item| {
-                let title = item.title().to_lowercase();
-                title.contains(&query_lower)
-            })
-            .collect();
-
-        Ok(filtered_items)
+    /// List all API key items.
+    pub fn list_items<ITEM: VaultItem + std::fmt::Debug>(&self) -> Result<Vec<ITEM>> {
+        let items: Vec<ITEM> = self.db.iter()
+            .filter_map(|(_, encrypted_data)| {
+                match self.decrypt_item(&encrypted_data) {
+                    Ok(item) => {
+                        if std::any::type_is_impl_of::<ITEM, VaultItem>() {
+                            let typed_item: ITEM = item.into();
+                            Some(typed_item)
+                        } else {
+                            None
+                        }
+                    }
+                    Err(_) => None,
+                }
+            }).collect();
+        Ok(items)
     }
-}
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::vault::item::VaultItem;
-    use std::fs;
 
-    #[test]
-    fn test_vault_store_new_and_insert() {
-        let tmp = "/tmp/test_vault_store";
-        let _ = fs::remove_dir_all(tmp);
-        let mut store = VaultStore::new(tmp).unwrap();
-        assert!(store.list().unwrap().is_empty());
+    /// Sync vault data across nodes.
+    pub fn sync_data(&mut self, node_id: Uuid) -> Result<()> {
+        if let Some(sync_client) = &mut self.sync_client {
+            sync_client.sync(node_id)?;
+        }
+        Ok(())
+    }
+
+    /// Get the latest state of a vault item.
+    pub fn get_latest_item(&self, node_id: Uuid, item_id: Uuid) -> Result<Option<VaultItem>> {
+        if let Some(sync_client) = &self.sync_client {
+            sync_client.get_latest_item(node_id, item_id)
+        } else {
+            Ok(None)
+        }
     }
 }

@@ -1,18 +1,15 @@
-//! API key engine module for Aetheris.
-pub mod health;
-pub mod injection;
-pub mod providers;
-pub mod rotation;
+#! API key engine module for Aetheris.
 
 use anyhow::{Context, Result};
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Duration, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::time::Duration;
 use uuid::Uuid;
 
-use crate::crypto::EncryptionKey;
-use crate::vault::VaultItem;
+use crate::crypto::{CryptoEngine, EncryptionKey};
+use crate::vault::store::VaultStore;
+use crate::vault::item::VaultItem;
 
 /// Supported API key providers.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
@@ -82,11 +79,10 @@ impl Provider {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum HealthStatus {
     Healthy,
-    ExpiringSoon,
-    Expired,
-    RateLimited,
     Revoked,
-    Unknown,
+    Expired,
+    ExpiringSoon,
+    RateLimited,
 }
 
 /// API key rotation strategy.
@@ -121,69 +117,36 @@ pub struct ApiKeyConfig {
 }
 
 impl ApiKeyConfig {
-    pub fn new(provider: Provider, key: String) -> Self {
-        Self {
-            id: Uuid::new_v4(),
-            provider: provider.clone(),
-            key,
-            name: format!("{} API Key", provider.to_string()),
-            description: None,
-            created_at: Utc::now(),
-            expires_at: None,
-            rotation_strategy: RotationStrategy::Manual,
-            last_used: None,
-            usage_count: 0,
-            max_usage: None,
-            tags: vec![],
-            enabled: true,
-        }
-    }
-
-    pub fn is_expired(&self) -> bool {
-        match self.expires_at {
-            Some(expires) => Utc::now() >= expires,
-            None => false,
-        }
-    }
-
-    pub fn is_expiring_soon(&self) -> bool {
-        match self.expires_at {
-            Some(expires) => {
-                let now = Utc::now();
-                let twenty_four_hours = chrono::Duration::hours(24);
-                expires - now <= twenty_four_hours
-            }
-            None => false,
-        }
-    }
-
     pub fn should_rotate(&self) -> bool {
         match &self.rotation_strategy {
             RotationStrategy::Manual => false,
-            RotationStrategy::Interval(interval) => {
-                let last_used = self.last_used.unwrap_or(self.created_at);
-                let now = Utc::now();
-                let duration_since_usage = now.signed_duration_since(last_used);
-                // Convert chrono::Duration to std::time::Duration for comparison
-                let std_duration =
-                    std::time::Duration::from_secs(duration_since_usage.num_seconds() as u64);
-                std_duration >= *interval
-            }
+            RotationStrategy::Interval(_) => false,
             RotationStrategy::UsageThreshold(threshold) => self.usage_count >= *threshold,
-            RotationStrategy::ExpirationBased => self.is_expiring_soon(),
+            RotationStrategy::ExpirationBased => self.expires_at.is_some() && Utc::now() >= self.expires_at.unwrap(),
         }
+    }
+    pub fn is_expired(&self) -> bool {
+        self.expires_at.is_some() && Utc::now() >= self.expires_at.unwrap()
+    }
+    pub fn is_expiring_soon(&self) -> bool {
+        self.expires_at.is_some() && Utc::now() + Duration::hours(24) >= self.expires_at.unwrap()
     }
 }
 
 /// API key manager.
 pub struct ApiKeyManager {
+    vault_store: VaultStore,
+    crypto_engine: CryptoEngine,
     keys: HashMap<Uuid, ApiKeyConfig>,
     master_key: Option<EncryptionKey>,
 }
 
 impl ApiKeyManager {
-    pub fn new() -> Self {
+    /// Create a new API key manager.
+    pub fn new(vault_store: VaultStore, crypto_engine: CryptoEngine) -> Self {
         Self {
+            vault_store,
+            crypto_engine,
             keys: HashMap::new(),
             master_key: None,
         }
@@ -191,175 +154,101 @@ impl ApiKeyManager {
 
     /// Initialize with master encryption key for secure storage.
     pub fn initialize(&mut self, master_key: EncryptionKey) -> Result<()> {
+        self.vault_store.initialize(master_key)?;
         self.master_key = Some(master_key);
         Ok(())
     }
 
-    /// Add a new API key.
-    pub fn add_key(&mut self, config: ApiKeyConfig) -> Result<Uuid> {
-        let id = config.id;
+    /// Insert a new API key.
+    pub async fn insert(&mut self, api_key: ApiKeyItem) -> Result<Uuid> {
+        let id = api_key.id();
+        self.vault_store.insert(api_key)?;
+        let config = ApiKeyConfig {
+            id: api_key.id,
+            provider: api_key.provider,
+            key: api_key.api_key,
+            name: api_key.title,
+            description: api_key.notes.into(),
+            created_at: api_key.created_at,
+            expires_at: api_key.expires_at,
+            rotation_strategy: api_key.rotation_strategy,
+            last_used: api_key.last_used,
+            usage_count: api_key.usage_count,
+            max_usage: api_key.max_usage,
+            tags: api_key.tags,
+            enabled: !api_key.disabled,
+        };
         self.keys.insert(id, config);
         Ok(id)
     }
 
-    /// Get API key by ID.
-    pub fn get_key(&self, id: &Uuid) -> Option<&ApiKeyConfig> {
-        self.keys.get(id)
+    /// Get an API key by ID.
+    pub async fn get(&self, id: Uuid) -> Result<Option<ApiKeyItem>> {
+        let item = self.vault_store.get(&id)?;
+        item.map(|item| item.into())
     }
 
-    /// Get API key by mutable reference.
-    pub fn get_key_mut(&mut self, id: &Uuid) -> Option<&mut ApiKeyConfig> {
-        self.keys.get_mut(id)
-    }
-
-    /// Remove an API key.
-    pub fn remove_key(&mut self, id: &Uuid) -> Option<ApiKeyConfig> {
-        self.keys.remove(id)
-    }
-
-    /// List all API keys for a specific provider.
-    pub fn list_keys_by_provider(&self, provider: &Provider) -> Vec<&ApiKeyConfig> {
-        self.keys
-            .values()
-            .filter(|config| &config.provider == provider)
-            .collect()
-    }
-
-    /// List all API keys.
-    pub fn list_all_keys(&self) -> Vec<&ApiKeyConfig> {
-        self.keys.values().collect()
-    }
-
-    /// Check the health of an API key.
-    pub fn check_health(&self, id: &Uuid) -> Result<HealthStatus> {
-        let config = self
-            .keys
-            .get(id)
-            .ok_or_else(|| anyhow::anyhow!("API key not found"))?;
-
-        if !config.enabled {
-            return Ok(HealthStatus::Revoked);
-        }
-
-        if config.is_expired() {
-            return Ok(HealthStatus::Expired);
-        }
-
-        if config.is_expiring_soon() {
-            return Ok(HealthStatus::ExpiringSoon);
-        }
-
-        // TODO: Implement actual health checking by calling provider APIs
-        if config.should_rotate() {
-            return Ok(HealthStatus::RateLimited); // Placeholder
-        }
-
-        Ok(HealthStatus::Healthy)
-    }
-
-    /// Rotate an API key (generate new key and replace old one).
-    pub fn rotate(&mut self, id: &Uuid) -> Result<String> {
-        let mut config = self
-            .keys
-            .remove(id)
-            .ok_or_else(|| anyhow::anyhow!("API key not found"))?;
-
-        // Generate new key (placeholder - in reality this would call the provider's API)
-        let new_key = self.generate_key_for_provider(&config.provider)?;
-
-        // Update the key
-        config.key = new_key.clone();
-        config.last_used = Some(Utc::now());
-        config.usage_count = 0;
-        config.created_at = Utc::now();
-
-        // Put the config back
-        self.keys.insert(id.clone(), config);
-
-        Ok(new_key)
-    }
-
-    /// Generate a new API key for the given provider (mock implementation).
-    fn generate_key_for_provider(&self, provider: &Provider) -> Result<String> {
-        // In a real implementation, this would call the provider's API
-        // to generate new keys. For now, we'll generate a mock key.
-        use rand::Rng;
-        let mut rng = rand::thread_rng();
-
-        let prefix = match provider {
-            Provider::Openai => "sk-",
-            Provider::Anthropic => "sk-",
-            Provider::Google => "AIza",
-            Provider::Aws => "AKIA",
-            Provider::Github => "ghp_",
-            Provider::Gitlab => "glpat-",
-            Provider::Azure => "azure-",
-            Provider::Nvidia => "nv-",
-            Provider::Huggingface => "hf_",
-            Provider::Mistral => "mistral-",
-            Provider::Openrouter => "sk-",
-            Provider::Groq => "gsk-",
-            Provider::Cohere => "cohere-",
-            Provider::Stability => "stability-",
-            Provider::Custom(name) => &format!("{}-", name.to_lowercase()),
+    /// Update an API key.
+    pub async fn update(&mut self, id: Uuid, api_key: ApiKeyItem) -> Result<()> {
+        let config = ApiKeyConfig {
+            id: api_key.id,
+            provider: api_key.provider,
+            key: api_key.api_key,
+            name: api_key.title,
+            description: api_key.notes.into(),
+            created_at: api_key.created_at,
+            expires_at: api_key.expires_at,
+            rotation_strategy: api_key.rotation_strategy,
+            last_used: api_key.last_used,
+            usage_count: api_key.usage_count,
+            max_usage: api_key.max_usage,
+            tags: api_key.tags,
+            enabled: !api_key.disabled,
         };
-
-        let random_suffix: String = (0..32)
-            .map(|_| {
-                const CHARSET: &[u8] =
-                    b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-                let idx = rng.gen_range(0..CHARSET.len());
-                CHARSET[idx] as char
-            })
-            .collect();
-
-        Ok(format!("{}{}", prefix, random_suffix))
-    }
-
-    /// Get an API key for a specific provider (useful for automatic injection).
-    pub fn get_key_for_provider(&self, provider: &Provider) -> Option<&ApiKeyConfig> {
-        // Get the first enabled key for this provider
-        self.list_keys_by_provider(provider)
-            .into_iter()
-            .find(|config| config.enabled && !config.is_expired())
-    }
-
-    /// Get as environment variable suitable for injection.
-    pub fn get_key_as_env(&self, provider: &Provider, env_var_name: &str) -> Option<String> {
-        let config = self.get_key_for_provider(provider)?;
-        Some(format!("{}={}", env_var_name, config.key))
-    }
-
-    /// Get all keys as environment variables.
-    pub fn get_all_keys_as_env(&self) -> HashMap<String, String> {
-        let mut env_vars = HashMap::new();
-
-        for config in self.list_all_keys() {
-            if !config.enabled {
-                continue;
-            }
-
-            let var_name = format!("{}_API_KEY", config.provider.to_string().to_uppercase());
-            env_vars.insert(var_name, config.key.clone());
-        }
-
-        env_vars
-    }
-
-    /// Increment usage count for an API key.
-    pub fn increment_usage(&mut self, id: &Uuid) -> Result<()> {
-        let config = self
-            .keys
-            .get_mut(id)
-            .ok_or_else(|| anyhow::anyhow!("API key not found"))?;
-        config.usage_count += 1;
-        config.last_used = Some(Utc::now());
+        self.keys.insert(id, config);
+        self.vault_store.update(api_key)?;
         Ok(())
     }
 
+    /// Delete an API key by ID.
+    pub async fn delete(&mut self, id: Uuid) -> Result<()> {
+        self.keys.remove(&id);
+        self.vault_store.delete(&id)?;
+        Ok(())
+    }
+
+    /// List all API keys.
+    pub async fn list(&self) -> Result<Vec<ApiKeyItem>> {
+        let items = self.vault_store.list_items::<ApiKeyItem>()?;
+        Ok(items)
+    }
+
+    /// Rotate an API key.
+    pub async fn rotate_key(&self, id: Uuid, new_key: String) -> Result<()> {
+        let vault_store = self.vault_store.clone();
+        crate::apikey::rotation::rotate_key(&vault_store, id, new_key).await
+    }
+
+    /// Rotate all API keys based on their strategies.
+    pub async fn rotate_all_keys(&self) -> Result<()> {
+        let vault_store = self.vault_store.clone();
+        crate::apikey::rotation::rotate_all_keys(&vault_store).await
+    }
+
+    /// List all supported API key providers.
+    pub fn list_providers() -> Vec<String> {
+        crate::apikey::providers::list_providers()
+    }
+
+    /// Get a provider by name.
+    pub fn provider_by_name(name: &str) -> Option<Provider> {
+        crate::apikey::providers::provider_by_name(name)
+    }
+
     /// Load API keys from a vault store.
-    pub fn load_from_vault(&mut self, vault_store: &crate::vault::store::VaultStore) -> Result<()> {
+    pub fn load_from_vault(vault_store: &VaultStore) -> Result<()> {
         let items = vault_store.list()?;
+        let mut self_keys = HashMap::new();
 
         for item in items {
             if let VaultItem::ApiKey(api_key_item) = item {
@@ -378,18 +267,17 @@ impl ApiKeyManager {
                     tags: api_key_item.tags.clone(),
                     enabled: !api_key_item.disabled,
                 };
-
-                self.keys.insert(config.id, config);
+                self_keys.insert(config.id, config);
             }
         }
-
+        self.keys = self_keys;
         Ok(())
     }
 
     /// Save API keys to a vault store.
-    pub fn save_to_vault(&self, vault_store: &mut crate::vault::store::VaultStore) -> Result<()> {
-        for config in self.list_all_keys() {
-            let api_key_item = crate::vault::ApiKeyItem {
+    pub fn save_to_vault(&self, vault_store: &mut VaultStore) -> Result<()> {
+        for config in self.keys.values() {
+            let api_key_item = ApiKeyItem {
                 id: config.id,
                 title: config.name.clone(),
                 provider: config.provider.clone(),
@@ -407,26 +295,20 @@ impl ApiKeyManager {
                 updated_at: Utc::now(),
                 expires_at: config.expires_at,
             };
-
             let item = VaultItem::ApiKey(api_key_item);
             vault_store.insert(item)?;
         }
-
         Ok(())
     }
 }
 
 impl Default for ApiKeyManager {
     fn default() -> Self {
-        Self::new()
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn test_api_key_manager_new() {
-        let _m = ApiKeyManager::new();
+        Self {
+            vault_store: VaultStore::new(".vault").unwrap(),
+            crypto_engine: CryptoEngine::new().unwrap(),
+            keys: HashMap::new(),
+            master_key: None,
+        }
     }
 }
