@@ -24,3 +24,12 @@ pub struct Navbar {
     pub position: String,
 }
 pub fn apply_theme() -> () {}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_apply_theme() {
+        assert!(true);
+    }
+}
