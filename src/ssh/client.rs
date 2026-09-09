@@ -7,10 +7,10 @@ use crate::ssh::keypair::SshKeypair;
 use crate::ssh::session::SshSession;
 use crate::ssh::SshConfig;
 use anyhow::{bail, Context, Result};
-use std::sync::Arc;
-use tokio::sync::RwLock;
 use russh::{client, ChannelMsg};
 use std::net::SocketAddr;
+use std::sync::Arc;
+use tokio::sync::RwLock;
 
 /// Authentication strategy for client connections.
 #[derive(Debug, Clone)]
@@ -129,7 +129,10 @@ mod tests {
 
 impl SshClient {
     /// Connect using russh engine.
-    pub async fn russh_connect(&self, addr: SocketAddr) -> anyhow::Result<client::Handle<client::Config>> {
+    pub async fn russh_connect(
+        &self,
+        addr: SocketAddr,
+    ) -> anyhow::Result<client::Handle<client::Config>> {
         bail!("russh_connect: not fully implemented — requires token auth setup")
     }
 }
