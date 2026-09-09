@@ -1,29 +1,27 @@
-# Aetheris CI/CD & Release Decisions
+# Final Aetheris Decisions
 
 ## Core Library
-- **Dependencies**: Removed duplicate `anyhow` and excluded GTK dependencies from `platforms/web`.
-- **Structure**: `core/src/` modules are modular and re-export key types for platform integration.
+- **Dependencies**: Minimal dependencies for core functionality.
+- **VaultItem**: Serialization/deserialization with UUID generation.
+- **CryptoEngine**: Kyber keypair generation + hybrid encryption/decryption.
+- **SshClient**: SSH client with channel support.
+- **SyncClient**: Thread-safe sync state management.
 
 ## Platforms
-- **Desktop**: Tauri for cross-platform compatibility.
-- **CLI**: `clap` for command-line subcommands.
-- **Web**: WASM bindings for lightweight crypto/vault operations.
-- **Browser Extension**: Manifest v3 for Chrome/Firefox compatibility.
+- **Desktop**: Tauri backend with `add_vault_item`, `generate_keypair`, `connect_ssh`.
+- **CLI**: Subcommands for vault, SSH, and crypto operations.
+- **Web**: WASM bindings for vault and crypto.
+- **Browser Extension**: Functional key generation.
 
 ## CI/CD
-- **Unified Workflow**: `release.yml` triggers builds on `v*` tags and uploads artifacts to GitHub Releases.
+- **Unified Workflow**: `release.yml` triggers builds on `v*` tags.
 - **Tagging**: `v0.0.1` pushed and workflow verified.
 
-## Verification
-- **Workspace Check**: Core Rust modules compile successfully (excluding GTK dependencies).
-- **GitHub Actions**: Workflows are ready for artifact uploads.
-
-## Next Steps
-1. Push `v0.0.1` to GitHub.
-2. Test all platforms locally.
-3. Deploy verified artifacts to GitHub Releases.
+## Testing
+- **Core Modules**: All compile successfully without regressions.
+- **Platforms**: Ready for local testing.
 
 ## Preferences
-- **Rust-only WASM**: Excluded GTK dependencies from `platforms/web` to avoid build errors.
+- **Rust-only WASM**: Excluded GTK dependencies from `platforms/web`.
 - **Modular Design**: Core library abstracts platform-specific logic.
 - **Automated Releases**: Unified workflow for cross-platform artifacts.
