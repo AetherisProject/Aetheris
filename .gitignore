@@ -118,6 +118,7 @@ Thumbs.db
 **/*.profraw
 
 # Docs build
+/public/
 /docs/_build/
 /site/
 

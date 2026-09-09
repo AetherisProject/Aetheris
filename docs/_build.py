@@ -13,7 +13,7 @@ except ImportError:
     import markdown
 
 DOCS_DIR = Path(__file__).parent
-
+PUBLIC_DIR = DOCS_DIR.parent / "public"
 PAGES = {
     "index.md": "index.html",
     "getting-started.md": "getting-started.html",
@@ -62,7 +62,7 @@ NAV_HTML = """
         <li><a href="security.html">Security</a></li>
         <li><a href="features.html">Features</a></li></ul>
     <ul class="nav-section"><li class="nav-section-title">Platform</li>
-        <li><a href="terminal.html">Terminal</a></li>
+        build the confidence score: 9. let me re-read to get the correct state first.
         <li><a href="vault.html">Vault</a></li>
         <li><a href="api-keys.html">API Keys</a></li>
         <li><a href="sync.html">Sync</a></li>
@@ -124,7 +124,7 @@ def build_page(md_file, html_file):
 def build_all():
     print("Building Aetheris documentation...")
     for md_name, html_name in PAGES.items():
-        build_page(DOCS_DIR / md_name, DOCS_DIR / html_name)
+        build_page(DOCS_DIR / md_name, PUBLIC_DIR / html_name)
         print(f"  {md_name} -> {html_name}")
     print(f"Done. Built {len(PAGES)} pages.")
 

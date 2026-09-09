@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         continue-on-error: true
         with:
-          path: docs/
+          path: public/
 
   deploy:
     if: github.event_name == 'workflow_dispatch'
