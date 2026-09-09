@@ -17,3 +17,4 @@ export default function Dashboard() {
     </div>
   );
 }
+// Phase 1 Desktop Dashboard stub
