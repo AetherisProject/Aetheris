@@ -1,19 +1,25 @@
-# Duress Mode Implementation
+# Aetheris Design Preferences
 
-## Key Features
-- **Shamir Secret Sharing**: Splits the master key into shares for recovery.
-- **Key Reconstruction**: Reconstructs the master key from a threshold number of shares.
-- **Security**: Leverages `rand` for randomness and secure cryptographic operations.
+## [Code Formatting]
+- **Preference**: Use `cargo fmt` for consistent code style.
+- **Rationale**: Ensures readability and maintainability across the codebase.
 
-## Implementation Details
-- **`split_master_key`**: Splits the master key into shares using Shamir Secret Sharing.
-- **`reconstruct_master_key`**: Reconstructs the master key from a set of shares.
+## [Linting]
+- **Preference**: Use `cargo clippy` for linting.
+- **Rationale**: Detects potential bugs and style issues early.
 
-## Files Modified
-- `src/crypto/duress.rs`: Core logic for Shamir Secret Sharing.
-- `src/crypto/mod.rs`: Integrated Duress mode methods into `CryptoEngine`.
+## [Security]
+- **Preference**: Use `bandit` for security scanning.
+- **Rationale**: Ensures compliance with security best practices.
 
-## Next Steps
-- Ensure all security compliance checks pass.
-- Run Phase 1 tests to verify correctness.
-- Address clippy warnings in Phase 1 modules.
+## [Performance]
+- **Preference**: Use `cargo bench` for performance benchmarking.
+- **Rationale**: Measures and optimizes critical operations.
+
+## [CI/CD Orchestration]
+- **Preference**: Use modular agents for CI/CD workflows.
+- **Rationale**: Enhances scalability and maintainability.
+
+## [Cross-Platform Integration]
+- **Preference**: Implement platform-specific agents.
+- **Rationale**: Supports diverse platforms (web, desktop, mobile, browser) efficiently.

@@ -1,0 +1,13 @@
+name: aetheris_mobile
+version: 00.0.0
+publish_to: 'none'
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons:
+    version: ^1.0.0
+
+flutter:
+  sdk: flutter

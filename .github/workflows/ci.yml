@@ -20,16 +20,17 @@ concurrency:
 jobs:
   fmt:
     name: Format Check
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.platform.runner }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
       - run: cargo fmt -- --check
+
   clippy:
     name: Clippy Lint
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.platform.runner }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -38,6 +39,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: cargo clippy --all-targets --all-features -- -D warnings
         continue-on-error: true
+
   gitleaks:
     name: Secret Scan
     runs-on: ubuntu-latest
@@ -48,59 +50,111 @@ jobs:
       - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  test-linux:
-    name: Test (Linux)
+
+  test:
+    name: Test
     needs: [fmt, clippy, gitleaks]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
-      - name: Install deps
-        run: sudo apt-get update && sudo apt-get install -y libssl-dev pkg-config
-      - run: cargo build --all-features
-        continue-on-error: true
-        env:
-          CARGO_BUILD_JOBS: 2
-      - run: cargo test --all-features
-        continue-on-error: true
-        env:
-          CARGO_BUILD_JOBS: 2
-  test-windows:
-    name: Test (Windows)
-    needs: [fmt, clippy, gitleaks]
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
-      - run: cargo build --all-features
-        continue-on-error: true
-        env:
-          CARGO_BUILD_JOBS: 2
-      - run: cargo test --all-features
-        continue-on-error: true
-        env:
-          CARGO_BUILD_JOBS: 2
-  test-macos:
-    name: Test (macOS)
-    needs: [fmt, clippy, gitleaks]
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
-      - run: cargo build --all-features
-        continue-on-error: true
-        env:
-          CARGO_BUILD_JOBS: 2
-      - run: cargo test --all-features
-        continue-on-error: true
-        env:
-          CARGO_BUILD_JOBS: 2
+    runs-on: ${{ matrix.platform.runner }}
+    strategy:
+      matrix:
+        include:
+          - name: Linux
+            runner: ubuntu-latest
+            steps:
+              - uses: actions/checkout@v4
+              - uses: dtolnay/rust-toolchain@stable
+              - uses: Swatinem/rust-cache@v2
+              - name: Install deps
+                run: sudo apt-get update && sudo apt-get install -y libssl-dev pkg-config
+              - run: cargo build --all-features
+                continue-on-error: true
+              - run: cargo test --all-features
+                continue-on-error: true
+              - env:
+                  CARGO_BUILD_JOBS: 2
+
+          - name: Windows
+            runner: windows-latest
+            steps:
+              - uses: actions/checkout@v4
+              - uses: dtolnay/rust-toolchain@stable
+              - uses: Swatinem/rust-cache@v2
+              - run: cargo build --all-features
+                continue-on-error: true
+              - run: cargo test --all-features
+                continue-on-error: true
+              - env:
+                  CARGO_BUILD_JOBS: 2
+
+          - name: macOS
+            runner: macos-latest
+            steps:
+              - uses: actions/checkout@v4
+              - uses: dtolnay/rust-toolchain@stable
+              - uses: Swatinem/rust-cache@v2
+              - run: cargo build --all-features
+                continue-on-error: true
+              - run: cargo test --all-features
+                continue-on-error: true
+              - env:
+                  CARGO_BUILD_JOBS: 2
+
+          - name: Web
+            runner: ubuntu-latest
+            steps:
+              - uses: actions/checkout@v4
+              - uses: dtolnay/rust-toolchain@stable
+              - name: Install wasm-pack
+                run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+              - run: wasm-pack build --target web --out-dir pkg
+                continue-on-error: true
+              - run: cargo test --all-features --target wasm32-unknown-unknown --lib
+                continue-on-error: true
+
+          - name: Desktop
+            runner: ubuntu-latest
+            steps:
+              - uses: actions/checkout@v4
+              - uses: dtolnay/rust-toolchain@stable
+              - name: Install dependencies
+                run: sudo apt-get update && sudo apt-get install -y libssl-dev pkg-config
+              - run: cargo build --all-features
+                continue-on-error: true
+              - run: cargo test --all-features
+                continue-on-error: true
+              - env:
+                  CARGO_BUILD_JOBS: 2
+
+          - name: Mobile
+            runner: ubuntu-latest
+            steps:
+              - uses: actions/checkout@v4
+              - uses: dtolnay/rust-toolchain@stable
+              - name: Install dependencies
+                run: sudo apt-get update && sudo apt-get install -y libssl-dev pkg-config
+              - run: cargo build --all-features
+                continue-on-error: true
+              - run: cargo test --all-features
+                continue-on-error: true
+              - env:
+                  CARGO_BUILD_JOBS: 2
+
+          - name: Browser Extension
+            runner: ubuntu-latest
+            steps:
+              - uses: actions/checkout@v4
+              - uses: dtolnay/rust-toolchain@stable
+              - name: Install dependencies
+                run: sudo apt-get update && sudo apt-get install -y libssl-dev pkg-config
+              - run: cargo build --all-features
+                continue-on-error: true
+              - run: cargo test --all-features
+                continue-on-error: true
+              - env:
+                  CARGO_BUILD_JOBS: 2
   coverage:
     name: Code Coverage
-    needs: [test-linux, test-windows, test-macos]
+    needs: [test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -113,6 +167,7 @@ jobs:
           fail_ci_if_error: false
   audit:
     name: Security Audit
+    needs: [test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -120,15 +175,48 @@ jobs:
       - uses: taiki-e/install-action@cargo-audit
       - run: cargo audit
         continue-on-error: true
-  wasm:
-    name: WASM Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: wasm32-unknown-unknown
-      - name: Install wasm-pack
-        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-      - run: wasm-pack build --target web --out-dir pkg
-        continue-on-error: true
+matrix:
+  platform:
+    - name: Linux
+      runner: ubuntu-latest
+    - name: Windows
+      runner: windows-latest
+    - name: macOS
+      runner: macos-latest
+    - name: Web
+      runner: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - uses: dtolnay/rust-toolchain@stable
+        - name: Install wasm-pack
+          run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+        - run: wasm-pack build --target web --out-dir pkg
+        - name: Run Web Tests
+          run: cargo test --all-features --target wasm32-unknown-unknown --lib
+    - name: Desktop
+      runner: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - uses: dtolnay/rust-toolchain@stable
+        - name: Install dependencies
+          run: sudo apt-get update && sudo apt-get install -y libssl-dev pkg-config
+        - run: cargo build --all-features
+        - run: cargo test --all-features
+    - name: Mobile
+      runner: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - uses: dtolnay/rust-toolchain@stable
+        - name: Install dependencies
+          run: sudo apt-get update && sudo apt-get install -y libssl-dev pkg-config
+        - run: cargo build --all-features
+        - run: cargo test --all-features
+    - name: Browser Extension
+      runner: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - uses: dtolnay/rust-toolchain@stable
+        - name: Install dependencies
+          run: sudo apt-get update && sudo apt-get install -y libssl-dev pkg-config
+        - run: cargo build --all-features
+        - run: cargo test --all-features

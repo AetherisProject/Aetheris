@@ -1,1 +1,30 @@
-flutter:\n  uses-material-design: true\n  assets:\n    - assets/icons/
+name: aetheris_mobile
+version: 1.0.0+1
+description: Aetheris mobile app
+environment:
+  sdk: ^3.0.0
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_secure_storage: ^8.0.0
+  flutter_riverpod: ^2.0.0
+  fluent_runtime: ^0.1.0
+  i18n: ^3.0.0
+  # Shared Rust FFI interface placeholder
+  # flutter_ffi: ^0.1.0  # Placeholder for future integration
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+    flutter_localizations:
+      sdk: flutter
+  build_runner: ^2.0.0
+  flutter_gen: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  module_platforms:
+    android: null
+    ios: null

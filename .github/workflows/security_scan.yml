@@ -1,0 +1,115 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * *'  # Daily at midnight
+  workflow_dispatch:
+
+jobs:
+  security-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: actions-rs/rust@v1
+        with:
+          toolchain: stable
+
+      - name: Install cargo-audit
+        run: cargo install cargo-audit
+
+      - name: Run security audit
+        run: |
+          echo "Running cargo-audit for security vulnerabilities..."
+          cargo audit --json 2>&1 | tee audit_results.json || echo "Audit completed with warnings"
+          
+          # Check if vulnerabilities were found
+          if grep -q '"vulnerabilities"' audit_results.json; then
+            VULN_COUNT=$(grep -oP '"vulnerabilities": \[\K[^\]]*' audit_results.json | tr ',' '\n' | grep -c '"id"' || echo "0")
+            echo "::warning::Found ${VULN_COUNT} vulnerabilities"
+            
+            if [ "$VULN_COUNT" -gt 0 ]; then
+              echo "Vulnerabilities found:"
+              cat audit_results.json | jq -r '.vulnerabilities[] | "- \(.id): \(.description)"'
+              exit 1
+            fi
+          else
+            echo "✓ No vulnerabilities found"
+          fi
+
+      - name: Upload audit results
+        uses: actions/upload-artifact@v3
+        with:
+          name: "security-audit-${{ github.run_id }}"
+          path: audit_results.json
+          retention-days: 7
+
+  clippy-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: actions-rs/rust@v1
+        with:
+          toolchain: stable
+          components: clippy
+
+      - name: Run clippy
+        run: |
+          echo "Running clippy for code quality..."
+          cargo clippy --all-targets --all-features -- -D warnings 2>&1 | tee clippy_results.txt || echo "Clippy found issues"
+          
+          # Check if warnings were found
+          if grep -q "warning" clippy_results.txt; then
+            WARNING_COUNT=$(grep -c "warning" clippy_results.txt || echo "0")
+            echo "::warning::Found ${WARNING_COUNT} clippy warnings"
+            exit 1
+          else
+            echo "✓ No clippy warnings found"
+          fi
+
+      - name: Upload clippy results
+        uses: actions/upload-artifact@v3
+        with:
+          name: "clippy-results-${{ github.run_id }}"
+          path: clippy_results.txt
+          retention-days: 7
+
+  gitleaks-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .gitleaks.toml
+
+  dependabot-alerts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Dependabot alerts
+        run: |
+          echo "Checking for Dependabot alerts..."
+          ALERTS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/dependabot/alerts" | \
+            jq -r '.[] | "- \(.dependency.package.ecosystem)/\(.dependency.package.name)@\(.dependency.package.version): \(.security_advisory.summary)"')
+          
+          if [ -n "$ALERTS" ]; then
+            echo "::warning::Dependabot alerts found:"
+            echo "$ALERTS"
+            exit 1
+          else
+            echo "✓ No Dependabot alerts found"
+          fi

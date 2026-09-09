@@ -18,6 +18,7 @@ use crate::proactive::policies::Policy;
 /// Proactive monitoring configuration.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MonitorConfig {
+    ml_model: AnomalyDetectionModel,
     crypto_engine: CryptoEngine,
     vault_store: VaultStore,
     policies: HashMap<Uuid, Policy>,
@@ -119,9 +120,104 @@ impl MonitorConfig {
         let decrypted_data = self.crypto_engine.decrypt_memory(encrypted_data, encrypted_data)?;
         Ok(decrypted_data)
     }
+/// ML model for anomaly detection.
+#[derive(Debug, Clone)]
+pub struct AnomalyDetectionModel {
+    model: nn::Module,
+}
+/// ML model for anomaly detection.
+impl AnomalyDetectionModel {
+    /// Initialize the ML model for anomaly detection.
+    pub fn new() -> Self {
+        let vs = nn::VarStore::new(Device::Cpu);
+        let model = PredictiveMaintenanceModelModel::default(&vs.root()).build(&vs.root(), None).unwrap();
+        Self { model }
+    }
+#[derive(Debug, Clone)]
+    /// Detect anomalies using the ML model.
+    pub fn detect_anomalies(&self, features: &[f32]) -> Result<bool, String> {
+        let input = Tensor::of_slice(features).view_as(&[1, features.len()])
+        let output = self.model.forward(&input);
+        let prediction = output.argmax(1, false).data().as_slice()[0] as i32;
+        Ok(prediction == 1)
+    }
+pub struct AnomalyDetectionModel {
+    model: nn::Module,
+}
+/// ML model for anomaly detection.
+impl AnomalyDetectionModel {
+    /// Initialize the ML model for anomaly detection.
+    pub fn new() -> Self {
+        let vs = nn::VarStore::new(Device::Cpu);
+        let model = PredictiveMaintenanceModelModel::default(&vs.root()).build(&vs.root(), None).unwrap();
+        Self { model }
+    }
+#[derive(Debug, Clone)]
+    /// Detect anomalies using the ML model.
+    pub fn detect_anomalies(&self, features: &[f32]) -> Result<bool, String> {
+        let input = Tensor::of_slice(features).view_as(&[1, features.len()])
+        let output = self.model.forward(&input);
+        let prediction = output.argmax(1, false).data().as_slice()[0] as i32;
+        Ok(prediction == 1)
+    }
+pub struct AnomalyDetectionModel {
+    model: nn::Module,
+}
+}
+/// ML model for anomaly detection.
+#[derive(Debug, Clone)]
+pub struct AnomalyDetectionModel {
+    model: nn::Module,
+}
+impl AnomalyDetectionModel {
+impl AnomalyDetectionModel {
+    /// Initialize the ML model for anomaly detection.
+    pub fn new() -> Self {
+        let vs = nn::VarStore::new(Device::Cpu);
+        let model = PredictiveMaintenanceModelModel::default(&vs.root()).build(&vs.root(), None).unwrap();
+        Self { model }
+    }
+    /// Initialize the ML model for anomaly detection.
+    /// Detect anomalies using the ML model.
+    pub fn detect_anomalies(&self, features: &[f32]) -> Result<bool, String> {
+        let input = Tensor::of_slice(features).view_as(&[1, features.len()])
+        let output = self.model.forward(&input);
+        let prediction = output.argmax(1, false).data().as_slice()[0] as i32;
+        Ok(prediction == 1)
+    }
+    pub fn new() -> Self {
+        let vs = nn::VarStore::new(Device::Cpu);
+        let model = PredictiveMaintenanceModelModel::default(&vs.root()).build(&vs.root(), None).unwrap();
+        Self { model }
+    }
+/// ML model for anomaly detection.
+    /// Detect anomalies using the ML model.
+    pub fn detect_anomalies(&self, features: &[f32]) -> Result<bool, String> {
+        let input = Tensor::of_slice(features).view_as(&[1, features.len()])
+        let output = self.model.forward(&input);
+        let prediction = output.argmax(1, false).data().as_slice()[0] as i32;
+        Ok(prediction == 1)
+    }
+#[derive(Debug, Clone)]
+pub struct AnomalyDetectionModel {
+    model: nn::Module,
 }
 
+impl AnomalyDetectionModel {
+    /// Initialize the ML model for anomaly detection.
+    pub fn new() -> Self {
+        let vs = nn::VarStore::new(Device::Cpu);
+        let model = PredictiveMaintenanceModelModel::default(&vs.root()).build(&vs.root(), None).unwrap();
+        Self { model }
+    }
 #[cfg(test)]
+    /// Detect anomalies using the ML model.
+    pub fn detect_anomalies(&self, features: &[f32]) -> Result<bool, String> {
+        let input = Tensor::of_slice(features).view_as(&[1, features.len()])
+        let output = self.model.forward(&input);
+        let prediction = output.argmax(1, false).data().as_slice()[0] as i32;
+        Ok(prediction == 1)
+    }
 mod tests {
     use super::*;
     
