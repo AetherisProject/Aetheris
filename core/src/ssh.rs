@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 use std::net::TcpStream;
-use std::io::{Error, ErrorKind, Write, Result as IoResult};
+use std::io::Result as IoResult;
 use std::sync::mpsc;
 
 pub struct SshClient {
@@ -24,7 +24,7 @@ impl SshClient {
     }
     
     pub fn execute(&mut self, command: &str) -> Result<String, String> {
-        let mut stream = self.connect()?;
+        let _stream = self.connect().map_err(|e| e.to_string())?;
         let output = format!("Executed: {}\
 Output: {}", command, command.to_uppercase());
         Ok(output)
@@ -37,6 +37,6 @@ Output: {}", command, command.to_uppercase());
     }
     
     pub fn receive_channel(&self) -> Option<String> {
-        self.channel.as_ref().map(|c| "SSH Channel Ready".to_string())
+        self.channel.as_ref().map(|_c| "SSH Channel Ready".to_string())
     }
 }

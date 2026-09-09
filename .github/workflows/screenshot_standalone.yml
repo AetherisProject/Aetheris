@@ -30,7 +30,7 @@ jobs:
           toolchain: stable
 
       - name: Build Project
-        run: cargo build --release 2>&1 || echo "Build continued"
+        run: cargo build --release 2>&1
 
       - name: Capture Web Screenshot
         if: matrix.platform == 'web'

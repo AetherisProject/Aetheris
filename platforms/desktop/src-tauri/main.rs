@@ -1,7 +1,6 @@
 #![cfg_attr(all(not(debug_assertions), target_os = "windows"), windows_subsystem = "windows")]
 
 use aetheris_core::{vault::VaultItem, crypto::CryptoEngine, ssh::SshClient};
-use tauri::Manager;
 use tauri::generate_handler;
 
 #[tauri::command]
@@ -18,8 +17,8 @@ async fn generate_keypair() -> Result<(Vec<u8>, Vec<u8>), String> {
 
 #[tauri::command]
 async fn connect_ssh(host: String, port: u16) -> Result<String, String> {
-    let client = SshClient::new(host, port);
-    client.connect()?;
+    let mut client = SshClient::new(host.clone(), port);
+    client.connect().map_err(|e| e.to_string())?;
     Ok(format!("Connected to {}:{}", host, port))
 }
 

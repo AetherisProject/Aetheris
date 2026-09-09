@@ -7,5 +7,6 @@ edition = "2021"
 clap = { version = "4.0" }
 aetheris-core = { path = "../../core" }
 
-[bin]
-aetheris = "src/main.rs"
+[[bin]]
+name = "aetheris-cli"
+path = "src/main.rs"

@@ -30,7 +30,7 @@ jobs:
 
       - name: Build for ${{ matrix.platform }}
         run: |
-          cargo build --release 2>&1 || echo "Build continued despite errors"
+          cargo build --release 2>&1
 
       - name: Capture Web Screenshot
         if: matrix.platform == 'web'

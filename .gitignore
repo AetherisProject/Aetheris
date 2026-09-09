@@ -3,8 +3,7 @@
 **/target/
 **/*.rs.bk
 *.pdb
-Cargo.lock
-**/Cargo.lock
+# Cargo.lock is committed for reproducible builds
 
 # Environment files
 .env
@@ -58,6 +57,7 @@ Thumbs.db
 **/yarn.lock
 **/pnpm-lock.yaml
 !web/package-lock.json
+!desktop/package-lock.json
 **/.npm/
 **/.pnpm/
 **/bower_components/
@@ -75,9 +75,7 @@ Thumbs.db
 /desktop/build/
 /desktop/.vite/
 /desktop/node_modules/
-/desktop/package-lock.json
 /src-tauri/target/
-/src-tauri/Cargo.lock
 **/src-tauri/target/
 
 # Browser extension
@@ -151,3 +149,5 @@ id_ecdsa
 # Memory / local state (optional — keep if tracking)
 .github/runner/
 scripts/check-runners.sh
+
+platforms/desktop/gen/

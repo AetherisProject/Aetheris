@@ -26,7 +26,7 @@ jobs:
       - name: Run tests with coverage
         run: |
           cargo tarpaulin --out Xml --run-types Tests -- --test-threads=1 2>&1 || echo "Tarpaulin failed, falling back to cargo test"
-          cargo test --lib -- --test-threads=1 2>&1 || echo "Tests failed"
+          cargo test --lib -- --test-threads=1 2>&1
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
