@@ -1,0 +1,24 @@
+@page "/"
+@inject VaultState State
+@inject NavigationManager Nav
+
+<div class="center-screen">
+    <div class="card unlock-card">
+        <div class="brand-badge big">◈</div>
+        <h1>Unlock vault</h1>
+        <p class="muted">Decryption happens on this device. The server only ever stores ciphertext.</p>
+        <input type="password" placeholder="master password" @bind="password" @bind:event="oninput" />
+        <button class="btn primary" @onclick="UnlockVault" disabled="@(password.Length == 0)">Unlock</button>
+        <p class="muted small">baseline build — any non-empty password unlocks demo data (W4 wires real crypto)</p>
+    </div>
+</div>
+
+@code {
+    private string password = "";
+
+    private void UnlockVault()
+    {
+        State.MarkUnlocked();
+        Nav.NavigateTo("/vault");
+    }
+}

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aetheris — Mobile dummy</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  body { display: grid; place-items: center; min-height: 100vh; padding: 24px; }
+  .phone {
+    width: 360px; height: 720px; border-radius: 40px; border: 10px solid #1c2333;
+    background: var(--bg); overflow: hidden; position: relative; box-shadow: 0 30px 80px rgba(0,0,0,.6);
+  }
+  .notch { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 110px; height: 22px; background: #1c2333; border-radius: 12px; z-index: 5; }
+  .screen { position: absolute; inset: 0; padding: 44px 16px 76px; overflow-y: auto; }
+  .tabbar {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 62px; display: flex;
+    background: rgba(15,23,42,.97); border-top: 1px solid var(--border); z-index: 6;
+  }
+  .tabbar a { flex: 1; display: grid; place-items: center; color: var(--muted); font-size: 11px; cursor: pointer; text-align: center; }
+  .tabbar a.active { color: var(--primary); }
+  .tabbar .ic { font-size: 17px; display: block; }
+  .avatar { font-size: 44px; text-align: center; margin: 30px 0 6px; color: var(--primary); }
+  .row {
+    display: flex; gap: 12px; align-items: center; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 8px; cursor: pointer;
+  }
+  .row h4 { margin: 0; font-size: 14px; } .row p { margin: 2px 0 0; }
+  .sheet {
+    position: absolute; left: 0; right: 0; bottom: 0; background: var(--surface-2);
+    border-radius: 22px 22px 0 0; border-top: 1px solid var(--border); padding: 20px; z-index: 8;
+    transform: translateY(105%); transition: transform .25s ease;
+  }
+  .sheet.open { transform: translateY(0); }
+  .grab { width: 42px; height: 4px; background: var(--surface); border-radius: 4px; margin: 0 auto 14px; }
+  .kv { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .kv .btn { padding: 6px 12px; font-size: 12px; }
+  input[type=range] { accent-color: var(--primary); }
+  .gen { font-size: 17px; letter-spacing: .05em; text-align: center; padding: 12px; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="notch"></div>
+
+  <!-- unlock -->
+  <div id="m-unlock" class="screen" style="text-align:center">
+    <div class="avatar">◈</div>
+    <h3>Welcome back</h3>
+    <p class="muted small" style="margin:6px 0 18px">vault synced · generation 42</p>
+    <input type="password" placeholder="master password" style="text-align:center">
+    <button class="btn primary" style="width:100%;margin-top:10px" onclick="show('list');toast('Unlocked')">Unlock</button>
+    <p class="muted small" style="margin-top:16px">👆 biometric unlock gates the device key (W4)</p>
+  </div>
+
+  <!-- list -->
+  <div id="m-list" class="screen hidden">
+    <input placeholder="search vault…" style="margin-bottom:12px">
+    <div id="m-items"></div>
+  </div>
+
+  <!-- generator -->
+  <div id="m-gen" class="screen hidden">
+    <h3 style="margin-bottom:14px">Password generator</h3>
+    <div class="card gen mono" id="genOut">Xy9$kL2#mQ7!vF4z</div>
+    <label>length · <span id="len">16</span></label>
+    <input type="range" min="8" max="40" value="16" oninput="document.getElementById('len').textContent=this.value">
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn" style="flex:1" onclick="toast('Regenerated')">↻ Generate</button>
+      <button class="btn primary" style="flex:1" onclick="toast('Copied · clears in 45s')">Copy</button>
+    </div>
+  </div>
+
+  <!-- gateway mini -->
+  <div id="m-gw" class="screen hidden">
+    <h3 style="margin-bottom:12px">Gateway</h3>
+    <div class="card" style="margin-bottom:10px">
+      <div class="kv"><span class="mono">gpt</span><span class="chip green">21% budget</span></div>
+      <div class="kv"><span class="mono">claude</span><span class="chip amber">88% budget</span></div>
+      <div class="kv" style="border:none"><span class="mono">local</span><span class="chip">fallback</span></div>
+    </div>
+    <p class="muted small">Requests today: 134 · all keys injected from vault · nothing leaves this device in plaintext.</p>
+  </div>
+
+  <!-- detail sheet -->
+  <div id="sheet" class="sheet">
+    <div class="grab" onclick="closeSheet()"></div>
+    <h3 id="sh-title">GitHub</h3>
+    <p class="muted small" id="sh-meta">password · updated 3d ago</p>
+    <div class="kv"><span class="muted small">username</span><span>me@example.com</span></div>
+    <div class="kv"><span class="muted small">password</span><span>•••••••• <button class="btn" onclick="event.stopPropagation();toast('Copied · clears in 45s')">Copy</button></span></div>
+    <div class="kv" style="border:none"><span class="muted small">TOTP</span><span class="mono" style="color:var(--cyan)">482 913</span></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn" style="flex:1" onclick="toast('Edit form (W4)')">Edit</button>
+      <button class="btn" style="flex:1" onclick="closeSheet()">Close</button>
+    </div>
+  </div>
+
+  <!-- tab bar -->
+  <nav class="tabbar" id="tabs" style="display:none">
+    <a data-t="list" class="active" onclick="tab('list',this)"><span class="ic">🗄</span>Vault</a>
+    <a data-t="gen" onclick="tab('gen',this)"><span class="ic">🎲</span>Generate</a>
+    <a data-t="gw" onclick="tab('gw',this)"><span class="ic">⚡</span>Gateway</a>
+    <a data-t="unlock" onclick="lock()"><span class="ic">🔒</span>Lock</a>
+  </nav>
+</div>
+<p class="muted small" style="position:fixed;bottom:10px;left:50%;transform:translateX(-50%)">mobile = the same PWA, phone layout · <a href="index.html">← back</a></p>
+<div id="toast" class="toast"></div>
+
+<script>
+const items = [
+  {t:'GitHub', meta:'me@example.com', c:'dot-password', g:'PW'},
+  {t:'OpenAI production', meta:'via gateway alias gpt', c:'dot-apikey', g:'AK'},
+  {t:'Anthropic', meta:'expires —', c:'dot-apikey', g:'AN'},
+  {t:'Recovery codes', meta:'10 left', c:'dot-note', g:'NT'},
+];
+document.getElementById('m-items').innerHTML = items.map(i=>`
+  <div class="row" onclick="openSheet('${i.t}','${i.meta}')">
+    <div class="icon-dot ${i.c}">${i.g}</div>
+    <div><h4>${i.t}</h4><p class="muted small">${i.meta}</p></div>
+  </div>`).join('');
+
+function show(id){
+  ['unlock','list','gen','gw'].forEach(p=>document.getElementById('m-'+p).classList.toggle('hidden', p!==id));
+  document.getElementById('tabs').style.display = id==='unlock' ? 'none' : 'flex';
+}
+function tab(id, el){ show(id);
+  document.querySelectorAll('.tabbar a').forEach(a=>a.classList.toggle('active', a===el)); }
+function lock(){ show('unlock'); closeSheet(); }
+function openSheet(t,m){ document.getElementById('sh-title').textContent=t;
+  document.getElementById('sh-meta').textContent=m; document.getElementById('sheet').classList.add('open'); }
+function closeSheet(){ document.getElementById('sheet').classList.remove('open'); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2000); }
+</script>
+</body>
+</html>

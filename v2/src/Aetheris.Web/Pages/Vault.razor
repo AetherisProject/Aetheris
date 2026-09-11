@@ -1,0 +1,38 @@
+@page "/vault"
+@inject VaultState State
+
+@if (!State.IsUnlocked)
+{
+    <p class="muted">Locked — <a href="/">unlock first</a>.</p>
+}
+else
+{
+    <header class="page-head">
+        <h1>Vault</h1>
+        <button class="btn primary" @onclick="() => showAdd = !showAdd">+ Add item</button>
+    </header>
+
+    @if (showAdd)
+    {
+        <div class="card">
+            <strong>Add item</strong>
+            <p class="muted small">Type picker + fields render here per mockups/web.html (W4 task 4.3).</p>
+        </div>
+    }
+
+    <div class="item-grid">
+        @foreach (var item in State.Items)
+        {
+            <div class="card item-card">
+                <span class="chip">@item.Type</span>
+                <h3>@item.Title</h3>
+                <p class="muted">@item.Meta</p>
+                <code class="secret">@item.Secret</code>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private bool showAdd;
+}

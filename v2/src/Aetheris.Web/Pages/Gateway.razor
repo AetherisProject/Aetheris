@@ -1,0 +1,59 @@
+@page "/gateway"
+@inject HttpClient Http
+@inject IConfiguration Config
+
+<header class="page-head">
+    <h1>LLM Gateway</h1>
+    <code class="chip">@(Config["GatewayUrl"] ?? "http://127.0.0.1:7474")/v1</code>
+</header>
+
+@if (error is not null)
+{
+    <div class="card">
+        <strong>Gateway not reachable</strong>
+        <p class="muted">@error</p>
+        <p class="muted small">Start it: <code>AETHERIS_GATEWAY_PASS=… dotnet run --project src/Aetheris.Gateway</code></p>
+    </div>
+}
+else if (budgets is null)
+{
+    <p class="muted">loading…</p>
+}
+else
+{
+    <h2>Budgets (tokens/day)</h2>
+    <div class="item-grid">
+        @foreach (var entry in budgets.EnumerateObject())
+        {
+            <div class="card">
+                <h3>@entry.Name</h3>
+                <p class="muted">
+                    spent @entry.Value.GetProperty("spentToday") /
+                    cap @(entry.Value.GetProperty("capPerDay").GetInt64() == 0 ? "∞"
+                        : entry.Value.GetProperty("capPerDay").ToString())
+                </p>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private System.Text.Json.JsonElement budgets;
+    private bool loaded;
+    private string? error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var url = $"{Config["GatewayUrl"] ?? "http://127.0.0.1:7474"}/v1/gateway/budgets";
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.Add("X-Aetheris-Gateway-Token", "dev");
+            using var response = await Http.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            budgets = await response.Content.ReadFromJsonAsync<System.Text.Json.JsonElement>();
+            loaded = true;
+        }
+        catch (Exception ex) { error = ex.Message; }
+    }
+}

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aetheris v2 — Click Dummies</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 32px; text-align: center; }
+  .glyph { font-size: 54px; background: linear-gradient(135deg, var(--primary), var(--violet), var(--cyan)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero h1 { font-size: 30px; letter-spacing: 0.02em; }
+  .hero p.tag { color: var(--muted); max-width: 560px; line-height: 1.6; }
+  .platforms { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; max-width: 960px; width: 100%; margin-top: 26px; }
+  .platforms a {
+    text-decoration: none; color: var(--text); transition: transform .15s ease, border-color .15s ease;
+  }
+  .platforms a:hover { transform: translateY(-4px); }
+  .platforms .card:hover { border-color: var(--primary); }
+  .platforms .emoji { font-size: 26px; }
+  .platforms h3 { margin: 8px 0 4px; font-size: 15px; }
+  .flow { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 28px; max-width: 760px; }
+  .flow .chip { padding: 6px 12px; }
+  .flow .arrow { color: var(--muted); align-self: center; }
+  footer { margin-top: 34px; color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="glyph">◈</div>
+  <h1>Aetheris v2 — product click dummies</h1>
+  <p class="tag">Interactive HTML prototypes of the four client surfaces. Everything you click here
+  is the visual spec for the agents building the real apps. No builds needed — just open and click.</p>
+
+  <div class="platforms">
+    <a href="web.html" class="card">
+      <div class="emoji">🌐</div>
+      <h3>Web / PWA</h3>
+      <p class="muted small">The all-platform client: vault, gateway dashboard, settings. Runs on desktop &amp; mobile browsers; installable.</p>
+      <span class="chip">W4</span>
+    </a>
+    <a href="mobile.html" class="card">
+      <div class="emoji">📱</div>
+      <h3>Mobile (PWA frame)</h3>
+      <p class="muted small">Phone-sized flow: unlock → items → detail → generator. Same PWA, mobile layout.</p>
+      <span class="chip">W4</span>
+    </a>
+    <a href="desktop.html" class="card">
+      <div class="emoji">🖥</div>
+      <h3>Desktop (Avalonia)</h3>
+      <p class="muted small">The commercial app: vault tabs plus the <b>SSH terminal</b> with vault-key auth and SFTP. </p>
+      <span class="chip">W6</span>
+    </a>
+    <a href="cli.html" class="card">
+      <div class="emoji">⌨</div>
+      <h3>CLI — aeth</h3>
+      <p class="muted small">Terminal demo: init, add, ls — and the <code>aeth run</code> env-injection trick in action.</p>
+      <span class="chip">W5</span>
+    </a>
+  </div>
+
+  <div class="flow">
+    <span class="chip">unlock once</span><span class="arrow">→</span>
+    <span class="chip cyan">passwords on every device</span><span class="arrow">→</span>
+    <span class="chip cyan">API keys in the gateway</span><span class="arrow">→</span>
+    <span class="chip green">tools call one local endpoint</span><span class="arrow">→</span>
+    <span class="chip amber">SSH desktop app = paid tier</span>
+  </div>
+
+  <footer>
+    Spec pair: <code>v2/PLAN-FOR-AGENTS.md</code> + <code>v2/agents/*.md</code> — each card references these screens.
+  </footer>
+</div>
+</body>
+</html>

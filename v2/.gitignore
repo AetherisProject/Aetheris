@@ -1,0 +1,10 @@
+bin/
+obj/
+out/
+data/
+*.vault
+*.user
+.vs/
+.vscode/
+appsettings.Development.json
+secrets.json
