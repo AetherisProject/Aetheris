@@ -1,0 +1,17 @@
+@inherits LayoutComponentBase
+
+<div class="shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-badge">◈</span> Aetheris
+            <span class="brand-sub">secrets os</span>
+        </div>
+        <nav>
+            <NavLink href="vault" Match="NavLinkMatch.All">🗄 Vault</NavLink>
+            <NavLink href="gateway">⚡ Gateway</NavLink>
+            <NavLink href="settings">⚙ Settings</NavLink>
+        </nav>
+        <div class="sidebar-foot">v2 baseline</div>
+    </aside>
+    <main class="content">@Body</main>
+</div>

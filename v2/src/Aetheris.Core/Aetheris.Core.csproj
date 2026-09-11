@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>12</LangVersion>
+    <Description>Aetheris Core: vault domain model, Argon2id KDF, XChaCha20-Poly1305 AEAD, key hierarchy, encrypted file vault.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Single audited crypto dependency: covers Argon2id, XChaCha20-Poly1305, Ed25519/X25519, ML-KEM. -->
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.3.1" />
+  </ItemGroup>
+
+</Project>

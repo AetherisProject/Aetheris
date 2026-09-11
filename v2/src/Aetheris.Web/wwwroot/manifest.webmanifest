@@ -1,0 +1,10 @@
+{
+  "name": "Aetheris — Secrets OS",
+  "short_name": "Aetheris",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090D16",
+  "theme_color": "#6366F1",
+  "description": "Vault, API keys and LLM gateway — one zero-knowledge hub, every platform.",
+  "icons": []
+}

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aetheris — Desktop dummy (Avalonia + SSH)</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  body { display: grid; place-items: center; min-height: 100vh; padding: 26px; }
+  .window {
+    width: 1020px; max-width: 96vw; height: 660px; border-radius: 14px; overflow: hidden;
+    border: 1px solid var(--border); background: var(--bg); box-shadow: 0 40px 90px rgba(0,0,0,.55);
+    display: flex; flex-direction: column;
+  }
+  .titlebar {
+    height: 38px; display: flex; align-items: center; gap: 8px; padding: 0 14px;
+    background: var(--surface-2); border-bottom: 1px solid var(--border); flex: none;
+  }
+  .tl { width: 12px; height: 12px; border-radius: 50%; }
+  .titlebar .name { margin-left: 8px; color: var(--muted); font-size: 12.5px; }
+  .tabs { display: flex; gap: 4px; padding: 8px 14px 0; background: var(--surface-2); flex: none; }
+  .tabs a { padding: 8px 16px; border-radius: 9px 9px 0 0; color: var(--muted); cursor: pointer; font-size: 13px; }
+  .tabs a.active { background: var(--bg); color: var(--text); border-top: 2px solid var(--primary); }
+  .pane { flex: 1; overflow-y: auto; padding: 18px; }
+  .split { display: grid; grid-template-columns: 320px 1fr; gap: 14px; height: calc(100% - 4px); }
+  .vrow { display: flex; gap: 10px; align-items: center; padding: 10px; border-radius: 10px; cursor: pointer; border: 1px solid transparent; }
+  .vrow:hover, .vrow.active { background: var(--surface); border-color: var(--border); }
+  .vrow h5 { margin: 0; font-size: 13px; } .vrow p { margin: 1px 0 0; }
+  .term {
+    background: #05070d; border: 1px solid var(--border); border-radius: 10px; padding: 14px;
+    font-family: 'JetBrains Mono', Consolas, monospace; font-size: 12.5px; line-height: 1.7;
+    color: #9ae6a0; height: 100%; overflow-y: auto; white-space: pre-wrap;
+  }
+  .term .p { color: var(--cyan); } .term .dim { color: #4b5c74; }
+  .conn { display: flex; gap: 8px; margin-bottom: 12px; }
+  .conn select { flex: 1; }
+  .file { display: flex; justify-content: space-between; padding: 7px 10px; border-radius: 8px; font-size: 12.5px; }
+  .file:hover { background: var(--surface); }
+  .kv { display:flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="window">
+  <div class="titlebar">
+    <span class="tl" style="background:#EF4444"></span><span class="tl" style="background:#F59E0B"></span><span class="tl" style="background:#10B981"></span>
+    <span class="name">Aetheris — the secrets OS · <b style="color:var(--emerald)">vault unlocked</b></span>
+  </div>
+  <div class="tabs">
+    <a class="active" onclick="tab('vault',this)">🗄 Vault</a>
+    <a onclick="tab('term',this)">💻 Terminal</a>
+    <a onclick="tab('sftp',this)">📁 SFTP</a>
+    <a onclick="tab('gw',this)">⚡ Gateway</a>
+  </div>
+
+  <!-- vault pane -->
+  <div id="d-vault" class="pane">
+    <div class="split">
+      <div class="card" style="padding:8px;overflow-y:auto">
+        <input placeholder="search…" style="margin-bottom:8px">
+        <div class="vrow active"><div class="icon-dot dot-password">PW</div><div><h5>GitHub</h5><p class="muted small">me@example.com</p></div></div>
+        <div class="vrow"><div class="icon-dot dot-apikey">OK</div><div><h5>OpenAI prod</h5><p class="muted small">via gateway</p></div></div>
+        <div class="vrow"><div class="icon-dot dot-ssh">SH</div><div><h5>prod-server</h5><p class="muted small">deploy@10.0.0.8</p></div></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:4px">GitHub</h3><p class="muted small">password · updated 3d ago · gen 42</p>
+        <div class="kv"><span class="muted">username</span><span>me@example.com <button class="btn ghost" onclick="toast('Copied · clears in 45s')">Copy</button></span></div>
+        <div class="kv"><span class="muted">password</span><span>•••••••• <button class="btn ghost" onclick="toast('Copied · clears in 45s')">Copy</button></span></div>
+        <div class="kv"><span class="muted">url</span><span>https://github.com</span></div>
+        <div class="kv" style="border:none"><span class="muted">totp</span><span class="mono" style="color:var(--cyan)">482 913</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- terminal pane -->
+  <div id="d-term" class="pane hidden">
+    <div class="conn">
+      <select id="host"><option>prod-server — deploy@10.0.0.8 (key from vault)</option><option>staging — deploy@10.0.0.9 (key from vault)</option></select>
+      <button class="btn primary" id="connBtn" onclick="connect()">Connect</button>
+    </div>
+    <div class="term" id="term"><span class="dim"># select a host and connect — the private key is decrypted in memory from the vault, never written to ~/.ssh</span>
+</div>
+  </div>
+
+  <!-- sftp pane -->
+  <div id="d-sftp" class="pane hidden">
+    <div class="split" style="grid-template-columns:1fr 1fr">
+      <div class="card"><h4 class="muted small" style="margin-bottom:8px">LOCAL — ~/projects/aetheris</h4>
+        <div class="file mono"><span>📄 Program.cs</span><span class="muted">4.1 KB</span></div>
+        <div class="file mono"><span>📁 src</span><span class="muted">—</span></div>
+        <div class="file mono"><span>📁 mockups</span><span class="muted">—</span></div>
+      </div>
+      <div class="card"><h4 class="muted small" style="margin-bottom:8px">REMOTE — /var/www/aetheris</h4>
+        <div class="file mono"><span>📁 app</span><span class="muted">—</span></div>
+        <div class="file mono"><span>📄 deploy.sh</span><span class="muted">1.2 KB</span></div>
+        <div class="file mono" onclick="toast('Upload queued — SFTP via vault key')"><span class="muted">⇪ drop files to upload</span><span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- gateway pane -->
+  <div id="d-gw" class="pane hidden">
+    <div class="grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="card"><span class="chip cyan mono">gpt</span><h3 style="margin-top:8px">21%</h3><p class="muted small">41,203 / 200k tokens today</p></div>
+      <div class="card"><span class="chip mono">claude</span><h3 style="margin-top:8px">88%</h3><p class="muted small">88,450 / 100k · alert soon</p></div>
+      <div class="card"><span class="chip green mono">local</span><h3 style="margin-top:8px">∞</h3><p class="muted small">ollama · fallback of last resort</p></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <label>Endpoint for your tools</label>
+      <div style="display:flex;gap:8px"><input class="mono" value="http://127.0.0.1:7474/v1" readonly><button class="btn" onclick="toast('Copied')">Copy</button></div>
+      <p class="muted small" style="margin-top:8px">Set it once in every IDE/agent/CLI — keys stay in this vault, scopes stay enforced by the gateway.</p>
+    </div>
+  </div>
+</div>
+<p class="muted small" style="position:fixed;bottom:10px;left:50%;transform:translateX(-50%)">W6 · Avalonia + SSH.NET · <a href="index.html">← back</a></p>
+<div id="toast" class="toast"></div>
+
+<script>
+function tab(id, el){
+  document.querySelectorAll('.tabs a').forEach(a=>a.classList.toggle('active', a===el));
+  ['vault','term','sftp','gw'].forEach(p=>document.getElementById('d-'+p).classList.toggle('hidden', p!==id));
+}
+let connected=false;
+function connect(){
+  const t=document.getElementById('term'), b=document.getElementById('connBtn');
+  if(connected){ t.innerHTML='<span class="dim"># disconnected — key zeroized</span>\n'; b.textContent='Connect'; connected=false; return; }
+  b.textContent='Disconnect'; connected=true;
+  const lines=[
+    ['dim','# using vault item "prod-server" (ssh-ed25519) · key decrypted in memory'],
+    ['p','deploy@10.0.0.8:~$ '],
+    ['','Welcome to Ubuntu 24.04 LTS (aetheris-prod)'],
+    ['','  load: 0.42 · mem: 31% · uptime 41 days'],
+    ['p','deploy@10.0.0.8:~$ systemctl status aetheris-gateway'],
+    ['','● aetheris-gateway.service — active (running) · port 7474'],
+    ['p','deploy@10.0.0.8:~$ '],
+  ];
+  t.innerHTML='';
+  lines.forEach((l,i)=>setTimeout(()=>{ t.innerHTML+=`<span class="${l[0]}">${l[1]}</span>\n`; t.scrollTop=t.scrollHeight; }, i*450));
+}
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2200); }
+</script>
+</body>
+</html>

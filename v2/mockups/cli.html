@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aetheris — CLI dummy (aeth)</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  body { display: grid; place-items: center; min-height: 100vh; padding: 26px; }
+  .window { width: 820px; max-width: 94vw; border-radius: 14px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 40px 90px rgba(0,0,0,.55); }
+  .bar { height: 34px; display: flex; align-items: center; gap: 8px; background: var(--surface-2); padding: 0 14px; border-bottom: 1px solid var(--border); }
+  .tl { width: 11px; height: 11px; border-radius: 50%; }
+  .bar span.name { color: var(--muted); font-size: 12px; margin-left: 6px; }
+  .term { background: #05070d; height: 460px; overflow-y: auto; padding: 16px; font-family: 'JetBrains Mono',Consolas,monospace; font-size: 13px; line-height: 1.75; white-space: pre-wrap; }
+  .cmd { color: var(--cyan); } .ok { color: var(--emerald); } .dim { color: #55637a; } .warn { color: var(--amber); } .key { color: var(--primary); }
+  .cursor { display: inline-block; width: 8px; height: 15px; background: var(--emerald); vertical-align: -2px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .controls { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; }
+</style>
+</head>
+<body>
+<div class="window">
+  <div class="bar"><span class="tl" style="background:#EF4444"></span><span class="tl" style="background:#F59E0B"></span><span class="tl" style="background:#10B981"></span><span class="name">zsh — aeth demo</span></div>
+  <div class="term" id="term"><span class="dim"># click ▶ to step through the CLI story</span>
+<span class="cursor"></span></div>
+</div>
+<div class="controls">
+  <button class="btn" onclick="prev()">◀ back</button>
+  <button class="btn primary" onclick="next()">▶ next</button>
+  <button class="btn ghost" onclick="reset()">reset</button>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+const steps = [
+`\x1bcmd$ aeth init --vault keys.vault
+\x1bdimmaster password: ********\nconfirm:      ********
+\x1bok✓ vault created · Argon2id(t=3,m=64MiB,p=4) · gen 1`,
+`\x1bcmd$ aeth add apikey --vault keys.vault --provider openai --title "OpenAI prod"
+\x1bdimapi key: ••••••••••••••••••••••••••
+\x1bok✓ added ApiKey 'OpenAI prod' (b3f91c02…)
+\x1bdimstored inside XChaCha20-Poly1305 envelope — title & key never hit disk in plaintext`,
+`\x1bcmd$ aeth ls --vault keys.vault
+\x1bkeyb3f91c02  ApiKey     OpenAI prod
+\x1bkey77aa12d  Password   GitHub
+\x1bkeyc09e55f  Note       Recovery codes
+\x1bdim— 3 items · generation 4`,
+`\x1bcmd$ AETHERIS_GATEWAY_PASS=… aetheris-gateway &
+\x1bok⚡ gateway listening on http://127.0.0.1:7474/v1
+\x1bdimkeystore unlocked · aliases: gpt → openai · claude → anthropic · local → ollama`,
+`\x1bcmd$ curl 127.0.0.1:7474/v1/chat/completions \\
+    -H "X-Aetheris-Gateway-Token: dev" -d '{"model":"gpt","messages":[…]}'
+\x1bok{"id":"chatcmpl-9x…","choices":[{"message":{"role":"assistant","content":"Hello!"}}],
+     "usage":{"prompt_tokens":12,"completion_tokens":9}}
+\x1bdimkey injected FROM THE VAULT at request time — never touched this shell`,
+`\x1bcmd$ aeth run --env OPENAI_API_KEY=b3f91c02 -- python train.py
+\x1bdim— aeth: injected OPENAI_API_KEY from 'OpenAI prod' into child process (value never displayed)
+\x1bokepoch 1/10 · loss 0.412 …
+\x1bdimno .env file · no shell history leak · child-only visibility`,
+`\x1bcmd$ aeth gateway budgets
+\x1bkeygpt     41,203 / 200,000 tokens today  ████░░░░░░ 21%
+\x1bwarnclaude  88,450 / 100,000 tokens today  ████████░░ 88%
+\x1bkeylocal    unlimited (ollama)             · fallback ready`,
+];
+const ESC={cmd:'cmd',dim:'dim',ok:'ok',warn:'warn',key:'key'};
+function render(s){ const re=/\x1b(\w+)([^\x1b]*)/g; return s.replace(re,(m,c,t)=>`<span class="${ESC[c]}">${t}</span>`); }
+const term=document.getElementById('term'); let i=0;
+function paint(){ term.innerHTML = steps.slice(0,i+1).map(render).join('\n\n')+'\n\n<span class="cursor"></span>'; term.scrollTop=term.scrollHeight; }
+function next(){ if(i<steps.length-1){i++;paint();} else toast('end of demo — all of this runs from the v2 skeleton'); }
+function prev(){ if(i>0){i--;paint();} }
+function reset(){ i=0; term.innerHTML='<span class="dim"># click ▶ to step through the CLI story</span>\n<span class="cursor"></span>'; }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2600); }
+</script>
+</body>
+</html>

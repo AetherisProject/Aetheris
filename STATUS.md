@@ -42,4 +42,15 @@ accurate** and the offending files have been removed. Verified state:
 - [ ] Core v0.1: `crypto` + `vault` (7 item types, sled) with ≥80 % coverage
 - [ ] CLI v0.1: `init/unlock/add/get/ls` end-to-end, green in CI
 
+### 2026-09-11 (later) — v2 track added
+
+Decision pivot: for the personal goal (keys + passwords + LLM gateway on all
+platforms, useful from the base up) the stack moved to **C#/.NET 8,
+hub-and-spoke** (self-hosted hub + thin clients; PWA first). See **`v2/`**:
+runnable .NET skeleton (`Aetheris.sln`), real click dummies (`v2/mockups/`),
+and the agent orchestration plan (`v2/PLAN-FOR-AGENTS.md` + `v2/agents/`).
+The v1 Rust DESIGN remains the long-term blueprint; v2 supersedes it for
+near-term execution. Agent order: W1 core → W3 gateway ∥ W2 hub → W5 CLI →
+W4 PWA → W6 desktop SSH (the commercial layer).
+
 *Update this file whenever reality changes. Do not create new status docs.*
