@@ -4,7 +4,8 @@
 
 A unified SSH terminal, password vault, API key manager, and zero-knowledge sync platform — all in one tool. Published under **[aetheris.merlin-tribukait.com](https://aetheris.merlin-tribukait.com)**.
 
-> 🎨 **New:** Explore the official **[Aetheris Brand Identity & Web Design Portal](brand.html)** and **[Design System Specifications](design-system.html)**.
+> 🧭 **Authoritative:** the **[Master Design Document](design.html)** defines the target architecture and the M0 → M4 delivery plan.
+> 🎨 Explore the official **[Aetheris Brand Identity & Web Design Portal](brand.html)** and **[Design System Specifications](design-system.html)**.
 
 ## Why Aetheris?
 

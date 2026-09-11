@@ -1,9 +1,0 @@
-# Initialize Flutter project
-flutter create --platforms android,ios .
-
-# Move project into the mobile directory
-mv Aetheris/mobile/flutter-project Aetheris/mobile
-
-# Update directory structure
-rm -rf Aetheris/mobile/flutter-project
-mv Aetheris/mobile Aetheris/mobile/flutter-project
