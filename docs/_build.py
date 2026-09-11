@@ -16,6 +16,7 @@ DOCS_DIR = Path(__file__).parent
 PUBLIC_DIR = DOCS_DIR.parent / "public"
 PAGES = {
     "index.md": "index.html",
+    "DESIGN.md": "design.html",
     "getting-started.md": "getting-started.html",
     "architecture.md": "architecture.html",
     "security.md": "security.html",

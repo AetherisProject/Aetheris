@@ -1,100 +1,39 @@
-# Aetheris Agent Status
+# AGENTS.md — Working Rules for Contributors & Agents
 
-## Overall Status: 95% Automation Complete
+## Canonical documents (read these, trust only these)
 
-### **Automation Summary**
-- **CI/CD Pipeline**: 90% complete
-- **Testing**: 85% complete
-- **Screenshots**: 95% complete
-- **Security Scans**: 100% complete
-- **Performance Tests**: 100% complete
-- **Documentation**: 100% automated (manual updates only)
+1. [`docs/DESIGN.md`](docs/DESIGN.md) — target architecture & delivery plan (change by PR only)
+2. [`STATUS.md`](STATUS.md) — current verified state (dated, honest)
+3. [`ROADMAP.md`](ROADMAP.md) — next-milestone priority queue
 
-### **Current Status: All Features Complete**
-- **Overall: 100% done, 0 open.**
-- **All phases completed**: Phase 1 (Crypto/Vault/Security), Phase 2 (API Key Management, Zero-Knowledge Sync, Web/Mobile Integration, Authentication, Proactive Engine), Phase 3 (Final Verification/Denployment), Phase 4 (Automation), Phase 5 (Testing/Validation)
+**Do not create new status/summary/completion files** (no `COMPLETE*.md`,
+`FINAL_*.md`, `DEPLOYMENT_*.md` memos). Update `STATUS.md` instead. Notable
+decisions go into DESIGN Appendix B as ADR entries.
 
-## Implementation Details
+## Where the code really lives
 
-### **Automation Features**
-#### **CI/CD Pipeline**
-- ✅ Auto-trigger on push/pull request/tag
-- ✅ Matrix strategy for all platforms (Web, Desktop, Mobile)
-- ✅ Dependency installation
-- ✅ Build execution with error handling
-- ✅ Test execution
-- ✅ Screenshot capture
-- ✅ Artifact upload
+- Compiled workspace members: `core/`, `platforms/{cli,desktop,web,mobile/lib}`.
+- Root `src/`: **reference scaffolding, not part of any crate** — migrate
+  modules into `core/src/` with tests, then delete from `src/` (DESIGN §4).
+- Don't add dead code: every module must be reachable from a workspace crate
+  and covered by tests (core coverage target ≥80 %).
 
-#### **Testing Automation**
-- ✅ Unit tests via `cargo test`
-- ✅ Integration tests via `cargo test`
-- ✅ Test coverage via `cargo tarpaulin` (80%+ threshold)
-- ✅ Platform-specific tests
-- ✅ Security scans via `cargo audit`
-- ✅ Clippy for code quality
-- ✅ Performance benchmarks via `cargo criterion`
+## Security invariants (non-negotiable)
 
-#### **Screenshots**
-- ✅ Web: Playwright
-- ✅ Desktop: Xvfb + scrot
-- ✅ Mobile: ADB screencap
-- ✅ Artifact upload
+- All crypto in `aetheris-core` only; shells never derive keys or handle
+  plaintext secrets. Algorithms per DESIGN §5.2 — no hand-rolled crypto.
+  (Known defect: legacy FNV keystream in `core/src/crypto.rs` — M0 task C-1.)
+- Secrets use `SecureString`/`SecureVec`, zeroized on drop; never printed,
+  logged, or serialized in plaintext.
+- Sync server is zero-knowledge: ciphertext blobs only.
+- No secrets in git — gitleaks + `cargo audit` gate every PR.
 
-#### **Security**
-- ✅ Dependabot alerts
-- ✅ gitleaks for secrets detection
-- ✅ Cargo audit for vulnerabilities
-- ✅ Clippy for code quality
+## Build & verify
 
-#### **Documentation**
-- ✅ Auto-generated changelog
-- ✅ Auto-generated comparison docs
-- ✅ Auto-generated implementation summary
+```bash
+cargo build --workspace
+cargo test --workspace
+cargo clippy --workspace -- -D warnings
+```
 
-## Platform Status
-
-### **Web**
-- ✅ CI/CD Pipeline
-- ✅ Unit Tests
-- ✅ Integration Tests
-- ✅ Screenshot Capture
-- ✅ Performance Benchmarks
-
-### **Desktop**
-- ✅ CI/CD Pipeline
-- ✅ Unit Tests
-- ✅ Integration Tests
-- ✅ Screenshot Capture
-- ✅ Performance Benchmarks
-
-### **Mobile (Android)**
-- ✅ CI/CD Pipeline
-- ✅ Unit Tests
-- ✅ Integration Tests
-- ✅ Screenshot Capture
-- ✅ Performance Benchmarks
-
-### **Browser Extensions**
-- ✅ CI/CD Pipeline
-- ✅ Unit Tests
-- ✅ Integration Tests
-- ✅ Screenshot Capture
-
-## Next Steps
-
-### **Final Validation**
-1. **Run Final Build Verification**: `./tests/build_verification.sh`
-2. **Deploy to Beta**: Execute deployment scripts
-3. **Monitor CI/CD**: Check for any issues
-4. **Iterate**: Gather user feedback
-
-### **Automation Completion**
-- **All features now 100% automated**
-- **All tests passing**
-- **All security scans passing**
-- **All performance benchmarks completed**
-- **All documentation auto-generated**
-
----
-*Status auto-updated from .memory/automation_status.json and project completion markers.*
+Prefer proof over claims: a feature is "done" only when CI proves it.
