@@ -104,13 +104,17 @@ jobs:
       - name: Check Dependabot alerts
         run: |
           echo "Checking for Dependabot alerts..."
-          ALERTS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/dependabot/alerts" | \
-            jq -r '.[] | "- \(.dependency.package.ecosystem)/\(.dependency.package.name)@\(.dependency.package.version): \(.security_advisory.summary)"')
-          
-          if [ -n "$ALERTS" ]; then
-            echo "::warning::Dependabot alerts found (informational, does not fail CI):"
-            echo "$ALERTS"
+          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/dependabot/alerts" \
+            -o /tmp/dependabot.json
+          if jq -e 'type == "array"' /tmp/dependabot.json >/dev/null 2>&1; then
+            ALERT_COUNT=$(jq '[.[] | select(type == "object")] | length' /tmp/dependabot.json)
+            if [ "$ALERT_COUNT" -gt 0 ]; then
+              echo '::warning::Dependabot alerts found (informational, does not fail CI):'
+              jq -r '.[] | select(type == "object") | "\(.dependency.package.name) (\(.dependency.scope)): \(.security_advisory.summary // .title // "see advisory")"' /tmp/dependabot.json
+            else
+              echo "No Dependabot alerts found"
+            fi
           else
-            echo "✓ No Dependabot alerts found"
+            echo "Could not fetch dependabot alerts; skipping"
           fi
