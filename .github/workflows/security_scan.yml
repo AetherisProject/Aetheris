@@ -17,9 +17,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Rust
-        uses: actions-rs/rust@v1
-        with:
-          toolchain: stable
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Install cargo-audit
         run: cargo install cargo-audit
@@ -44,7 +42,7 @@ jobs:
           fi
 
       - name: Upload audit results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: "security-audit-${{ github.run_id }}"
           path: audit_results.json
@@ -57,9 +55,8 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Rust
-        uses: actions-rs/rust@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
           components: clippy
 
       - name: Run clippy
@@ -77,7 +74,7 @@ jobs:
           fi
 
       - name: Upload clippy results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: "clippy-results-${{ github.run_id }}"
           path: clippy_results.txt

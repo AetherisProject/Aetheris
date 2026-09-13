@@ -25,9 +25,7 @@ jobs:
           playwright install
 
       - name: Setup Rust
-        uses: actions-rs/rust@v1
-        with:
-          toolchain: stable
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Build Project
         run: cargo build --release 2>&1
@@ -86,7 +84,7 @@ jobs:
           ls -la screenshots/
 
       - name: Upload Screenshots
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: "screenshots-${{ matrix.platform }}-${{ github.run_id }}"
           path: screenshots/*.png
@@ -120,7 +118,7 @@ jobs:
           fi
 
       - name: Upload Android Screenshot
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: "screenshots-mobile-android-${{ github.run_id }}"
           path: screenshots/*.png
