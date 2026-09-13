@@ -1,9 +1,10 @@
 {
   "manifest_version": 3,
   "name": "Aetheris",
-  "version": "0.1.0",
-  "description": "Aetheris Browser Extension for Secrets Management",
+  "version": "0.2.0",
+  "description": "Aetheris Browser Extension for Secrets Management and LLM Chat",
   "permissions": ["storage", "tabs", "activeTab"],
+  "host_permissions": ["http://127.0.0.1:8008/*", "http://localhost:8008/*"],
   "background": {
     "service_worker": "background.js"
   },

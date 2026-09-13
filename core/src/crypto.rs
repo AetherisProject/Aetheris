@@ -41,7 +41,7 @@ impl CryptoEngine {
     pub fn hybrid_encrypt(&self, data: &[u8], public_key: &[u8]) -> Result<Vec<u8>, String> {
         let kem = Kem::new(KEM_ALGORITHM).map_err(|e| format!("Failed to initialize Kyber KEM: {}", e))?;
         let pk = kem.public_key_from_bytes(public_key).ok_or("Invalid public key length")?;
-        let (ct, ss) = kem.encapsulate(&pk).map_err(|e| format!("Encapsulation failed: {}", e))?;
+        let (ct, ss) = kem.encapsulate(pk).map_err(|e| format!("Encapsulation failed: {}", e))?;
         let ss = ss.into_vec();
         let keystream = Self::derive_keystream(&ss, data.len());
         let mut output = ct.into_vec();
@@ -59,7 +59,7 @@ impl CryptoEngine {
         }
         let sk = kem.secret_key_from_bytes(secret_key).ok_or("Invalid secret key length")?;
         let ct = kem.ciphertext_from_bytes(&ciphertext[..ct_len]).ok_or("Invalid ciphertext length")?;
-        let ss = kem.decapsulate(&sk, &ct).map_err(|e| format!("Decapsulation failed: {}", e))?;
+        let ss = kem.decapsulate(sk, ct).map_err(|e| format!("Decapsulation failed: {}", e))?;
         let ss = ss.into_vec();
         let keystream = Self::derive_keystream(&ss, ciphertext.len() - ct_len);
         let mut plaintext = Vec::with_capacity(keystream.len());

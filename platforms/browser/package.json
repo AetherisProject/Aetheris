@@ -1,6 +1,7 @@
 {
   "name": "aetheris-browser",
-  "version": "0.1.0",
+  "version": "0.2.0",
+  "description": "Aetheris Browser Extension for Secrets Management and LLM Chat",
   "private": true,
   "scripts": {
     "build": "webpack --mode production"

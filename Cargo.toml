@@ -4,6 +4,7 @@ members = [
     "platforms/desktop",
     "platforms/cli",
     "platforms/web",
+    "platforms/mobile/lib",
 ]
 resolver = "2"
 

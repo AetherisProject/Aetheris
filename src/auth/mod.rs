@@ -1,5 +1,5 @@
 //! Authentication system module for Aetheris.
-pub mod account;
+pub mod chat;
 pub mod consensus;
 pub mod mfa;
 pub mod oauth;

@@ -12,7 +12,7 @@ fn to_hex(bytes: &[u8]) -> String {
 
 fn from_hex_or_raw(input: &str) -> Vec<u8> {
     let hex: String = input.chars().filter(|c| !c.is_whitespace()).collect();
-    if hex.len() % 2 == 0 && hex.chars().all(|c| c.is_ascii_hexdigit()) {
+    if hex.len().is_multiple_of(2) && hex.chars().all(|c| c.is_ascii_hexdigit()) {
         (0..hex.len())
             .step_by(2)
             .map(|i| u8::from_str_radix(&hex[i..i + 2], 16).unwrap_or(0))
