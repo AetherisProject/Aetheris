@@ -97,11 +97,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Android Emulator
-        uses: actions-configure-android-environment@v2
-        with:
-          arch: x86_64
-
+      - name: Setup Android Platform Tools
+        run: |
+          echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
+          adb version || echo "ADB unavailable, screenshot step will use placeholder"
       - name: Capture Android Screenshot
         run: |
           mkdir -p screenshots
