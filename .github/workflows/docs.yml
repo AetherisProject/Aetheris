@@ -29,7 +29,7 @@ jobs:
       - name: Build HTML docs
         run: python docs/_build.py
       - name: Setup Pages (optional)
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v6
         continue-on-error: true
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
