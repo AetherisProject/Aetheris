@@ -30,6 +30,12 @@ impl AetherisWeb {
     }
 }
 
+impl Default for AetherisWeb {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 // Chat-related structures and functions
 #[derive(Debug, Serialize, Deserialize)]
 struct ChatMessage {

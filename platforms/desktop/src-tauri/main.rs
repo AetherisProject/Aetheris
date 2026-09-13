@@ -15,7 +15,7 @@ async fn add_vault_item(name: String, data: String) -> Result<VaultItem, String>
 #[tauri::command]
 async fn generate_keypair() -> Result<(Vec<u8>, Vec<u8>), String> {
     let engine = CryptoEngine::new()?;
-    Ok(engine.generate_kyber_keypair()?)
+    engine.generate_kyber_keypair()
 }
 
 #[tauri::command]
