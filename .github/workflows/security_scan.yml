@@ -42,7 +42,7 @@ jobs:
           fi
 
       - name: Upload audit results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: "security-audit-${{ github.run_id }}"
           path: audit_results.json
@@ -70,7 +70,7 @@ jobs:
           cargo clippy --all-targets --all-features -- -D warnings 2>&1 | tee clippy_results.txt
 
       - name: Upload clippy results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: "clippy-results-${{ github.run_id }}"
           path: clippy_results.txt
