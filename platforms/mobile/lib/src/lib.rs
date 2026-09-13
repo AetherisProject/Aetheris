@@ -98,14 +98,15 @@ impl ChatClient {
 
 // Simple FFI-safe wrapper functions
 #[no_mangle]
-pub extern "C" fn create_chat_client(base_url: *const u8, base_url_len: usize) -> *mut ChatClient {
-    let base_url_str = unsafe { 
+pub unsafe extern "C" fn create_chat_client(base_url: *const u8, base_url_len: usize) -> *mut ChatClient {
+    let base_url_str = {
         std::str::from_utf8_unchecked(std::slice::from_raw_parts(base_url, base_url_len))
     };
     Box::into_raw(Box::new(ChatClient::new(base_url_str.to_string())))
 }
 
 #[no_mangle]
-pub extern "C" fn free_chat_client(client: *mut ChatClient) {
-    unsafe { let _ = Box::from_raw(client); }
+pub unsafe extern "C" fn free_chat_client(client: *mut ChatClient) {
+    let _ = Box::from_raw(client);
 }
+
