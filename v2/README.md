@@ -73,3 +73,18 @@ Baseline skeleton: Core crypto + file vault are implemented and tested; Hub,
 Gateway, Web, CLI are working baselines that the **agent workstreams W1–W6**
 harden to product grade. Nothing here claims to be "done" — `agents/` says
 exactly what remains, with acceptance gates.
+
+## Lineage: from KEY-BITCHER to Aetheris
+
+This project descends from [KEY-BITCHER](https://github.com/merlin-tribukait/KEY-BITCHER),
+a working Rust CLI that syncs AI-provider keys from a private S3 bucket into
+`.env` files, imports them into Wave, and benchmarks providers for expired
+keys. KEY-BITCHER proved the pain is real — and exposed its own limit:
+**syncing secrets *everywhere* spreads the attack surface.** Aetheris is the
+answer: keys stay in one encrypted vault and are *injected at request time*
+(gateway / child-env), so they never need to sit in `.env` at all.
+
+Ported into v2 (see the agent cards): the provider health-check catalog and
+benchmark patterns (→ W3 3.3/3.7), the S3-style sync lessons (→ W2 storage),
+and the `.env` compatibility bridge (→ W5 5.7, `aeth env-export --secure` for
+legacy tools that can only read env files).

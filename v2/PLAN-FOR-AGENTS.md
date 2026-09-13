@@ -43,6 +43,7 @@ injection. Everything else supports that.
 | W4 | All-platform PWA client | `src/Aetheris.Web` | W1, W2, W3 | `agents/W4-web-pwa.md` |
 | W5 | CLI | `src/Aetheris.Cli` | W1 | `agents/W5-cli.md` |
 | W6 | Desktop SSH app (commercial) | `src/Aetheris.Desktop` | W1, W4 | `agents/W6-desktop-ssh.md` |
+| W7 | Market: monetization & launch | positioning/pricing/launch artifacts | W1–W3 | `agents/W7-market.md` |
 
 **Run order (solo + agents):** W1 → (W3 ∥ W2) → W5 → W4 → W6.
 W3 and W2 are independent; W3 first = the personal "wow" moment sooner.

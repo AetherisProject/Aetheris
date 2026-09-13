@@ -22,6 +22,12 @@ clipboard with auto-clear, JSON mode, sync push/pull, `aeth run` polished.
 - [ ] 5.5 `aeth run --env NAME=<ref> …` multi-var support, `--vault` on every
       command, exit codes mirror the child's.
 - [ ] 5.6 `aeth gateway models|budgets|logs|health` hitting W3's API.
+- [ ] 5.7 `.env` compatibility bridge (ported from KEY-BITCHER's
+      `sync-secrets`): `aeth env-export --to .env [--only prefix1,prefix2]
+      [--secure]` materializes vault API keys into an `.env` file with 0600
+      perms, an auto-generated restore warning header, and a `secure` command
+      that verifies ownership/permissions. Marked in docs as the *legacy*
+      escape hatch — gateway injection (W3) and `aeth run` are the defaults.
 
 ## Acceptance gate
 

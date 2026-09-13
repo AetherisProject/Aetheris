@@ -1,0 +1,6 @@
+/* Games direction — Games Reborn laser crimson/phoenix gold */
+:root {
+  --accent: #FF2D55;    /* laser crimson  */
+  --accent-2: #FFB703;  /* phoenix gold   */
+  --glow: rgba(255, 45, 85, 0.40);
+}

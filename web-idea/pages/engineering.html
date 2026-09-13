@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aetheris — Engineering · Merlin Tribukait</title>
+<meta name="description" content="Aetheris: the secrets operating system — encrypted vault, local LLM gateway, zero-knowledge sync. Open source security tooling by Merlin Tribukait.">
+<link rel="stylesheet" href="../brand/brand-core.css">
+<link rel="stylesheet" href="../brand/direction-engineering.css">
+<link rel="icon" href="../brand/aetheris.svg" type="image/svg+xml">
+</head>
+<body>
+
+<nav class="tri-nav">
+  <a class="who" href="hub.html"><img src="../brand/merlin.svg" width="22" height="22" alt="">Merlin&nbsp;Tribukait</a>
+  <span class="spacer"></span>
+  <a href="hub.html">⌂ Person</a>
+  <a class="here" href="engineering.html">Engineering</a>
+  <a href="games.html">Games</a>
+</nav>
+
+<header class="hero">
+  <img class="mark" src="../brand/aetheris.svg" alt="Aetheris shield">
+  <h1><span class="accent">Aetheris</span> — your keys never live in .env again.</h1>
+  <p class="lead">
+    The secrets operating system: one encrypted vault, one <b>local LLM gateway</b>
+    that injects provider keys at request time, zero-knowledge sync to every device.
+    Open source · self-hosted · C#/.NET 8.
+  </p>
+  <div class="btnrow">
+    <a class="btn primary" href="https://github.com/merlin-tribukait/Aetheris">GitHub repo ↗</a>
+    <a class="btn" href="https://github.com/merlin-tribukait/Aetheris/tree/arena/01a09070-aetheris/v2/mockups">Live click-preview ↗</a>
+  </div>
+</header>
+
+<div class="grid">
+  <div class="card big"><h3>⚡ The LLM gateway</h3>
+    <p>One OpenAI-compatible endpoint (<code>127.0.0.1:7474/v1</code>) for every tool you use.
+    Keys come from the encrypted vault at request time — never from <code>.env</code>, shell
+    history, or client code. Model aliases with fallback chains, tokens/day budgets,
+    redaction-first logs. Works with OpenAI, Anthropic, and local Ollama models.</p></div>
+  <div class="card"><h3>🗄️ Zero-knowledge vault</h3><p>Passwords, API keys, SSH items, TOTP. Argon2id → XChaCha20-Poly1305 per item. The server only ever sees ciphertext.</p></div>
+  <div class="card"><h3>⌨️ aeth CLI</h3><p><code>aeth run --env OPENAI_API_KEY=&lt;ref&gt; -- cmd</code> — injects secrets into child processes only. Lineage: KEY-BITCHER.</p></div>
+  <div class="card"><h3>🌐 One PWA, all devices</h3><p>Web/desktop/mobile from a single client. Installable, offline-first, auto-locking.</p></div>
+</div>
+
+<section>
+  <p class="sec-title">Also on this track</p>
+  <div class="grid">
+    <div class="card"><h3>KEY-BITCHER</h3><p>The original AI-key sync CLI (Rust, CI, S3) — now maintained as the <code>.env</code> bridge of Aetheris. <a href="https://github.com/merlin-tribukait/KEY-BITCHER">repo ↗</a></p></div>
+    <div class="card"><h3>Hire this stack</h3><p>Full-stack + security, EN/DE +5 languages, remote or NRW. <a href="hub.html">About Merlin →</a></p></div>
+  </div>
+</section>
+
+<footer>
+  <div class="trinity">
+    <img src="../brand/merlin.svg" alt="">
+    <img src="../brand/aetheris.svg" alt="">
+    <img src="../brand/games-reborn.svg" alt="">
+  </div>
+  A direction of <a href="hub.html">Merlin Tribukait</a> · also:
+  <a href="games.html">Games Reborn →</a>
+</footer>
+</body>
+</html>

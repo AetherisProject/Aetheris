@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="ti" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E8ECF4"/>
+      <stop offset=".5" stop-color="#8F96A3"/>
+      <stop offset="1" stop-color="#565D6B"/>
+    </linearGradient>
+    <linearGradient id="cy" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#06B6D4"/>
+      <stop offset="1" stop-color="#6366F1"/>
+    </linearGradient>
+  </defs>
+  <!-- trunk mark: titanium hex plate + MT monogram + dual-channel edge -->
+  <path d="M64 6 116 34v60L64 122 12 94V34Z" fill="#11141D" stroke="url(#cy)" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M64 14 108 38v52L64 114 20 90V38Z" fill="none" stroke="url(#ti)" stroke-width="1.5" opacity=".5"/>
+  <!-- M -->
+  <path d="M36 84V50l14 20 14-20v34" fill="none" stroke="url(#ti)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- T -->
+  <path d="M74 50h18M83 50v34" fill="none" stroke="url(#ti)" stroke-width="7" stroke-linecap="round"/>
+</svg>

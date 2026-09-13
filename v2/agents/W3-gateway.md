@@ -24,6 +24,13 @@ OpenAI/Anthropic/Ollama non-streaming — harden it to daily-driver grade.
       key string appears **nowhere** in logs, budgets file, or responses.
 - [ ] 3.6 OpenAI-compat completeness: `/v1/models` from upstreams merged with
       aliases; `max_tokens` passthrough; error bodies shaped like OpenAI's.
+- [ ] 3.7 Port the provider catalog from the predecessor project
+      ([KEY-BITCHER](https://github.com/merlin-tribukait/KEY-BITCHER)): its
+      `benchmark.rs` already health-pings OpenAI, Anthropic, Google, Mistral,
+      OpenRouter, NVIDIA — adapt those endpoints into provider stubs and the
+      health-check task (3.3). Also review its `import-md` parser: a docs
+      handout → structured `ApiKey` vault items is a genuinely useful feature.
+      Port ideas, not code (Rust → C# rewrite with tests).
 
 ## Acceptance gate
 

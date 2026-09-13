@@ -1,0 +1,6 @@
+/* Engineering direction — Aetheris indigo/violet/cyan (matches v2 design tokens) */
+:root {
+  --accent: #6366F1;    /* aether-indigo  */
+  --accent-2: #06B6D4;  /* cyber-cyan     */
+  --glow: rgba(99, 102, 241, 0.40);
+}

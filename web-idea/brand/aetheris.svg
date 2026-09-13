@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="eng" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6366F1"/>
+      <stop offset=".55" stop-color="#A855F7"/>
+      <stop offset="1" stop-color="#06B6D4"/>
+    </linearGradient>
+  </defs>
+  <!-- engineering mark: shield with inset portal diamond -->
+  <path d="M64 8l48 18v38c0 30-20 49-48 56-28-7-48-26-48-56V26Z" fill="#0B0E15" stroke="url(#eng)" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M64 40l24 24-24 24-24-24Z" fill="none" stroke="url(#eng)" stroke-width="3.5" stroke-linejoin="round"/>
+  <circle cx="64" cy="64" r="7" fill="url(#eng)"/>
+  <!-- keyhole slit: it's a secrets product -->
+  <rect x="62" y="64" width="4" height="14" rx="2" fill="url(#eng)"/>
+</svg>
