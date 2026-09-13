@@ -59,7 +59,7 @@ jobs:
           killall Xvfb 2>/dev/null || true
 
       - name: Upload Screenshots
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: "screenshots-${{ matrix.platform }}"
           path: |
