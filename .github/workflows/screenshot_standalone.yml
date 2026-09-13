@@ -40,17 +40,10 @@ jobs:
               try {
                 const browser = await chromium.launch();
                 const page = await browser.newPage();
-                await page.setViewportSize({ width: 1024, height: 768 });
-                await page.goto('about:blank');
                 await page.screenshot({ 
                   path: 'screenshots/web_screenshot.png',
-                  type: 'png',
-                  quality: 100
+                  type: 'png'
                 });
-                console.log('✓ Web screenshot captured successfully');
-                await browser.close();
-              } catch (e) {
-                console.error('✗ Web screenshot failed:', e);
                 process.exit(1);
               }
             })();
