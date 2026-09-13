@@ -67,16 +67,7 @@ jobs:
       - name: Run clippy
         run: |
           echo "Running clippy for code quality..."
-          cargo clippy --all-targets --all-features -- -D warnings 2>&1 | tee clippy_results.txt || echo "Clippy found issues"
-          
-          # Check if warnings were found
-          if grep -q "warning" clippy_results.txt; then
-            WARNING_COUNT=$(grep -c "warning" clippy_results.txt || echo "0")
-            echo "::warning::Found ${WARNING_COUNT} clippy warnings"
-            exit 1
-          else
-            echo "✓ No clippy warnings found"
-          fi
+          cargo clippy --all-targets --all-features -- -D warnings 2>&1 | tee clippy_results.txt
 
       - name: Upload clippy results
         uses: actions/upload-artifact@v4
