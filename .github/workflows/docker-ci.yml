@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Verify core Dockerfile
         run: test -f docker/core/Dockerfile && echo "core Dockerfile OK"
       - run: 'cargo fmt -- --check || echo "fmt needs fix (pre-existing stub errors allowed)"'
@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Verify web Dockerfile syntax
         run: grep -q "node:20" docker/web/Dockerfile && echo "web Dockerfile OK"
       - run: npm ci && npm run build
@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Verify desktop Dockerfile
         run: grep -q "rust:1.78" docker/desktop/Dockerfile && echo "desktop Dockerfile OK"
       - run: chmod +x desktop/test_build.sh && ./desktop/test_build.sh || true
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Verify browser Dockerfile
         run: grep -q "python:3.12" docker/browser/Dockerfile && echo "browser Dockerfile OK"
       - run: chmod +x browser/build.sh && ./browser/build.sh
@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Verify mobile Dockerfile
         run: grep -q "flutter" docker/mobile/Dockerfile && echo "mobile Dockerfile OK"
       - run: chmod +x mobile/build.sh && ./mobile/build.sh || true
