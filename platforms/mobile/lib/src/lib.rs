@@ -98,6 +98,8 @@ impl ChatClient {
 
 // Simple FFI-safe wrapper functions
 #[no_mangle]
+/// # Safety
+/// `base_url` must be a valid pointer to a UTF-8 string of length `base_url_len`.
 pub unsafe extern "C" fn create_chat_client(base_url: *const u8, base_url_len: usize) -> *mut ChatClient {
     let base_url_str = {
         std::str::from_utf8_unchecked(std::slice::from_raw_parts(base_url, base_url_len))
@@ -106,6 +108,8 @@ pub unsafe extern "C" fn create_chat_client(base_url: *const u8, base_url_len: u
 }
 
 #[no_mangle]
+/// # Safety
+/// `client` must be a valid pointer returned by `create_chat_client`.
 pub unsafe extern "C" fn free_chat_client(client: *mut ChatClient) {
     let _ = Box::from_raw(client);
 }
