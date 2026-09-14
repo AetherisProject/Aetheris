@@ -94,7 +94,7 @@ dependencies = [
  "sha2",
  "sled",
  "subtle",
- "thiserror 1.0.69",
+ "thiserror 2.0.20",
  "tokio",
  "tracing",
  "tracing-subscriber",
@@ -110,6 +110,7 @@ name = "aetheris-desktop"
 version = "0.1.0"
 dependencies = [
  "aetheris-core",
+ "parking_lot 0.12.5",
  "reqwest 0.12.28",
  "serde",
  "serde_json",
