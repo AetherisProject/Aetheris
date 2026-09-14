@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Demo Implementation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <h1>Demo Implementation Test</h1>
+    
+    <button onclick="testDemoModal()">Test Demo Modal</button>
+    <button onclick="testDemoRegistry()">Test Demo Registry</button>
+    
+    <div id="test-results"></div>
+    
+    <!-- Include the modal HTML -->
+    <div id="demo-modal" class="demo-modal">
+        <div class="demo-modal-content">
+            <div class="demo-modal-header">
+                <h3 id="demo-modal-title">Demo Title</h3>
+                <button class="demo-modal-close" onclick="closeDemoModal()">&times;</button>
+            </div>
+            <div class="demo-modal-body">
+                <p id="demo-modal-description">Demo description goes here</p>
+                
+                <div class="demo-input-section">
+                    <label for="demo-modal-input">What do you need?</label>
+                    <textarea id="demo-modal-input" placeholder="Enter your request..." rows="3"></textarea>
+                </div>
+                
+                <div class="demo-options-section" id="demo-modal-options">
+                    <!-- Options will be dynamically added here -->
+                </div>
+            </div>
+            <div class="demo-modal-footer">
+                <button class="secondary" onclick="closeDemoModal()">Cancel</button>
+                <button class="primary" onclick="runDemoFromModal()" id="demo-modal-run">
+                    <span class="button-text"><i class="fas fa-magic"></i> Generate</span>
+                    <span class="button-loading"><i class="fas fa-spinner fa-spin"></i> Working...</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Demo Results Modal -->
+    <div id="demo-results-modal" class="demo-modal">
+        <div class="demo-modal-content demo-results-content">
+            <div class="demo-modal-header">
+                <h3 id="demo-results-title">Results</h3>
+                <button class="demo-modal-close" onclick="closeResultsModal()">&times;</button>
+            </div>
+            <div class="demo-modal-body demo-results-body" id="demo-results-content">
+                <!-- Results will be displayed here -->
+            </div>
+            <div class="demo-modal-footer">
+                <button class="secondary" onclick="closeResultsModal()">Close</button>
+                <button class="primary" onclick="copyResults()" id="demo-copy-btn">
+                    <i class="fas fa-copy"></i> Copy Results
+                </button>
+                <button class="primary" onclick="runDemoFromModal()" id="demo-try-again-btn">
+                    <i class="fas fa-redo"></i> Try Again
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/demos.js"></script>
+    <script>
+        // Test functions
+        function testDemoRegistry() {
+            const results = document.getElementById('test-results');
+            results.innerHTML = '<h3>Testing Demo Registry...</h3>';
+            
+            try {
+                const allDemos = DemoRegistry.getAll();
+                const demoKeys = Object.keys(allDemos);
+                
+                results.innerHTML += `<p>Found ${demoKeys.length} demos:</p>`;
+                results.innerHTML += '<ul>';
+                
+                demoKeys.forEach(key => {
+                    const demo = allDemos[key];
+                    results.innerHTML += `<li><strong>${key}</strong>: ${demo.name} (${demo.category})`;
+                    if (demo.options && demo.options.length > 0) {
+                        results.innerHTML += ` - Options: ${demo.options.map(o => o.name).join(', ')}`;
+                    }
+                    results.innerHTML += '</li>';
+                });
+                
+                results.innerHTML += '</ul>';
+                results.innerHTML += '<p>✅ Demo Registry test passed!</p>';
+                
+            } catch (error) {
+                results.innerHTML += `<p>❌ Error: ${error.message}</p>`;
+            }
+        }
+        
+        function testDemoModal() {
+            // Test opening the email demo modal
+            openDemoModal('email');
+        }
+        
+        // Mock puter for testing
+        window.puter = {
+            ai: {
+                chat: async (prompt, options) => {
+                    return { text: `Mock response to: ${prompt}` };
+                },
+                generateImage: async (prompt) => {
+                    throw new Error('Image generation not available in test');
+                }
+            }
+        };
+        
+        // Mock functions for modal testing
+        function openDemoModal(demoKey) {
+            const demo = DemoRegistry.get(demoKey);
+            if (!demo) {
+                alert('Demo not found: ' + demoKey);
+                return;
+            }
+            
+            alert(`✅ Successfully opened modal for: ${demo.name}`);
+            console.log('Demo config:', demo);
+        }
+        
+        function closeDemoModal() {
+            alert('Modal closed');
+        }
+        
+        function closeResultsModal() {
+            alert('Results modal closed');
+        }
+        
+        function runDemoFromModal() {
+            alert('Run demo from modal called');
+        }
+        
+        function copyResults() {
+            alert('Copy results called');
+        }
+    </script>
+</body>
+</html>

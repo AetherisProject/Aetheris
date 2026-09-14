@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aether - Experience Full AI Model Access</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-logo">&#9670;</span>
+                <span class="brand-name">Aether</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link active">Home</a>
+                <a href="models.html" class="nav-link">Models</a>
+                <a href="chat.html" class="nav-link">Chat</a>
+                <a href="research.html" class="nav-link">Research</a>
+                <a href="files.html" class="nav-link">Files</a>
+            </div>
+            <div class="nav-actions">
+                <a href="#" class="btn btn-ghost">Docs</a>
+                <a href="#" class="btn btn-primary">Get Aetheris</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge">&#9670; Free Demo</span>
+                <span class="badge-text">Try 500+ AI models with no restrictions</span>
+            </div>
+            <h1 class="hero-title">
+                Experience Full AI Model Access
+            </h1>
+            <p class="hero-subtitle">
+                Try 500+ AI models for free. No limits. No restrictions. 
+                Discover the full potential of AI with Aether.
+            </p>
+            <div class="hero-actions">
+                <a href="chat.html" class="btn btn-primary btn-lg">
+                    <span>&#9670;</span> Try Demo
+                </a>
+                <a href="models.html" class="btn btn-secondary btn-lg">
+                    <span>&#9670;</span> View Models
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">500+</span>
+                    <span class="stat-label">AI Models</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Providers</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">Unlimited</span>
+                    <span class="stat-label">Access</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="gradient-orb"></div>
+            <div class="model-float model-float-1">
+                <span class="model-tag">GPT-4o</span>
+            </div>
+            <div class="model-float model-float-2">
+                <span class="model-tag">Claude 3.5</span>
+            </div>
+            <div class="model-float model-float-3">
+                <span class="model-tag">Mistral Large</span>
+            </div>
+            <div class="model-float model-float-4">
+                <span class="model-tag">FLUX.1</span>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll to explore</span>
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <!-- Model Showcase Section -->
+    <section class="section showcase">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">500+ AI Models at Your Fingertips</h2>
+                <p class="section-subtitle">
+                    Access the most comprehensive collection of AI models from all major providers.
+                    From cutting-edge LLMs to powerful image generators, everything is available.
+                </p>
+            </div>
+            
+            <div class="provider-badges">
+                <div class="provider-badge">
+                    <span class="provider-logo openai">OpenAI</span>
+                </div>
+                <div class="provider-badge">
+                    <span class="provider-logo anthropic">Anthropic</span>
+                </div>
+                <div class="provider-badge">
+                    <span class="provider-logo google">Google</span>
+                </div>
+                <div class="provider-badge">
+                    <span class="provider-logo xai">xAI</span>
+                </div>
+                <div class="provider-badge">
+                    <span class="provider-logo mistral">Mistral</span>
+                </div>
+                <div class="provider-badge">
+                    <span class="provider-logo deepseek">DeepSeek</span>
+                </div>
+                <div class="provider-badge">
+                    <span class="provider-logo meta">Meta</span>
+                </div>
+                <div class="provider-badge">
+                    <span class="provider-logo cohere">Cohere</span>
+                </div>
+            </div>
+
+            <div class="model-categories">
+                <button class="category-btn active" data-category="all">
+                    <span class="category-icon">&#9670;</span>
+                    <span>All Models</span>
+                </button>
+                <button class="category-btn" data-category="text">
+                    <span class="category-icon">&#9998;</span>
+                    <span>Text</span>
+                </button>
+                <button class="category-btn" data-category="image">
+                    <span class="category-icon">&#128247;</span>
+                    <span>Image</span>
+                </button>
+                <button class="category-btn" data-category="audio">
+                    <span class="category-icon">&#128664;</span>
+                    <span>Audio</span>
+                </button>
+                <button class="category-btn" data-category="video">
+                    <span class="category-icon">&#128249;</span>
+                    <span>Video</span>
+                </button>
+                <button class="category-btn" data-category="code">
+                    <span class="category-icon">&#128187;</span>
+                    <span>Code</span>
+                </button>
+            </div>
+
+            <div class="featured-models">
+                <div class="model-card featured">
+                    <div class="model-card-header">
+                        <span class="model-provider-badge openai">OpenAI</span>
+                        <span class="model-type-badge text">Text</span>
+                    </div>
+                    <h3 class="model-name">GPT-4o</h3>
+                    <p class="model-description">OpenAI's most advanced model with multimodal capabilities and real-time reasoning.</p>
+                    <div class="model-meta">
+                        <span class="model-capability">Chat</span>
+                        <span class="model-capability">Generate</span>
+                        <span class="model-capability">Analyze</span>
+                    </div>
+                    <a href="chat.html?model=gpt-4o" class="btn btn-primary btn-sm">Try It</a>
+                </div>
+                <div class="model-card featured">
+                    <div class="model-card-header">
+                        <span class="model-provider-badge anthropic">Anthropic</span>
+                        <span class="model-type-badge text">Text</span>
+                    </div>
+                    <h3 class="model-name">Claude 3.5 Sonnet</h3>
+                    <p class="model-description">Anthropic's intelligent and helpful AI assistant with advanced reasoning capabilities.</p>
+                    <div class="model-meta">
+                        <span class="model-capability">Chat</span>
+                        <span class="model-capability">Code</span>
+                        <span class="model-capability">Reason</span>
+                    </div>
+                    <a href="chat.html?model=claude-3-5-sonnet" class="btn btn-primary btn-sm">Try It</a>
+                </div>
+                <div class="model-card featured">
+                    <div class="model-card-header">
+                        <span class="model-provider-badge blackforest">Black Forest Labs</span>
+                        <span class="model-type-badge image">Image</span>
+                    </div>
+                    <h3 class="model-name">FLUX.1 [Dev]</h3>
+                    <p class="model-description">State-of-the-art text-to-image model with incredible detail and prompt adherence.</p>
+                    <div class="model-meta">
+                        <span class="model-capability">Generate</span>
+                        <span class="model-capability">Edit</span>
+                        <span class="model-capability">High-Res</span>
+                    </div>
+                    <a href="chat.html?model=flux-1-dev" class="btn btn-primary btn-sm">Try It</a>
+                </div>
+                <div class="model-card featured">
+                    <div class="model-card-header">
+                        <span class="model-provider-badge mistral">Mistral</span>
+                        <span class="model-type-badge text">Text</span>
+                    </div>
+                    <h3 class="model-name">Mistral Large 2</h3>
+                    <p class="model-description">Mistral's flagship model with exceptional performance in reasoning and coding tasks.</p>
+                    <div class="model-meta">
+                        <span class="model-capability">Chat</span>
+                        <span class="model-capability">Code</span>
+                        <span class="model-capability">Math</span>
+                    </div>
+                    <a href="chat.html?model=mistral-large-2" class="btn btn-primary btn-sm">Try It</a>
+                </div>
+            </div>
+
+            <div class="section-cta">
+                <a href="models.html" class="btn btn-outline">
+                    Browse All 500+ Models
+                    <span class="btn-arrow">&#8594;</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Capabilities Tour Section -->
+    <section class="section capabilities">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">What You Can Do</h2>
+                <p class="section-subtitle">
+                    Explore the full range of AI capabilities available through Aether's demo.
+                    Each tool is ready to use with any of our 500+ models.
+                </p>
+            </div>
+
+            <div class="capabilities-grid">
+                <div class="capability-card">
+                    <div class="capability-icon">&#9998;</div>
+                    <h3 class="capability-title">AI Chat</h3>
+                    <p class="capability-description">
+                        Engage in natural conversations with AI models. 
+                        Get answers, brainstorm ideas, and solve problems.
+                    </p>
+                    <div class="capability-tags">
+                        <span class="tag">Text Generation</span>
+                        <span class="tag">Multimodal</span>
+                    </div>
+                    <a href="chat.html" class="btn btn-primary btn-sm">Try It</a>
+                </div>
+                <div class="capability-card">
+                    <div class="capability-icon">&#128247;</div>
+                    <h3 class="capability-title">Image Generation</h3>
+                    <p class="capability-description">
+                        Create stunning images from text prompts. 
+                        Edit and enhance existing images with AI.
+                    </p>
+                    <div class="capability-tags">
+                        <span class="tag">Text-to-Image</span>
+                        <span class="tag">Image-to-Image</span>
+                    </div>
+                    <a href="chat.html" class="btn btn-primary btn-sm">Try It</a>
+                </div>
+                <div class="capability-card">
+                    <div class="capability-icon">&#128249;</div>
+                    <h3 class="capability-title">Video Generation</h3>
+                    <p class="capability-description">
+                        Generate videos from text or images. 
+                        Analyze and understand video content.
+                    </p>
+                    <div class="capability-tags">
+                        <span class="tag">Text-to-Video</span>
+                        <span class="tag">Video Analysis</span>
+                    </div>
+                    <a href="chat.html" class="btn btn-primary btn-sm">Try It</a>
+                </div>
+                <div class="capability-card">
+                    <div class="capability-icon">&#128664;</div>
+                    <h3 class="capability-title">Audio Processing</h3>
+                    <p class="capability-description">
+                        Transcribe speech to text. 
+                        Generate natural speech from text.
+                    </p>
+                    <div class="capability-tags">
+                        <span class="tag">Speech-to-Text</span>
+                        <span class="tag">Text-to-Speech</span>
+                    </div>
+                    <a href="chat.html" class="btn btn-primary btn-sm">Try It</a>
+                </div>
+                <div class="capability-card">
+                    <div class="capability-icon">&#128196;</div>
+                    <h3 class="capability-title">Document Intelligence</h3>
+                    <p class="capability-description">
+                        Extract insights from documents. 
+                        Summarize, analyze, and understand content.
+                    </p>
+                    <div class="capability-tags">
+                        <span class="tag">OCR</span>
+                        <span class="tag">Summarization</span>
+                    </div>
+                    <a href="research.html" class="btn btn-primary btn-sm">Try It</a>
+                </div>
+                <div class="capability-card">
+                    <div class="capability-icon">&#128193;</div>
+                    <h3 class="capability-title">File Management</h3>
+                    <p class="capability-description">
+                        Store, organize, and manage your files in the cloud. 
+                        Access from anywhere, anytime.
+                    </p>
+                    <div class="capability-tags">
+                        <span class="tag">Cloud Storage</span>
+                        <span class="tag">File Operations</span>
+                    </div>
+                    <a href="files.html" class="btn btn-primary btn-sm">Try It</a>
+                </div>
+                <div class="capability-card">
+                    <div class="capability-icon">&#128269;</div>
+                    <h3 class="capability-title">Research Tools</h3>
+                    <p class="capability-description">
+                        Search, analyze, and synthesize information. 
+                        Get answers from multiple sources.
+                    </p>
+                    <div class="capability-tags">
+                        <span class="tag">Web Search</span>
+                        <span class="tag">Analysis</span>
+                    </div>
+                    <a href="research.html" class="btn btn-primary btn-sm">Try It</a>
+                </div>
+                <div class="capability-card coming-soon">
+                    <div class="capability-icon">&#129302;</div>
+                    <h3 class="capability-title">AI Agents</h3>
+                    <p class="capability-description">
+                        Autonomous AI agents that can perform complex tasks. 
+                        Coming soon to Aetheris.
+                    </p>
+                    <div class="capability-tags">
+                        <span class="tag">Automation</span>
+                        <span class="tag">Multi-step</span>
+                    </div>
+                    <span class="coming-soon-badge">Coming Soon</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Section -->
+    <section class="section comparison">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Aether vs Aetheris</h2>
+                <p class="section-subtitle">
+                    Compare the free demo experience with the full Aetheris platform.
+                    Ready to unlock the full potential?
+                </p>
+            </div>
+
+            <div class="comparison-container">
+                <div class="comparison-table">
+                    <div class="comparison-header">
+                        <div class="comparison-cell header-cell">Feature</div>
+                        <div class="comparison-cell header-cell">Aether (Demo)</div>
+                        <div class="comparison-cell header-cell">Aetheris (Full)</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="comparison-cell feature-cell">
+                            <span class="feature-icon">&#128100;</span>
+                            <span>Model Access</span>
+                        </div>
+                        <div class="comparison-cell">500+ models</div>
+                        <div class="comparison-cell">500+ models</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="comparison-cell feature-cell">
+                            <span class="feature-icon">&#128190;</span>
+                            <span>Persistence</span>
+                        </div>
+                        <div class="comparison-cell">Session only</div>
+                        <div class="comparison-cell highlight">Full vault</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="comparison-cell feature-cell">
+                            <span class="feature-icon">&#128257;</span>
+                            <span>Sync</span>
+                        </div>
+                        <div class="comparison-cell">No</div>
+                        <div class="comparison-cell highlight">Yes</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="comparison-cell feature-cell">
+                            <span class="feature-icon">&#128187;</span>
+                            <span>CLI</span>
+                        </div>
+                        <div class="comparison-cell">No</div>
+                        <div class="comparison-cell highlight">Yes</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="comparison-cell feature-cell">
+                            <span class="feature-icon">&#128736;</span>
+                            <span>Desktop App</span>
+                        </div>
+                        <div class="comparison-cell">No</div>
+                        <div class="comparison-cell highlight">Yes</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="comparison-cell feature-cell">
+                            <span class="feature-icon">&#128101;</span>
+                            <span>Team Features</span>
+                        </div>
+                        <div class="comparison-cell">No</div>
+                        <div class="comparison-cell highlight">Yes</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="comparison-cell feature-cell">
+                            <span class="feature-icon">&#128680;</span>
+                            <span>Offline Access</span>
+                        </div>
+                        <div class="comparison-cell">No</div>
+                        <div class="comparison-cell highlight">Yes</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="comparison-cell feature-cell">
+                            <span class="feature-icon">&#128279;</span>
+                            <span>Priority Support</span>
+                        </div>
+                        <div class="comparison-cell">Community</div>
+                        <div class="comparison-cell highlight">Priority</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comparison-cta">
+                <h3>Ready for the Full Experience?</h3>
+                <p>Get all the features, persistence, and power of Aetheris.</p>
+                <a href="#" class="btn btn-primary btn-lg">
+                    <span>&#9670;</span> Get Aetheris Now
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section class="section use-cases">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">What Users Are Building</h2>
+                <p class="section-subtitle">
+                    Discover how developers and creators are using Aether and Aetheris 
+                    to build amazing things with AI.
+                </p>
+            </div>
+
+            <div class="use-cases-grid">
+                <div class="use-case-card">
+                    <div class="use-case-icon">&#128218;</div>
+                    <h3 class="use-case-title">Research</h3>
+                    <p class="use-case-description">
+                        Analyze documents, search the web, and synthesize information 
+                        from multiple sources to gain deep insights.
+                    </p>
+                    <a href="research.html" class="use-case-link">
+                        Try Research Tools
+                        <span class="link-arrow">&#8594;</span>
+                    </a>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon">&#128187;</div>
+                    <h3 class="use-case-title">Coding</h3>
+                    <p class="use-case-description">
+                        Write, review, and debug code with AI assistance. 
+                        Get suggestions, explanations, and optimizations.
+                    </p>
+                    <a href="chat.html" class="use-case-link">
+                        Try Coding Assistant
+                        <span class="link-arrow">&#8594;</span>
+                    </a>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon">&#128393;</div>
+                    <h3 class="use-case-title">Content Creation</h3>
+                    <p class="use-case-description">
+                        Generate articles, stories, and marketing copy. 
+                        Create images and videos for your projects.
+                    </p>
+                    <a href="chat.html" class="use-case-link">
+                        Try Content Generation
+                        <span class="link-arrow">&#8594;</span>
+                    </a>
+                </div>
+                <div class="use-case-card">
+                    <div class="use-case-icon">&#128200;</div>
+                    <h3 class="use-case-title">Automation</h3>
+                    <p class="use-case-description">
+                        Automate repetitive tasks with AI agents. 
+                        Process files, extract data, and streamline workflows.
+                    </p>
+                    <a href="files.html" class="use-case-link">
+                        Try File Automation
+                        <span class="link-arrow">&#8594;</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="brand-logo">&#9670;</span>
+                    <span class="brand-name">Aether</span>
+                    <p class="footer-tagline">Free AI Model Demo</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="index.html">Home</a>
+                        <a href="models.html">Models</a>
+                        <a href="chat.html">Chat</a>
+                        <a href="research.html">Research</a>
+                        <a href="files.html">Files</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <a href="#">Docs</a>
+                        <a href="#">GitHub</a>
+                        <a href="#">API Reference</a>
+                        <a href="#">Changelog</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Aetheris</h4>
+                        <a href="#">Get Aetheris</a>
+                        <a href="#">Features</a>
+                        <a href="#">Pricing</a>
+                        <a href="#">Enterprise</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <a href="#">Privacy</a>
+                        <a href="#">Terms</a>
+                        <a href="#">Security</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Aether. All rights reserved.</p>
+                <p>Built with Puter.js</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Puter.js Integration -->
+    <script src="https://js.puter.com/v2/"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

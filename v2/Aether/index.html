@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aether - Your Imagination, Unlimited | AI Magic Showcase</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Your Imagination, <span class="highlight">Unlimited</span></h1>
+            <p class="subtitle">See what AI can do for YOU. No technical skills needed.</p>
+            
+            <!-- Magic tagline -->
+            <div class="tagline">
+                <span class="typing">Turn your ideas into reality...</span>
+            </div>
+            
+            <!-- CTA -->
+            <div class="cta">
+                <button class="primary" onclick="showRandomDemo()">
+                    <i class="fas fa-magic"></i> Show Me the Magic <i class="fas fa-magic"></i>
+                </button>
+                <button class="secondary" onclick="scrollToDemos()">
+                    Browse All Possibilities
+                </button>
+            </div>
+        </div>
+        
+        <!-- Background animation -->
+        <div class="hero-background">
+            <div class="particle" style="--delay: 0s; --duration: 15s;"></div>
+            <div class="particle" style="--delay: 2s; --duration: 18s;"></div>
+            <div class="particle" style="--delay: 4s; --duration: 12s;"></div>
+            <div class="particle" style="--delay: 6s; --duration: 16s;"></div>
+            <div class="particle" style="--delay: 8s; --duration: 14s;"></div>
+        </div>
+    </section>
+
+    <!-- Demo Showcase Section -->
+    <section class="demo-showcase" id="demo-showcase">
+        <div class="container">
+            <h2>I Can Do <span class="highlight">THAT</span> with AI?!</h2>
+            <p class="section-subtitle">Discover what's possible with artificial intelligence</p>
+            
+            <div class="demo-grid">
+                <!-- Demo Card 1 -->
+                <div class="demo-card" onclick="selectDemo('email')">
+                    <div class="card-icon">✉️</div>
+                    <h3>Write a Professional Email in Seconds</h3>
+                    <p>Just describe what you need, AI writes the perfect email</p>
+                    <div class="card-meta">
+                        <span class="category work">Work</span>
+                        <span class="try-btn">Try It →</span>
+                    </div>
+                </div>
+
+                <!-- Demo Card 2 -->
+                <div class="demo-card" onclick="selectDemo('logo')">
+                    <div class="card-icon">🎨</div>
+                    <h3>Create a Beautiful Logo for My Business</h3>
+                    <p>Describe your business, AI creates a custom logo</p>
+                    <div class="card-meta">
+                        <span class="category business">Business</span>
+                        <span class="try-btn">Try It →</span>
+                    </div>
+                </div>
+
+                <!-- Demo Card 3 -->
+                <div class="demo-card" onclick="selectDemo('summarize')">
+                    <div class="card-icon">📄</div>
+                    <h3>Summarize This 50-Page Document</h3>
+                    <p>Upload any document, AI extracts the key points</p>
+                    <div class="card-meta">
+                        <span class="category productivity">Productivity</span>
+                        <span class="try-btn">Try It →</span>
+                    </div>
+                </div>
+
+                <!-- Demo Card 4 -->
+                <div class="demo-card" onclick="selectDemo('code')">
+                    <div class="card-icon">💻</div>
+                    <h3>Write Code Without Being a Programmer</h3>
+                    <p>Describe what you want, AI writes the code</p>
+                    <div class="card-meta">
+                        <span class="category development">Development</span>
+                        <span class="try-btn">Try It →</span>
+                    </div>
+                </div>
+
+                <!-- Demo Card 5 -->
+                <div class="demo-card" onclick="selectDemo('translate')">
+                    <div class="card-icon">🌍</div>
+                    <h3>Translate to Any Language</h3>
+                    <p>Break language barriers instantly</p>
+                    <div class="card-meta">
+                        <span class="category communication">Communication</span>
+                        <span class="try-btn">Try It →</span>
+                    </div>
+                </div>
+
+                <!-- Demo Card 6 -->
+                <div class="demo-card" onclick="selectDemo('social')">
+                    <div class="card-icon">📱</div>
+                    <h3>Generate Social Media Posts</h3>
+                    <p>Create engaging content for any platform</p>
+                    <div class="card-meta">
+                        <span class="category marketing">Marketing</span>
+                        <span class="try-btn">Try It →</span>
+                    </div>
+                </div>
+
+                <!-- Demo Card 7 -->
+                <div class="demo-card" onclick="selectDemo('trip')">
+                    <div class="card-icon">✈️</div>
+                    <h3>Plan My Perfect Trip</h3>
+                    <p>Get personalized itineraries with one request</p>
+                    <div class="card-meta">
+                        <span class="category travel">Travel</span>
+                        <span class="try-btn">Try It →</span>
+                    </div>
+                </div>
+
+                <!-- Demo Card 8 -->
+                <div class="demo-card" onclick="selectDemo('learn')">
+                    <div class="card-icon">🎓</div>
+                    <h3>Learn Anything, Fast</h3>
+                    <p>Get personalized lessons on any topic</p>
+                    <div class="card-meta">
+                        <span class="category education">Education</span>
+                        <span class="try-btn">Try It →</span>
+                    </div>
+                </div>
+
+                <!-- Demo Card 9 -->
+                <div class="demo-card" onclick="selectDemo('data')">
+                    <div class="card-icon">📊</div>
+                    <h3>Analyze My Data</h3>
+                    <p>Upload data, AI finds insights and creates charts</p>
+                    <div class="card-meta">
+                        <span class="category business">Business</span>
+                        <span class="try-btn">Try It →</span>
+                    </div>
+                </div>
+
+                <!-- Demo Card 10 -->
+                <div class="demo-card" onclick="selectDemo('meal')">
+                    <div class="card-icon">🍽️</div>
+                    <h3>Create a Meal Plan</h3>
+                    <p>Get personalized recipes based on your needs</p>
+                    <div class="card-meta">
+                        <span class="category health">Health</span>
+                        <span class="try-btn">Try It →</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2>How Does This Magic Work?</h2>
+            <p class="intro">It's simpler than you think. Here's all you need to know:</p>
+            
+            <div class="steps">
+                <div class="step">
+                    <div class="number">1</div>
+                    <h3>You Have an Idea</h3>
+                    <p>Think of something you want to create, know, or do</p>
+                    <div class="example">
+                        <span class="user-idea">"I need a logo for my bakery"</span>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="number">2</div>
+                    <h3>You Describe It</h3>
+                    <p>Tell AI what you want in plain English</p>
+                    <div class="example">
+                        <span class="user-input">Type: "Create a logo for 'Sweet Delights Bakery' with pastel colors"</span>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="number">3</div>
+                    <h3>AI Makes It Real</h3>
+                    <p>Watch as your idea comes to life</p>
+                    <div class="example">
+                        <div class="ai-output">
+                            <i class="fas fa-magic"></i> 
+                            <span>Your custom logo appears here!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="key-insight">
+                <p><i class="fas fa-lightbulb"></i> <strong>No technical skills needed.</strong> AI handles the complexity, you get the results.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Case Categories Section -->
+    <section class="use-cases">
+        <div class="container">
+            <h2>AI Can Help With...</h2>
+            <p class="section-subtitle">Explore the many ways AI can transform your work and life</p>
+            
+            <div class="categories-grid">
+                <div class="category-card">
+                    <div class="category-icon">💼</div>
+                    <h3>Work & Productivity</h3>
+                    <p>Emails, documents, reports, analysis</p>
+                    <span class="count">15+ use cases</span>
+                    <button class="explore-btn" onclick="filterDemos('work')">Explore</button>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">🎨</div>
+                    <h3>Creativity & Design</h3>
+                    <p>Logos, graphics, art, writing</p>
+                    <span class="count">20+ use cases</span>
+                    <button class="explore-btn" onclick="filterDemos('creativity')">Explore</button>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">💻</div>
+                    <h3>Development & Tech</h3>
+                    <p>Code, debugging, architecture, automation</p>
+                    <span class="count">12+ use cases</span>
+                    <button class="explore-btn" onclick="filterDemos('development')">Explore</button>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">📚</div>
+                    <h3>Learning & Education</h3>
+                    <p>Tutoring, explanations, study guides</p>
+                    <span class="count">10+ use cases</span>
+                    <button class="explore-btn" onclick="filterDemos('education')">Explore</button>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">🌍</div>
+                    <h3>Communication</h3>
+                    <p>Translation, localization, transcription</p>
+                    <span class="count">8+ use cases</span>
+                    <button class="explore-btn" onclick="filterDemos('communication')">Explore</button>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">📈</div>
+                    <h3>Business & Marketing</h3>
+                    <p>Social media, ads, strategies, analytics</p>
+                    <span class="count">18+ use cases</span>
+                    <button class="explore-btn" onclick="filterDemos('business')">Explore</button>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">🎮</div>
+                    <h3>Fun & Entertainment</h3>
+                    <p>Stories, games, jokes, creativity</p>
+                    <span class="count">15+ use cases</span>
+                    <button class="explore-btn" onclick="filterDemos('fun')">Explore</button>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">🏠</div>
+                    <h3>Personal Life</h3>
+                    <p>Meal plans, travel, organization, advice</p>
+                    <span class="count">12+ use cases</span>
+                    <button class="explore-btn" onclick="filterDemos('personal')">Explore</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Try It Yourself Section -->
+    <section class="try-it" id="try-it">
+        <div class="container">
+            <h2>Try It Yourself - It's Free!</h2>
+            <p class="section-subtitle">Experience the magic firsthand. No sign-up required.</p>
+            
+            <div class="demo-interface">
+                <!-- Model selector -->
+                <div class="model-selector">
+                    <label><i class="fas fa-robot"></i> Choose an AI Model:</label>
+                    <select id="model-select">
+                        <option value="gpt-4o-mini">GPT-4o Mini (Fast & Smart)</option>
+                        <option value="claude-3-haiku">Claude 3 Haiku (Quick & Helpful)</option>
+                        <option value="gemini-1.5-flash">Gemini 1.5 Flash (Creative)</option>
+                        <option value="llama-3.1-70b">Llama 3.1 70B (Open Source)</option>
+                        <option value="mistral-large">Mistral Large (Precise)</option>
+                    </select>
+                </div>
+                
+                <!-- Demo type selector -->
+                <div class="demo-selector">
+                    <label><i class="fas fa-magic"></i> What would you like to try?</label>
+                    <select id="demo-select">
+                        <option value="chat">Chat with AI</option>
+                        <option value="write">Write something</option>
+                        <option value="generate">Generate an image</option>
+                        <option value="summarize">Summarize text</option>
+                        <option value="translate">Translate</option>
+                        <option value="code">Write code</option>
+                    </select>
+                </div>
+                
+                <!-- Input area -->
+                <div class="input-area">
+                    <textarea id="demo-input" placeholder="Describe what you want to create... (e.g., 'Write a professional email to my boss asking for a raise')" rows="4"></textarea>
+                    <button id="demo-submit" onclick="runDemo()" disabled>
+                        <span class="button-text"><i class="fas fa-rocket"></i> Try It Free</span>
+                        <span class="button-loading"><i class="fas fa-spinner fa-spin"></i> Working...</span>
+                    </button>
+                </div>
+                
+                <!-- Output area -->
+                <div class="output-area" id="demo-output">
+                    <div class="welcome-message">
+                        <i class="fas fa-wave-square"></i>
+                        <p>Type your request above and click "Try It Free" to see AI in action!</p>
+                        <p class="small">Powered by <strong>Puter</strong> - 500+ AI models at your fingertips</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <h2>What Users Are Saying</h2>
+            
+            <div class="testimonial-cards">
+                <div class="testimonial-card">
+                    <div class="quote">"</div>
+                    <p>I never thought I could create a website. Aether showed me how easy it is with AI. Now I have a professional site for my business!</p>
+                    <div class="author">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" alt="Sarah" class="avatar">
+                        <span><strong>Sarah</strong>, Small Business Owner</span>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="quote">"</div>
+                    <p>I was stuck on a work report. Aether's AI helped me organize my thoughts and write a draft in minutes. My boss was impressed!</p>
+                    <div class="author">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Michael" alt="Michael" class="avatar">
+                        <span><strong>Michael</strong>, Marketing Manager</span>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="quote">"</div>
+                    <p>As a student, Aether has been a game-changer. I can learn complex topics faster and get help with my assignments.</p>
+                    <div class="author">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Emily" alt="Emily" class="avatar">
+                        <span><strong>Emily</strong>, College Student</span>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="quote">"</div>
+                    <p>The image generation is incredible! I created a logo for my podcast in seconds. No design skills needed!</p>
+                    <div class="author">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=David" alt="David" class="avatar">
+                        <span><strong>David</strong>, Podcast Host</span>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="quote">"</div>
+                    <p>I used Aether to plan my entire vacation. It suggested the perfect itinerary with hotels, restaurants, and activities!</p>
+                    <div class="author">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa" alt="Lisa" class="avatar">
+                        <span><strong>Lisa</strong>, Travel Enthusiast</span>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="quote">"</div>
+                    <p>As a developer, I love how Aether helps me write code faster. It's like having a pair programming partner 24/7!</p>
+                    <div class="author">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="Alex" class="avatar">
+                        <span><strong>Alex</strong>, Software Developer</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Conversion Section -->
+    <section class="conversion">
+        <div class="container">
+            <h2>Ready for More Power?</h2>
+            <p class="section-subtitle">You've seen what AI can do. Now imagine having ALL this power integrated into your daily workflow.</p>
+            
+            <div class="comparison">
+                <div class="column">
+                    <h3>Aether (Demo)</h3>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> Try AI models</li>
+                        <li><i class="fas fa-check-circle"></i> See what's possible</li>
+                        <li><i class="fas fa-check-circle"></i> Learn how to use AI</li>
+                        <li><i class="fas fa-times-circle"></i> No persistence</li>
+                        <li><i class="fas fa-times-circle"></i> No sync</li>
+                        <li><i class="fas fa-times-circle"></i> No team features</li>
+                    </ul>
+                </div>
+                
+                <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+                
+                <div class="column premium">
+                    <h3>Aetheris (Full Platform)</h3>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> All 500+ AI models</li>
+                        <li><i class="fas fa-check-circle"></i> Full vault & persistence</li>
+                        <li><i class="fas fa-check-circle"></i> Sync across all devices</li>
+                        <li><i class="fas fa-check-circle"></i> CLI for power users</li>
+                        <li><i class="fas fa-check-circle"></i> Desktop app</li>
+                        <li><i class="fas fa-check-circle"></i> Team collaboration</li>
+                        <li><i class="fas fa-check-circle"></i> Offline access</li>
+                        <li><i class="fas fa-check-circle"></i> And much more...</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="cta">
+                <a href="https://github.com/AetherisProject/Aetheris" class="button primary large" target="_blank">
+                    <i class="fas fa-rocket"></i> Get Full Power with Aetheris
+                </a>
+                <p class="note"><i class="fas fa-info-circle"></i> Free and open source. No restrictions.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="links">
+                    <a href="https://github.com/AetherisProject/Aetheris" target="_blank">
+                        <i class="fab fa-github"></i> Aetheris
+                    </a>
+                    <a href="https://github.com/AetherisProject/Aether" target="_blank">
+                        <i class="fas fa-star"></i> Aether
+                    </a>
+                    <a href="#" target="_blank">
+                        <i class="fas fa-book"></i> Documentation
+                    </a>
+                    <a href="#" target="_blank">
+                        <i class="fas fa-users"></i> Community
+                    </a>
+                </div>
+                <p><i class="fas fa-heart"></i> Made with love by the Aetheris Team</p>
+                <p class="copyright">© 2026 Aetheris Project. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Puter Client Script -->
+    <script src="js/puter-client.js"></script>
+    <!-- Main App Script -->
+    <script src="js/app.js"></script>
+    <!-- Demos Script -->
+    <script src="js/demos.js"></script>
+    <!-- Demo Modal -->
+    <div id="demo-modal" class="demo-modal">
+        <div class="demo-modal-content">
+            <div class="demo-modal-header">
+                <h3 id="demo-modal-title">Demo Title</h3>
+                <button class="demo-modal-close" onclick="closeDemoModal()">&times;</button>
+            </div>
+            <div class="demo-modal-body">
+                <p id="demo-modal-description">Demo description goes here</p>
+                
+                <div class="demo-input-section">
+                    <label for="demo-modal-input">What do you need?</label>
+                    <textarea id="demo-modal-input" placeholder="Enter your request..." rows="3"></textarea>
+                </div>
+                
+                <div class="demo-options-section" id="demo-modal-options">
+                    <!-- Options will be dynamically added here -->
+                </div>
+            </div>
+            <div class="demo-modal-footer">
+                <button class="secondary" onclick="closeDemoModal()">Cancel</button>
+                <button class="primary" onclick="runDemoFromModal()" id="demo-modal-run">
+                    <span class="button-text"><i class="fas fa-magic"></i> Generate</span>
+                    <span class="button-loading"><i class="fas fa-spinner fa-spin"></i> Working...</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Demo Results Modal -->
+    <div id="demo-results-modal" class="demo-modal">
+        <div class="demo-modal-content demo-results-content">
+            <div class="demo-modal-header">
+                <h3 id="demo-results-title">Results</h3>
+                <button class="demo-modal-close" onclick="closeResultsModal()">&times;</button>
+            </div>
+            <div class="demo-modal-body demo-results-body" id="demo-results-content">
+                <!-- Results will be displayed here -->
+            </div>
+            <div class="demo-modal-footer">
+                <button class="secondary" onclick="closeResultsModal()">Close</button>
+                <button class="primary" onclick="copyResults()" id="demo-copy-btn">
+                    <i class="fas fa-copy"></i> Copy Results
+                </button>
+                <button class="primary" onclick="runDemoFromModal()" id="demo-try-again-btn">
+                    <i class="fas fa-redo"></i> Try Again
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

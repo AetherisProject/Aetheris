@@ -1,0 +1,59 @@
+name: aether_mobile
+description: A cross-platform Flutter client for the Aether API
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # HTTP client
+  http: ^1.0.0
+  
+  # WebSocket for streaming chat
+  web_socket_channel: ^2.4.0
+  
+  # Local storage
+  shared_preferences: ^2.2.2
+  path_provider: ^2.1.1
+  
+  # File operations
+  file_picker: ^5.3.3
+  
+  # Security
+  flutter_secure_storage: ^8.0.0
+  local_auth: ^2.1.7
+  
+  # UI
+  flutter_markdown: ^0.6.18
+  provider: ^6.1.1
+  
+  # Icons
+  cupertino_icons: ^1.0.6
+  
+  # Network connectivity
+  connectivity_plus: ^5.0.2
+  
+  # URL launcher
+  url_launcher: ^6.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/
+  
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto-Medium.ttf
+        - asset: assets/fonts/Roboto-Bold.ttf

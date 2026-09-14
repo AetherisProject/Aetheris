@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aether - Research Tools Demo</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Research-specific styles */
+        .research-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            height: calc(100vh - 64px);
+            overflow: hidden;
+        }
+        
+        .tool-sidebar {
+            background: var(--color-bg-secondary);
+            border-right: 1px solid var(--color-border-muted);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .tool-sidebar-header {
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--color-border-muted);
+            background: var(--color-bg-tertiary);
+        }
+        
+        .tool-sidebar-title {
+            font-size: var(--text-sm);
+            font-weight: var(--font-semibold);
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .tool-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-2);
+        }
+        
+        .tool-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            margin-bottom: var(--space-1);
+        }
+        
+        .tool-item:hover {
+            background: var(--color-bg-tertiary);
+        }
+        
+        .tool-item.active {
+            background: var(--color-primary-10);
+            border: 1px solid var(--color-primary-25);
+        }
+        
+        .tool-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-base);
+            flex-shrink: 0;
+        }
+        
+        .tool-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .tool-name {
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .tool-description {
+            font-size: var(--text-xs);
+            color: var(--color-text-tertiary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .main-research {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .research-header {
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--color-border-muted);
+            background: var(--color-bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .research-title {
+            font-weight: var(--font-semibold);
+        }
+        
+        .research-actions {
+            display: flex;
+            gap: var(--space-1);
+        }
+        
+        .research-action-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+            background: transparent;
+            border: 1px solid var(--color-border-muted);
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .research-action-btn:hover {
+            background: var(--color-bg-tertiary);
+            border-color: var(--color-border-primary);
+            color: var(--color-text-primary);
+        }
+        
+        .research-workspace {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+        }
+        
+        .input-panel {
+            border-right: 1px solid var(--color-border-muted);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .output-panel {
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .panel-header {
+            padding: var(--space-3) var(--space-4);
+            border-bottom: 1px solid var(--color-border-muted);
+            background: var(--color-bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .panel-title {
+            font-size: var(--text-sm);
+            font-weight: var(--font-semibold);
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .panel-content {
+            flex: 1;
+            padding: var(--space-4);
+            overflow-y: auto;
+        }
+        
+        /* Tool-specific input forms */
+        .tool-input {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .input-field {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+        
+        .input-label {
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            color: var(--color-text-secondary);
+        }
+        
+        .text-input {
+            padding: var(--space-3);
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border-muted);
+            border-radius: var(--radius-md);
+            color: var(--color-text-primary);
+            font-size: var(--text-base);
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .text-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+        
+        .text-input::placeholder {
+            color: var(--color-text-tertiary);
+        }
+        
+        .file-upload-area {
+            border: 2px dashed var(--color-border-muted);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+        
+        .file-upload-area:hover {
+            border-color: var(--color-border-primary);
+            background: var(--color-bg-tertiary);
+        }
+        
+        .file-upload-area.active {
+            border-color: var(--color-primary);
+            background: var(--color-primary-10);
+        }
+        
+        .file-upload-icon {
+            font-size: var(--text-3xl);
+            margin-bottom: var(--space-2);
+            color: var(--color-text-tertiary);
+        }
+        
+        .file-upload-text {
+            color: var(--color-text-secondary);
+            font-size: var(--text-sm);
+        }
+        
+        .file-upload-hint {
+            font-size: var(--text-xs);
+            color: var(--color-text-tertiary);
+            margin-top: var(--space-1);
+        }
+        
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+            margin-top: var(--space-2);
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2);
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-md);
+        }
+        
+        .file-icon {
+            color: var(--color-accent);
+        }
+        
+        .file-name {
+            flex: 1;
+            font-size: var(--text-sm);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .file-size {
+            font-size: var(--text-xs);
+            color: var(--color-text-tertiary);
+        }
+        
+        .file-remove {
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity var(--transition-fast);
+        }
+        
+        .file-remove:hover {
+            opacity: 1;
+        }
+        
+        .url-input {
+            display: flex;
+            gap: var(--space-2);
+        }
+        
+        .url-input input {
+            flex: 1;
+            padding: var(--space-2) var(--space-3);
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border-muted);
+            border-radius: var(--radius-md);
+            color: var(--color-text-primary);
+            font-size: var(--text-sm);
+        }
+        
+        .url-input button {
+            padding: var(--space-2) var(--space-3);
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .url-input button:hover {
+            filter: brightness(1.1);
+        }
+        
+        .parameter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--space-3);
+        }
+        
+        .parameter-select {
+            padding: var(--space-2);
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border-muted);
+            border-radius: var(--radius-md);
+            color: var(--color-text-primary);
+            font-size: var(--text-sm);
+        }
+        
+        .parameter-select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+        
+        /* Output display */
+        .output-content {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .output-result {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-border-muted);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+        }
+        
+        .output-result h3 {
+            font-size: var(--text-lg);
+            margin-bottom: var(--space-3);
+        }
+        
+        .output-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: var(--leading-relaxed);
+        }
+        
+        .output-code {
+            background: var(--color-bg-primary);
+            border-radius: var(--radius-md);
+            padding: var(--space-3);
+            font-family: var(--font-mono);
+            font-size: var(--text-sm);
+            overflow-x: auto;
+            white-space: pre;
+        }
+        
+        .output-image {
+            max-width: 100%;
+            border-radius: var(--radius-md);
+        }
+        
+        .output-actions {
+            display: flex;
+            gap: var(--space-2);
+            margin-top: var(--space-2);
+        }
+        
+        .output-action {
+            padding: var(--space-1) var(--space-2);
+            background: var(--color-bg-tertiary);
+            border: 1px solid var(--color-border-muted);
+            border-radius: var(--radius-sm);
+            color: var(--color-text-secondary);
+            font-size: var(--text-xs);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .output-action:hover {
+            background: var(--color-bg-elevated);
+            border-color: var(--color-border-primary);
+            color: var(--color-text-primary);
+        }
+        
+        .loading-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-8);
+            color: var(--color-text-secondary);
+        }
+        
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--color-bg-tertiary);
+            border-top-color: var(--color-primary);
+            border-radius: var(--radius-full);
+            animation: spin 0.8s linear infinite;
+            margin-right: var(--space-3);
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error-display {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+            color: var(--color-error);
+        }
+        
+        .run-btn {
+            padding: var(--space-3) var(--space-6);
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: var(--radius-lg);
+            color: white;
+            font-weight: var(--font-semibold);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            margin-top: var(--space-2);
+        }
+        
+        .run-btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
+        
+        .run-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .run-btn .btn-icon {
+            margin-right: var(--space-2);
+        }
+        
+        /* Tool descriptions */
+        .tool-description-panel {
+            padding: var(--space-4);
+            background: var(--color-bg-tertiary);
+            border-top: 1px solid var(--color-border-muted);
+        }
+        
+        .tool-description-title {
+            font-size: var(--text-sm);
+            font-weight: var(--font-semibold);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .tool-description-text {
+            font-size: var(--text-sm);
+            color: var(--color-text-tertiary);
+            line-height: var(--leading-relaxed);
+        }
+        
+        /* History panel */
+        .history-panel {
+            border-top: 1px solid var(--color-border-muted);
+            padding: var(--space-3);
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            padding: var(--space-2);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            margin-bottom: var(--space-1);
+            font-size: var(--text-sm);
+            color: var(--color-text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .history-item:hover {
+            background: var(--color-bg-tertiary);
+            color: var(--color-text-primary);
+        }
+        
+        /* Welcome screen */
+        .welcome-research {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-12);
+            text-align: center;
+            color: var(--color-text-secondary);
+        }
+        
+        .welcome-research-icon {
+            font-size: var(--text-5xl);
+            margin-bottom: var(--space-4);
+        }
+        
+        .welcome-research-title {
+            font-size: var(--text-2xl);
+            font-weight: var(--font-semibold);
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .welcome-research-description {
+            max-width: 400px;
+            margin-bottom: var(--space-6);
+            line-height: var(--leading-relaxed);
+        }
+        
+        .tool-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-3);
+            max-width: 600px;
+        }
+        
+        .tool-card {
+            padding: var(--space-3);
+            background: var(--color-bg-tertiary);
+            border: 1px solid var(--color-border-muted);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .tool-card:hover {
+            background: var(--color-bg-elevated);
+            border-color: var(--color-border-primary);
+        }
+        
+        .tool-card-icon {
+            font-size: var(--text-2xl);
+            margin-bottom: var(--space-2);
+        }
+        
+        .tool-card-name {
+            font-weight: var(--font-medium);
+            margin-bottom: var(--space-1);
+        }
+        
+        .tool-card-description {
+            font-size: var(--text-xs);
+            color: var(--color-text-tertiary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .research-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .tool-sidebar {
+                display: none;
+                position: fixed;
+                top: 64px;
+                left: 0;
+                width: 250px;
+                height: calc(100vh - 64px);
+                z-index: var(--z-modal);
+            }
+            
+            .tool-sidebar.visible {
+                display: flex;
+            }
+            
+            .research-workspace {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-panel {
+                border-right: none;
+                border-bottom: 1px solid var(--color-border-muted);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .research-header {
+                padding: var(--space-3);
+            }
+            
+            .research-title {
+                font-size: var(--text-sm);
+            }
+            
+            .panel-content {
+                padding: var(--space-3);
+            }
+            
+            .run-btn {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .research-actions {
+                gap: 0;
+            }
+            
+            .research-action-btn {
+                width: 28px;
+                height: 28px;
+            }
+            
+            .parameter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-logo">&#9670;</span>
+                <span class="brand-name">Aether</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="models.html" class="nav-link">Models</a>
+                <a href="chat.html" class="nav-link">Chat</a>
+                <a href="research.html" class="nav-link active">Research</a>
+                <a href="files.html" class="nav-link">Files</a>
+            </div>
+            <div class="nav-actions">
+                <a href="#" class="btn btn-ghost">Docs</a>
+                <a href="#" class="btn btn-primary">Get Aetheris</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Research Container -->
+    <div class="research-container">
+        <!-- Tool Sidebar -->
+        <aside class="tool-sidebar" id="tool-sidebar">
+            <div class="tool-sidebar-header">
+                <div class="tool-sidebar-title">Research Tools</div>
+            </div>
+            
+            <div class="tool-list" id="tool-list">
+                <div class="tool-item active" data-tool="search" onclick="selectTool('search')">
+                    <div class="tool-icon">&#128269;</div>
+                    <div class="tool-info">
+                        <div class="tool-name">Web Search</div>
+                        <div class="tool-description">Search and summarize</div>
+                    </div>
+                </div>
+                <div class="tool-item" data-tool="summarize" onclick="selectTool('summarize')">
+                    <div class="tool-icon">&#128196;</div>
+                    <div class="tool-info">
+                        <div class="tool-name">Summarize</div>
+                        <div class="tool-description">Condense text</div>
+                    </div>
+                </div>
+                <div class="tool-item" data-tool="translate" onclick="selectTool('translate')">
+                    <div class="tool-icon">&#127757;</div>
+                    <div class="tool-info">
+                        <div class="tool-name">Translate</div>
+                        <div class="tool-description">100+ languages</div>
+                    </div>
+                </div>
+                <div class="tool-item" data-tool="ocr" onclick="selectTool('ocr')">
+                    <div class="tool-icon">&#128247;</div>
+                    <div class="tool-info">
+                        <div class="tool-name">OCR</div>
+                        <div class="tool-description">Extract text from images</div>
+                    </div>
+                </div>
+                <div class="tool-item" data-tool="analyze" onclick="selectTool('analyze')">
+                    <div class="tool-icon">&#128200;</div>
+                    <div class="tool-info">
+                        <div class="tool-name">Analyze</div>
+                        <div class="tool-description">Document intelligence</div>
+                    </div>
+                </div>
+                <div class="tool-item" data-tool="code-review" onclick="selectTool('code-review')">
+                    <div class="tool-icon">&#128187;</div>
+                    <div class="tool-info">
+                        <div class="tool-name">Code Review</div>
+                        <div class="tool-description">Analyze code</div>
+                    </div>
+                </div>
+                <div class="tool-item" data-tool="generate" onclick="selectTool('generate')">
+                    <div class="tool-icon">&#9998;</div>
+                    <div class="tool-info">
+                        <div class="tool-name">Generate</div>
+                        <div class="tool-description">Create content</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tool-description-panel">
+                <div class="tool-description-title" id="tool-description-title">Web Search</div>
+                <div class="tool-description-text" id="tool-description-text">
+                    Search the web and get AI-powered summaries of the results.
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Research Area -->
+        <main class="main-research">
+            <!-- Research Header -->
+            <header class="research-header">
+                <div class="research-title" id="current-tool-name">Web Search</div>
+                <div class="research-actions">
+                    <button class="research-action-btn" onclick="toggleSidebar()" title="Change tool">
+                        <span>&#9670;</span>
+                    </button>
+                    <button class="research-action-btn" onclick="clearInput()" title="Clear">
+                        <span>&#128465;</span>
+                    </button>
+                    <button class="research-action-btn" onclick="showHistory()" title="History">
+                        <span>&#128197;</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Research Workspace -->
+            <div class="research-workspace">
+                <!-- Input Panel -->
+                <div class="input-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Input</div>
+                    </div>
+                    <div class="panel-content">
+                        <div class="tool-input" id="tool-input">
+                            <!-- Dynamic input based on tool -->
+                            <div id="input-search" class="input-form">
+                                <div class="input-field">
+                                    <label class="input-label">Search Query</label>
+                                    <textarea class="text-input" id="search-query" placeholder="Enter your search query..."></textarea>
+                                </div>
+                                <div class="input-field">
+                                    <label class="input-label">Options</label>
+                                    <div class="parameter-grid">
+                                        <select class="parameter-select" id="search-engine">
+                                            <option value="google">Google</option>
+                                            <option value="bing">Bing</option>
+                                            <option value="duckduckgo">DuckDuckGo</option>
+                                        </select>
+                                        <select class="parameter-select" id="search-results">
+                                            <option value="5">5 results</option>
+                                            <option value="10" selected>10 results</option>
+                                            <option value="20">20 results</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="input-summarize" class="input-form" style="display: none;">
+                                <div class="input-field">
+                                    <label class="input-label">Text to Summarize</label>
+                                    <textarea class="text-input" id="summarize-text" placeholder="Enter or paste text to summarize..."></textarea>
+                                </div>
+                                <div class="input-field">
+                                    <label class="input-label">Summary Length</label>
+                                    <select class="parameter-select" id="summary-length">
+                                        <option value="short">Short</option>
+                                        <option value="medium" selected>Medium</option>
+                                        <option value="long">Long</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div id="input-translate" class="input-form" style="display: none;">
+                                <div class="input-field">
+                                    <label class="input-label">Text to Translate</label>
+                                    <textarea class="text-input" id="translate-text" placeholder="Enter text to translate..."></textarea>
+                                </div>
+                                <div class="input-field">
+                                    <label class="input-label">Language Settings</label>
+                                    <div class="parameter-grid">
+                                        <select class="parameter-select" id="source-language">
+                                            <option value="auto">Auto Detect</option>
+                                            <option value="en">English</option>
+                                            <option value="es">Spanish</option>
+                                            <option value="fr">French</option>
+                                            <option value="de">German</option>
+                                            <option value="zh">Chinese</option>
+                                            <option value="ja">Japanese</option>
+                                        </select>
+                                        <select class="parameter-select" id="target-language">
+                                            <option value="en">English</option>
+                                            <option value="es">Spanish</option>
+                                            <option value="fr">French</option>
+                                            <option value="de">German</option>
+                                            <option value="zh">Chinese</option>
+                                            <option value="ja">Japanese</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="input-ocr" class="input-form" style="display: none;">
+                                <div class="input-field">
+                                    <label class="input-label">Upload Image</label>
+                                    <div class="file-upload-area" id="ocr-upload" onclick="document.getElementById('ocr-file').click()">
+                                        <div class="file-upload-icon">&#128247;</div>
+                                        <div class="file-upload-text">Click to upload or drag and drop</div>
+                                        <div class="file-upload-hint">PNG, JPG, WEBP (Max 10MB)</div>
+                                    </div>
+                                    <input type="file" id="ocr-file" accept="image/*" style="display: none;" onchange="handleFileUpload(event, 'ocr')">
+                                    <div class="file-list" id="ocr-file-list"></div>
+                                </div>
+                                <div class="input-field">
+                                    <label class="input-label">OCR Options</label>
+                                    <select class="parameter-select" id="ocr-language">
+                                        <option value="auto">Auto Detect</option>
+                                        <option value="en">English</option>
+                                        <option value="es">Spanish</option>
+                                        <option value="fr">French</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div id="input-analyze" class="input-form" style="display: none;">
+                                <div class="input-field">
+                                    <label class="input-label">Upload Document</label>
+                                    <div class="file-upload-area" id="analyze-upload" onclick="document.getElementById('analyze-file').click()">
+                                        <div class="file-upload-icon">&#128196;</div>
+                                        <div class="file-upload-text">Click to upload or drag and drop</div>
+                                        <div class="file-upload-hint">PDF, DOCX, TXT (Max 20MB)</div>
+                                    </div>
+                                    <input type="file" id="analyze-file" accept=".pdf,.docx,.txt" style="display: none;" onchange="handleFileUpload(event, 'analyze')">
+                                    <div class="file-list" id="analyze-file-list"></div>
+                                </div>
+                                <div class="input-field">
+                                    <label class="input-label">Analysis Type</label>
+                                    <select class="parameter-select" id="analysis-type">
+                                        <option value="summary">Summary</option>
+                                        <option value="keywords">Keywords</option>
+                                        <option value="questions">Questions</option>
+                                        <option value="insights">Insights</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div id="input-code-review" class="input-form" style="display: none;">
+                                <div class="input-field">
+                                    <label class="input-label">Code to Review</label>
+                                    <textarea class="text-input" id="code-text" placeholder="Paste your code here..."></textarea>
+                                </div>
+                                <div class="input-field">
+                                    <label class="input-label">Code Language</label>
+                                    <select class="parameter-select" id="code-language">
+                                        <option value="auto">Auto Detect</option>
+                                        <option value="javascript">JavaScript</option>
+                                        <option value="python">Python</option>
+                                        <option value="typescript">TypeScript</option>
+                                        <option value="java">Java</option>
+                                        <option value="c++">C++</option>
+                                        <option value="go">Go</option>
+                                        <option value="rust">Rust</option>
+                                    </select>
+                                </div>
+                                <div class="input-field">
+                                    <label class="input-label">Review Focus</label>
+                                    <select class="parameter-select" id="review-focus">
+                                        <option value="general">General</option>
+                                        <option value="bugs">Bug Detection</option>
+                                        <option value="performance">Performance</option>
+                                        <option value="security">Security</option>
+                                        <option value="style">Code Style</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div id="input-generate" class="input-form" style="display: none;">
+                                <div class="input-field">
+                                    <label class="input-label">Prompt</label>
+                                    <textarea class="text-input" id="generate-prompt" placeholder="Describe what you want to generate..."></textarea>
+                                </div>
+                                <div class="input-field">
+                                    <label class="input-label">Content Type</label>
+                                    <select class="parameter-select" id="generate-type">
+                                        <option value="article">Article</option>
+                                        <option value="story">Story</option>
+                                        <option value="poem">Poem</option>
+                                        <option value="email">Email</option>
+                                        <option value="code">Code</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="run-btn" id="run-btn" onclick="runTool()">
+                            <span class="btn-icon">&#9654;</span> Run
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Output Panel -->
+                <div class="output-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Output</div>
+                        <div class="output-actions">
+                            <button class="output-action" onclick="copyOutput()">Copy</button>
+                            <button class="output-action" onclick="clearOutput()">Clear</button>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <div class="output-content" id="output-content">
+                            <div class="welcome-research" id="welcome-research">
+                                <div class="welcome-research-icon">&#128218;</div>
+                                <h2 class="welcome-research-title">Research Tools</h2>
+                                <p class="welcome-research-description">
+                                    Choose a tool from the sidebar to get started. 
+                                    Each tool provides powerful AI capabilities for research and analysis.
+                                </p>
+                                <div class="tool-cards">
+                                    <div class="tool-card" onclick="selectTool('search')">
+                                        <div class="tool-card-icon">&#128269;</div>
+                                        <div class="tool-card-name">Web Search</div>
+                                        <div class="tool-card-description">Search and summarize</div>
+                                    </div>
+                                    <div class="tool-card" onclick="selectTool('summarize')">
+                                        <div class="tool-card-icon">&#128196;</div>
+                                        <div class="tool-card-name">Summarize</div>
+                                        <div class="tool-card-description">Condense text</div>
+                                    </div>
+                                    <div class="tool-card" onclick="selectTool('translate')">
+                                        <div class="tool-card-icon">&#127757;</div>
+                                        <div class="tool-card-name">Translate</div>
+                                        <div class="tool-card-description">100+ languages</div>
+                                    </div>
+                                    <div class="tool-card" onclick="selectTool('ocr')">
+                                        <div class="tool-card-icon">&#128247;</div>
+                                        <div class="tool-card-name">OCR</div>
+                                        <div class="tool-card-description">Extract text</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="history-panel" id="history-panel" style="display: none;">
+                        <div class="panel-title" style="padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border-muted);">History</div>
+                        <div id="history-list"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Sidebar Toggle -->
+    <button class="btn btn-primary" onclick="toggleSidebar()" id="mobile-sidebar-toggle" style="display: none; position: fixed; bottom: var(--space-4); left: var(--space-4); z-index: var(--z-fixed);">
+        <span>&#9670;</span> Tools
+    </button>
+
+    <!-- Puter.js Integration -->
+    <script src="https://js.puter.com/v2/"></script>
+    <script src="js/puter-client.js"></script>
+    <script src="js/research.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
