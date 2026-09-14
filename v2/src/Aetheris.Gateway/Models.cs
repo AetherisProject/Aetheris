@@ -14,6 +14,7 @@ public sealed record ChatRequest(
     [property: JsonPropertyName("max_tokens")] int? MaxTokens,
     [property: JsonPropertyName("stream")] bool? Stream);
 
+
 // ---- gateway configuration ----
 
 public sealed class GatewayConfig

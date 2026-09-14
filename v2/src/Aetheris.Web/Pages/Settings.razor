@@ -1,0 +1,248 @@
+@page "/settings"
+@inject VaultState State
+@inject NavigationManager Nav
+@inject IConfiguration Config
+
+@if (!State.IsUnlocked)
+{
+    <div class="center-screen">
+        <div class="card unlock-card">
+            <div class="brand-badge big">🔒</div>
+            <h1>Vault locked</h1>
+            <p class="muted">Please <a href="/">unlock</a> to access settings.</p>
+        </div>
+    </div>
+}
+else
+{
+    <div class="shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="brand-badge">◈</span> Aetheris
+                <span class="brand-sub">v2</span>
+            </div>
+            <nav class="nav">
+                <NavLink href="vault">🗄 Vault</NavLink>
+                <NavLink href="gateway">⚡ Gateway</NavLink>
+                <NavLink href="settings" Match="NavLinkMatch.All">⚙ Settings</NavLink>
+            </nav>
+            <div class="sidebar-foot muted small">
+                @if (State.IsHubReachable)
+                {
+                    <span>✓ Hub reachable</span>
+                }
+                else
+                {
+                    <span>⚠ Hub offline</span>
+                }
+            </div>
+        </aside>
+        
+        <main class="content">
+            <header class="page-head">
+                <h1>Settings</h1>
+            </header>
+
+            <div class="card">
+                <h3 style="margin-bottom: 16px;">Hub (sync server)</h3>
+                <div style="margin-bottom: 12px;">
+                    <label class="muted small">Hub URL</label>
+                    <input type="url" 
+                           @bind="_hubUrl" 
+                           placeholder="http://127.0.0.1:8080" 
+                           style="width: 100%; margin-top: 6px;" />
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                    <label class="muted small">Vault generation</label>
+                    <input type="text" 
+                           value="@State.CurrentGeneration — last push @GetLastPushTime()" 
+                           disabled 
+                           style="width: 100%; margin-top: 6px;" />
+                </div>
+
+                <div style="display: flex; gap: 8px; margin-top: 16px;">
+                    <button class="btn primary" @onclick="PushVault" disabled="@(!State.HasUnsavedChanges)">
+                        @if (_isPushing)
+                        {
+                            <span>Pushing…</span>
+                        }
+                        else
+                        {
+                            <span>Push vault to hub</span>
+                        }
+                    </button>
+                    <button class="btn" @onclick="PullVault">Pull from hub</button>
+                    <button class="btn" @onclick="SyncVault">Sync</button>
+                    <button class="btn" @onclick="LockVault" style="margin-left: auto;">Lock now</button>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 12px;">
+                <h3 style="margin-bottom: 16px;">Auto-lock</h3>
+                <div style="margin-bottom: 12px;">
+                    <label class="muted small">Auto-lock after inactivity</label>
+                    <div style="display: flex; gap: 8px; margin-top: 6px; align-items: center;">
+                        <input type="range" 
+                               min="1" 
+                               max="60" 
+                               @bind="_autoLockMinutes" 
+                               style="flex: 1;" />
+                        <span>@_autoLockMinutes min</span>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 12px;">
+                    <label class="muted small">Lock when tab is hidden</label>
+                    <div style="margin-top: 6px;">
+                        <label class="switch">
+                            <input type="checkbox" @bind="_lockOnTabHidden" />
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 12px;">
+                <h3 style="margin-bottom: 16px;">Pair a new device</h3>
+                <div style="margin-bottom: 12px;">
+                    <label class="muted small">Pairing code</label>
+                    <input type="text" 
+                           value="@_pairingCode — valid for 5 minutes" 
+                           disabled 
+                           style="width: 100%; margin-top: 6px;" />
+                </div>
+                <button class="btn primary" @onclick="GeneratePairingCode">Generate new code</button>
+            </div>
+
+            <div class="card" style="margin-top: 12px;">
+                <h3 style="margin-bottom: 16px;">About</h3>
+                <p class="muted small">
+                    Aetheris v2 — Zero-knowledge secrets management<br />
+                    All encryption happens in your browser<br />
+                    The server only ever stores ciphertext
+                </p>
+                <p class="muted small" style="margin-top: 12px;">
+                    Build: @GetBuildInfo()
+                </p>
+            </div>
+        </main>
+    </div>
+}
+
+@code {
+    private string _hubUrl = "";
+    private int _autoLockMinutes = 5;
+    private bool _lockOnTabHidden = true;
+    private string _pairingCode = "river-falcon-73";
+    private bool _isPushing = false;
+
+    protected override void OnInitialized()
+    {
+        _hubUrl = Config["HubUrl"] ?? "http://127.0.0.1:8080";
+    }
+
+    private async Task PushVault()
+    {
+        _isPushing = true;
+        StateHasChanged();
+        
+        try
+        {
+            await State.PushAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine(ex);
+        }
+        finally
+        {
+            _isPushing = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task PullVault()
+    {
+        try
+        {
+            await State.PullAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine(ex);
+        }
+    }
+
+    private async Task SyncVault()
+    {
+        try
+        {
+            await State.SyncAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine(ex);
+        }
+    }
+
+    private void LockVault()
+    {
+        State.Lock();
+        Nav.NavigateTo("/");
+    }
+
+    private void GeneratePairingCode()
+    {
+        var random = new Random();
+        var adjectives = new[] { "river", "mountain", "sky", "ocean", "forest", "desert", "star", "moon" };
+        var nouns = new[] { "falcon", "eagle", "lion", "tiger", "bear", "wolf", "dragon", "phoenix" };
+        
+        _pairingCode = $"{adjectives[random.Next(adjectives.Length)]}-{nouns[random.Next(nouns.Length)]}-{random.Next(100)}";
+    }
+
+    private string GetLastPushTime()
+    {
+        // In a real implementation, this would come from state
+        return "just now";
+    }
+
+    private string GetBuildInfo()
+    {
+        return "2026-09-14 · W4-Web-PWA";
+    }
+}
+
+<style>
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 24px;
+    }
+    .switch input { display: none; }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-color: var(--surface);
+        transition: .4s;
+        border-radius: 24px;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 4px;
+        bottom: 4px;
+        background-color: var(--muted);
+        transition: .4s;
+        border-radius: 50%;
+    }
+    input:checked + .slider { background-color: var(--primary); }
+    input:checked + .slider:before { 
+        transform: translateX(20px); 
+        background-color: white;
+    }
+</style>

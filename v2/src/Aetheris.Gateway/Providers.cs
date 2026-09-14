@@ -15,6 +15,7 @@ public interface ILlmProvider
     bool NeedsKey { get; }
     IReadOnlyDictionary<string, string> KnownModels { get; }
     Task<ProviderResult> ChatAsync(HttpClient http, string model, ChatRequest request, string? apiKey, CancellationToken ct);
+    IAsyncEnumerable<JsonNode> StreamChatAsync(HttpClient http, string model, ChatRequest request, string? apiKey, CancellationToken ct);
 }
 
 public abstract class ProviderBase : ILlmProvider
@@ -62,6 +63,70 @@ public abstract class ProviderBase : ILlmProvider
         var usage = body?["usage"];
         return (usage?["prompt_tokens"]?.GetValue<long>(), usage?["completion_tokens"]?.GetValue<long>());
     }
+
+    public virtual async IAsyncEnumerable<JsonNode> StreamChatAsync(HttpClient http, string model, ChatRequest request, string? apiKey, [EnumeratorCancellation] CancellationToken ct)
+    {
+        if (NeedsKey && string.IsNullOrEmpty(apiKey))
+        {
+            yield break;
+        }
+
+        using var message = BuildStreamRequest(model, request, apiKey ?? "");
+        var response = await http.SendAsync(message, ct);
+        
+        if (!response.IsSuccessStatusCode)
+        {
+            yield break;
+        }
+
+        using var stream = await response.Content.ReadAsStreamAsync(ct);
+        using var reader = new StreamReader(stream);
+        
+        while (!reader.EndOfStream && !ct.IsCancellationRequested)
+        {
+            var line = await reader.ReadLineAsync(ct);
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
+            
+            if (line.StartsWith("data: "))
+            {
+                var data = line[6..].Trim();
+                if (data == "[DONE]")
+                    break;
+                    
+                try
+                {
+                    var json = JsonNode.Parse(data);
+                    if (json is not null)
+                    {
+                        var mapped = MapStreamResponse(json);
+                        if (mapped is not null)
+                            yield return mapped;
+                    }
+                }
+                catch { /* parse error, skip */ }
+            }
+        }
+    }
+
+    protected virtual HttpRequestMessage BuildStreamRequest(string model, ChatRequest request, string apiKey)
+    {
+        var body = new JsonObject
+        {
+            ["model"] = model,
+            ["messages"] = JsonSerializer.SerializeToNode(request.Messages),
+            ["max_tokens"] = request.MaxTokens,
+            ["stream"] = true,
+        };
+        var message = new HttpRequestMessage(HttpMethod.Post, Endpoint)
+        {
+            Content = new StringContent(body.ToJsonString(), Encoding.UTF8, "application/json"),
+        };
+        Authorize(message, apiKey);
+        return message;
+    }
+
+    protected virtual JsonNode? MapStreamResponse(JsonNode? upstream) => upstream;
 }
 
 public sealed class OpenAiProvider : ProviderBase
@@ -133,6 +198,95 @@ public sealed class AnthropicProvider : ProviderBase
     }
     protected override (long?, long?) ExtractUsage(JsonNode? body) =>
         (body?["usage"]?["input_tokens"]?.GetValue<long>(), body?["usage"]?["output_tokens"]?.GetValue<long>());
+    
+    protected override HttpRequestMessage BuildStreamRequest(string model, ChatRequest request, string apiKey)
+    {
+        var system = string.Join("\n", request.Messages.Where(m => m.Role == "system").Select(m => m.Content));
+        var rest = request.Messages.Where(m => m.Role != "system").ToList();
+        var body = new JsonObject
+        {
+            ["model"] = model,
+            ["max_tokens"] = request.MaxTokens ?? 1024,
+            ["messages"] = JsonSerializer.SerializeToNode(rest),
+            ["stream"] = true,
+        };
+        if (system.Length > 0) body["system"] = system;
+        var message = new HttpRequestMessage(HttpMethod.Post, Endpoint)
+        {
+            Content = new StringContent(body.ToJsonString(), Encoding.UTF8, "application/json"),
+        };
+        Authorize(message, apiKey);
+        return message;
+    }
+
+    protected override JsonNode? MapStreamResponse(JsonNode? upstream)
+    {
+        if (upstream is null) return null;
+        
+        // Anthropic streaming format: { type: "message_start" | "content_block_start" | "content_block_delta" | "message_delta" | "message_stop" }
+        var type = upstream["type"]?.GetValue<string>();
+        
+        if (type == "message_start")
+        {
+            // First chunk with metadata
+            return new JsonObject
+            {
+                ["id"] = upstream["message"]?["id"]?.GetValue<string>() ?? Guid.NewGuid().ToString(),
+                ["object"] = "chat.completion.chunk",
+                ["created"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                ["model"] = upstream["model"]?.GetValue<string>() ?? "",
+                ["choices"] = new JsonArray(new JsonObject
+                {
+                    ["index"] = 0,
+                    ["delta"] = new JsonObject { ["role"] = "assistant", ["content"] = "" },
+                    ["finish_reason"] = null,
+                })
+            };
+        }
+        else if (type == "content_block_delta")
+        {
+            // Content chunks
+            var text = upstream["delta"]?["text"]?.GetValue<string>() ?? "";
+            return new JsonObject
+            {
+                ["id"] = Guid.NewGuid().ToString(),
+                ["object"] = "chat.completion.chunk",
+                ["created"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                ["model"] = "",
+                ["choices"] = new JsonArray(new JsonObject
+                {
+                    ["index"] = 0,
+                    ["delta"] = new JsonObject { ["role"] = null, ["content"] = text },
+                    ["finish_reason"] = null,
+                })
+            };
+        }
+        else if (type == "message_delta")
+        {
+            // Final metadata with stop reason
+            var finishReason = upstream["delta"]?["stop_reason"]?.GetValue<string>() ?? "stop";
+            return new JsonObject
+            {
+                ["id"] = Guid.NewGuid().ToString(),
+                ["object"] = "chat.completion.chunk",
+                ["created"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                ["model"] = "",
+                ["choices"] = new JsonArray(new JsonObject
+                {
+                    ["index"] = 0,
+                    ["delta"] = new JsonObject { ["role"] = null, ["content"] = "" },
+                    ["finish_reason"] = finishReason,
+                })
+            };
+        }
+        else if (type == "message_stop")
+        {
+            // Stream end - return null to signal completion
+            return null;
+        }
+        
+        return upstream;
+    }
 }
 
 /// <summary>Local models via Ollama's OpenAI-compatible endpoint — no key required.</summary>

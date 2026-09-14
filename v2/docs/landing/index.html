@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Aetheris - Your LLM keys never live in .env again. One encrypted vault, one local gateway, on every device.">
+    <meta name="keywords" content="LLM, API keys, vault, encryption, gateway, self-hosted, privacy, security">
+    <meta name="author" content="Aetheris">
+    <meta property="og:title" content="Aetheris - Local LLM Gateway with Encrypted Vault">
+    <meta property="og:description" content="Your LLM keys never live in .env again — one encrypted vault, one local gateway, on every device.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aetheris.dev">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Aetheris - Local LLM Gateway with Encrypted Vault">
+    <meta name="twitter:description" content="Your LLM keys never live in .env again — one encrypted vault, one local gateway, on every device.">
+    <title>Aetheris - Local LLM Gateway with Encrypted Vault</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <span class="glyph">◈</span>
+                <span class="name">Aetheris</span>
+            </div>
+            <nav class="nav">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#pricing" class="nav-link">Pricing</a>
+                <a href="#how-it-works" class="nav-link">How it Works</a>
+                <a href="#posts" class="nav-link">Blog</a>
+                <a href="#waitlist" class="nav-link">Waitlist</a>
+            </nav>
+            <div class="header-actions">
+                <a href="https://github.com/Aetheris/Aetheris" class="btn btn-ghost" target="_blank">
+                    <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0C5.374 0 0 5.373 0 12 0 17.302 3.438 21.8 8.207 23.387c.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    Star on GitHub
+                </a>
+                <a href="#waitlist" class="btn btn-primary">Join Waitlist</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <span class="badge-dot"></span>
+                        Open Source (MIT License)
+                    </div>
+                    <h1 class="hero-title">
+                        Your LLM keys never live in <code>.env</code> again
+                    </h1>
+                    <p class="hero-subtitle">
+                        One encrypted vault, one local gateway, on every device.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#waitlist" class="btn btn-primary btn-lg">
+                            Join Waitlist for Sync Tier
+                        </a>
+                        <a href="https://github.com/Aetheris/Aetheris" class="btn btn-ghost btn-lg" target="_blank">
+                            <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0C5.374 0 0 5.373 0 12 0 17.302 3.438 21.8 8.207 23.387c.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                            View on GitHub
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="terminal-mockup">
+                        <div class="terminal-header">
+                            <span class="terminal-dot red"></span>
+                            <span class="terminal-dot yellow"></span>
+                            <span class="terminal-dot green"></span>
+                            <span class="terminal-title">Terminal</span>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-line"><span class="prompt">$</span> <span class="command">aeth init</span></div>
+                            <div class="terminal-line"><span class="prompt">$</span> <span class="command">aeth add openai-key</span></div>
+                            <div class="terminal-line"><span class="prompt">$</span> <span class="command">aeth run -- curl https://api.openai.com/v1/chat/completions</span></div>
+                            <div class="terminal-line"><span class="success">✓ Keys encrypted and stored in vault</span></div>
+                            <div class="terminal-line"><span class="success">✓ Gateway running on http://localhost:8080</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <span>Scroll to explore</span>
+                <div class="scroll-arrow"></div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Features</h2>
+                    <p class="section-subtitle">Everything you need to secure your LLM workflow</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon vault">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">Encrypted Vault</h3>
+                        <p class="feature-description">
+                            Store all your API keys and secrets in an encrypted vault using Argon2id + XChaCha20-Poly1305. 
+                            Your keys are never stored in plaintext.
+                        </p>
+                        <div class="feature-tags">
+                            <span class="tag">BouncyCastle</span>
+                            <span class="tag">Zero-Knowledge</span>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon gateway">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 2a10 10 0 0 0-3.912 19.746"/>
+                                <path d="M12 6v6"/>
+                                <path d="M12 18v2"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">Local Gateway</h3>
+                        <p class="feature-description">
+                            Run a local gateway that proxies requests to your LLM providers. 
+                            All requests go through your own infrastructure.
+                        </p>
+                        <div class="feature-tags">
+                            <span class="tag">Self-Hosted</span>
+                            <span class="tag">C#/.NET 8</span>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon sync">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                                <line x1="12" y1="22.08" x2="12" y2="12"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">Multi-Device Sync</h3>
+                        <p class="feature-description">
+                            Sync your vault across all your devices with the hosted hub. 
+                            Zero-knowledge architecture ensures only you can access your data.
+                        </p>
+                        <div class="feature-tags">
+                            <span class="tag">Sync Tier</span>
+                            <span class="tag">€5/month</span>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon budget">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="1" x2="12" y2="23"/>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">Budget Tracking</h3>
+                        <p class="feature-description">
+                            Set budgets for each API provider and get alerts when you're approaching limits. 
+                            Never be surprised by unexpected costs again.
+                        </p>
+                        <div class="feature-tags">
+                            <span class="tag">Cost Control</span>
+                            <span class="tag">Alerts</span>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon ssh">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 2l-2 2-2-2-2 2-2-2-2 2-2-2-2 2z"/>
+                                <path d="M12 7v5"/>
+                                <path d="M12 17v5"/>
+                                <path d="M17 12h5"/>
+                                <path d="M7 12H2"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">SSH Terminal</h3>
+                        <p class="feature-description">
+                            Desktop Pro includes a full SSH terminal with vault-key authentication and SFTP support. 
+                            Secure remote access with your encrypted credentials.
+                        </p>
+                        <div class="feature-tags">
+                            <span class="tag">Desktop Pro</span>
+                            <span class="tag">€89 lifetime</span>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon pwa">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                                <line x1="8" y1="21" x2="16" y2="21"/>
+                                <line x1="12" y1="17" x2="12" y2="21"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">PWA Support</h3>
+                        <p class="feature-description">
+                            Progressive Web App that works on desktop and mobile browsers. 
+                            Installable, offline-capable, and responsive.
+                        </p>
+                        <div class="feature-tags">
+                            <span class="tag">Web</span>
+                            <span class="tag">Mobile</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="how-it-works">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">How It Works</h2>
+                    <p class="section-subtitle">Simple, secure, and under your control</p>
+                </div>
+                <div class="workflow">
+                    <div class="workflow-step">
+                        <div class="step-number">1</div>
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                <path d="M2 17l10 5 10-5"/>
+                                <path d="M2 12l10 5 10-5"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Initialize Vault</h3>
+                        <p class="step-description">
+                            Run <code>aeth init</code> to create your encrypted vault. 
+                            Your master password derives the encryption key using Argon2id.
+                        </p>
+                    </div>
+                    <div class="workflow-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22 12 16 12 16 8"/>
+                            <line x1="16" y1="16" x2="22" y2="12"/>
+                        </svg>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-number">2</div>
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Add Your Keys</h3>
+                        <p class="step-description">
+                            Store API keys with <code>aeth add &lt;name&gt;</code>. 
+                            Each key is encrypted and stored securely in your vault.
+                        </p>
+                    </div>
+                    <div class="workflow-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22 12 16 12 16 8"/>
+                            <line x1="16" y1="16" x2="22" y2="12"/>
+                        </svg>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-number">3</div>
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 2a10 10 0 0 0-3.912 19.746"/>
+                                <path d="M12 6v6"/>
+                                <path d="M12 18v2"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Start Gateway</h3>
+                        <p class="step-description">
+                            Launch the gateway with <code>aeth gateway</code>. 
+                            It listens on localhost and proxies requests to your providers.
+                        </p>
+                    </div>
+                    <div class="workflow-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22 12 16 12 16 8"/>
+                            <line x1="16" y1="16" x2="22" y2="12"/>
+                        </svg>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-number">4</div>
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                <polyline points="15 3 21 3 21 9"/>
+                                <line x1="10" y1="14" x2="21" y2="3"/>
+                            </svg>
+                        </div>
+                        <h3 class="step-title">Use Your Tools</h3>
+                        <p class="step-description">
+                            Run <code>aeth run -- curl ...</code> or configure your apps to use the gateway. 
+                            Keys are injected securely at runtime.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="pricing">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Pricing</h2>
+                    <p class="section-subtitle">Simple, transparent pricing for individuals and teams</p>
+                </div>
+                <div class="pricing-grid">
+                    <div class="pricing-card featured">
+                        <div class="pricing-header">
+                            <h3 class="pricing-title">Core</h3>
+                            <div class="pricing-badge">Free & Open Source</div>
+                        </div>
+                        <div class="pricing-price">
+                            <span class="price-amount">€0</span>
+                            <span class="price-period">/ forever</span>
+                        </div>
+                        <p class="pricing-description">
+                            Everything you need to get started with local LLM key management.
+                        </p>
+                        <ul class="pricing-features">
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Encrypted Vault</li>
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Local Gateway</li>
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> CLI Tool</li>
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Budget Tracking</li>
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> PWA Client</li>
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> MIT License</li>
+                        </ul>
+                        <div class="pricing-actions">
+                            <a href="https://github.com/Aetheris/Aetheris" class="btn btn-primary btn-block" target="_blank">
+                                Get Started on GitHub
+                            </a>
+                        </div>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3 class="pricing-title">Sync</h3>
+                            <div class="pricing-badge coming-soon">Coming Soon</div>
+                        </div>
+                        <div class="pricing-price">
+                            <span class="price-amount">€5</span>
+                            <span class="price-period">/ month</span>
+                        </div>
+                        <div class="pricing-alt-price">
+                            or €49 / year
+                        </div>
+                        <p class="pricing-description">
+                            Multi-device sync with hosted hub. Zero-knowledge architecture.
+                        </p>
+                        <ul class="pricing-features">
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Everything in Core</li>
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Hosted Hub</li>
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Multi-Device Sync</li>
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Automatic Backups</li>
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Priority Support</li>
+                        </ul>
+                        <div class="pricing-actions">
+                            <a href="#waitlist" class="btn btn-outline btn-block">
+                                Join Waitlist
+                            </a>
+                        </div>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3 class="pricing-title">Desktop Pro</h3>
+                            <div class="pricing-badge">Lifetime License</div>
+                        </div>
+                        <div class="pricing-price">
+                            <span class="price-amount">€89</span>
+                            <span class="price-period">/ once</span>
+                        </div>
+                        <p class="pricing-description">
+                            Full-featured desktop application with SSH terminal and SFTP.
+                        </p>
+                        <ul class="pricing-features">
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Everything in Sync</li>
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> SSH Terminal</li>
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> SFTP Support</li>
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Vault Integration</li>
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Avalonia UI</li>
+                        </ul>
+                        <div class="pricing-actions">
+                            <a href="#waitlist" class="btn btn-outline btn-block">
+                                Join Waitlist
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Posts Section -->
+        <section id="posts" class="posts">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Latest Posts</h2>
+                    <p class="section-subtitle">Technical deep dives on crypto, architecture, and more</p>
+                </div>
+                <div class="posts-grid">
+                    <article class="post-card">
+                        <div class="post-header">
+                            <span class="post-tag">Technical</span>
+                            <span class="post-date">Coming Soon</span>
+                        </div>
+                        <h3 class="post-title">I built a local LLM gateway that keeps keys out of .env (C#/.NET 8, OSS)</h3>
+                        <p class="post-excerpt">
+                            How I built Aetheris to solve the problem of scattered API keys and the security risks of storing them in .env files.
+                        </p>
+                        <div class="post-actions">
+                            <a href="../posts/aetheris-crypto-deep-dive.html" class="btn btn-ghost btn-sm">Read More</a>
+                        </div>
+                    </article>
+                    <article class="post-card">
+                        <div class="post-header">
+                            <span class="post-tag">Cryptography</span>
+                            <span class="post-date">Coming Soon</span>
+                        </div>
+                        <h3 class="post-title">Designing an encrypted vault over BouncyCastle: Argon2id + XChaCha20</h3>
+                        <p class="post-excerpt">
+                            A deep dive into the cryptographic primitives that power Aetheris vault encryption and key derivation.
+                        </p>
+                        <div class="post-actions">
+                            <a href="../posts/architecture-overview.html" class="btn btn-ghost btn-sm">Read More</a>
+                        </div>
+                    </article>
+                    <article class="post-card">
+                        <div class="post-header">
+                            <span class="post-tag">Architecture</span>
+                            <span class="post-date">Coming Soon</span>
+                        </div>
+                        <h3 class="post-title">One PWA, every platform: how the vault sync stays zero-knowledge</h3>
+                        <p class="post-excerpt">
+                            How Aetheris achieves zero-knowledge sync across all platforms using modern cryptographic techniques.
+                        </p>
+                        <div class="post-actions">
+                            <a href="../posts/zero-knowledge-sync.html" class="btn btn-ghost btn-sm">Read More</a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Waitlist Section -->
+        <section id="waitlist" class="waitlist">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Join the Waitlist</h2>
+                    <p class="section-subtitle">Be the first to know when Sync tier launches</p>
+                </div>
+                <div class="waitlist-content">
+                    <div class="waitlist-form-container">
+                        <form id="waitlist-form" class="waitlist-form">
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Name (Optional)</label>
+                                <input type="text" id="name" name="name" placeholder="Your name">
+                            </div>
+                            <div class="form-group">
+                                <label for="interest">Interest</label>
+                                <select id="interest" name="interest">
+                                    <option value="sync">Sync Tier (€5/month)</option>
+                                    <option value="desktop">Desktop Pro (€89 lifetime)</option>
+                                    <option value="both">Both</option>
+                                    <option value="service">Service Offer (€400-800)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Message (Optional)</label>
+                                <textarea id="message" name="message" placeholder="What would you like to see in Aetheris?"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                Join Waitlist
+                            </button>
+                        </form>
+                        <div id="waitlist-success" class="waitlist-success hidden">
+                            <div class="success-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                            </div>
+                            <h3>Thanks for joining!</h3>
+                            <p>We'll be in touch when Sync tier launches. In the meantime, check out the <a href="https://github.com/Aetheris/Aetheris">GitHub repo</a>.</p>
+                        </div>
+                    </div>
+                    <div class="waitlist-info">
+                        <h4>What you get:</h4>
+                        <ul class="waitlist-benefits">
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Early access to Sync tier</li>
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Discounted launch pricing</li>
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Exclusive updates and previews</li>
+                            <li><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Direct feedback channel</li>
+                        </ul>
+                        <div class="waitlist-stats">
+                            <span class="stat-number" id="waitlist-count">0+</span>
+                            <span class="stat-label">people on waitlist</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Metrics Section -->
+        <section id="metrics" class="metrics">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Honest Metrics</h2>
+                    <p class="section-subtitle">Transparency is our default</p>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                            </svg>
+                        </div>
+                        <div class="metric-value" id="github-stars">0</div>
+                        <div class="metric-label">GitHub Stars</div>
+                        <div class="metric-trend">Target: 150-500 by D+30</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                        </div>
+                        <div class="metric-value" id="gateway-calls">0</div>
+                        <div class="metric-label">Gateway First-Calls</div>
+                        <div class="metric-trend">Target: 20 by D+30</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                                <line x1="1" y1="10" x2="23" y2="10"/>
+                            </svg>
+                        </div>
+                        <div class="metric-value" id="paying-users">0</div>
+                        <div class="metric-label">Paying Sync Users</div>
+                        <div class="metric-trend">Target: 0-2 by D+30</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                <path d="M2 17l10 5 10-5"/>
+                                <path d="M2 12l10 5 10-5"/>
+                            </svg>
+                        </div>
+                        <div class="metric-value" id="service-clients">0</div>
+                        <div class="metric-label">Service Clients</div>
+                        <div class="metric-trend">Target: 1/month</div>
+                    </div>
+                </div>
+                <div class="metrics-note">
+                    <p><em>Last updated:</em> <span id="metrics-date">September 2026</span></p>
+                    <p><small>Metrics are updated monthly. We believe in honest, transparent reporting.</small></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="glyph">◈</span>
+                    <span class="name">Aetheris</span>
+                    <p class="footer-tagline">Your LLM keys never live in .env again</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="#features">Features</a>
+                        <a href="#pricing">Pricing</a>
+                        <a href="#how-it-works">How It Works</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <a href="https://github.com/Aetheris/Aetheris" target="_blank">GitHub</a>
+                        <a href="../posts/">Blog Posts</a>
+                        <a href="LEMONSQUEEZY.md">LemonSqueezy Setup</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                        <a href="LICENSE">MIT License</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Aetheris. All rights reserved.</p>
+                <p class="footer-credit">
+                    Made with <span class="heart">❤️</span> for developers who care about security
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

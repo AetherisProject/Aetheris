@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Aetheris.Desktop.ViewModels"
+             x:Class="Aetheris.Desktop.Views.SshView">
+    
+    <Grid RowDefinitions="Auto,1*,Auto" ColumnDefinitions="*">
+        <!-- Connection Bar -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10" HorizontalAlignment="Stretch">
+            <ComboBox Items="{Binding SavedConnections}" 
+                      SelectedItem="{Binding SelectedConnection}"
+                      DisplayMemberBinding="{Binding Name}"
+                      Width="200" Margin="0,0,10,0" />
+            <Button Content="New" Command="{Binding NewConnectionCommand}" Margin="0,0,10,0" />
+            <Button Content="Connect" Command="{Binding ConnectCommand}" IsEnabled="{Binding SelectedConnection != null && !IsBusy}" Margin="0,0,10,0" />
+            <Button Content="Disconnect" Command="{Binding DisconnectCommand}" IsEnabled="{Binding IsConnected}" Margin="0,0,10,0" />
+            <TextBlock Text="{Binding ConnectionStatus}" VerticalAlignment="Center" Margin="10,0,0,0" />
+        </StackPanel>
+
+        <!-- Terminal Area -->
+        <Border Grid.Row="1" Margin="10" BorderBrush="{DynamicResource ThemeBrush-GrayBrush}" BorderThickness="1">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <TextBox Text="{Binding TerminalOutput}" 
+                         AcceptsReturn="True" 
+                         IsReadOnly="True"
+                         FontFamily="Consolas, Courier New, monospace"
+                         FontSize="14"
+                         Background="Black"
+                         Foreground="White"
+                         Padding="10"
+                         TextWrapping="Wrap" />
+            </ScrollViewer>
+        </Border>
+
+        <!-- Input Area -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="10">
+            <TextBox Text="{Binding TerminalInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Watermark="Enter command..."
+                     FontFamily="Consolas, Courier New, monospace"
+                     FontSize="14"
+                     Width="*"
+                     KeyDown="OnTerminalKeyDown" />
+            <Button Content="Send" Command="{Binding SendCommandCommand}" Margin="10,0,0,0" />
+        </StackPanel>
+    </Grid>
+</UserControl>

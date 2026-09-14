@@ -1,0 +1,61 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Aetheris.Desktop.ViewModels"
+        xmlns:views="using:Aetheris.Desktop.Views"
+        x:Class="Aetheris.Desktop.MainWindow"
+        Title="Aetheris Desktop"
+        Width="1200"
+        Height="800"
+        WindowStartupLocation="CenterScreen"
+        CanResize="True"
+        MinWidth="800"
+        MinHeight="600">
+    
+    <Window.Styles>
+        <Style Selector="TabItem">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Padding" Value="10,5" />
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,1*,Auto" ColumnDefinitions="*">
+        <!-- Header -->
+        <Border Grid.Row="0" Background="{DynamicResource ThemeBrush-PrimaryBrush}" Padding="15,10">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                <TextBlock Text="Aetheris" FontSize="20" FontWeight="Bold" Foreground="White" />
+                <TextBlock Text="Desktop" FontSize="16" Foreground="White" Margin="5,0,0,0" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,0">
+                    <Button Content="Settings" Margin="0,0,10,0" />
+                    <Button Content="Lock Vault" Margin="0,0,10,0" Command="{Binding LockVaultCommand}" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Main Content - Tab Control -->
+        <TabControl Grid.Row="1" SelectedIndex="{Binding SelectedTabIndex}">
+            <TabItem Header="Vault" IsEnabled="{Binding IsVaultUnlocked}">
+                <views:VaultView DataContext="{Binding VaultViewModel}" />
+            </TabItem>
+            <TabItem Header="SSH" IsEnabled="{Binding IsVaultUnlocked}">
+                <views:SshView DataContext="{Binding SshViewModel}" />
+            </TabItem>
+            <TabItem Header="SFTP" IsEnabled="{Binding IsVaultUnlocked}">
+                <views:SftpView DataContext="{Binding SftpViewModel}" />
+            </TabItem>
+            <TabItem Header="Gateway" IsEnabled="{Binding IsVaultUnlocked}">
+                <views:GatewayView DataContext="{Binding GatewayViewModel}" />
+            </TabItem>
+        </TabControl>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="2" Background="{DynamicResource ThemeBrush-GrayBrush}" Padding="10,5">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                <TextBlock Text="{Binding StatusMessage}" FontSize="12" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock Text="{Binding ConnectionStatus}" FontSize="12" Margin="0,0,20,0" />
+                    <TextBlock Text="{Binding GatewayStatus}" FontSize="12" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

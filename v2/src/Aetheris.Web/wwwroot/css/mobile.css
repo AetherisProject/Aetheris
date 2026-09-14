@@ -1,0 +1,170 @@
+/* Mobile-specific styles */
+
+.mobile-shell {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: var(--bg);
+}
+
+.mobile-content {
+    flex: 1;
+    padding: 16px;
+    padding-bottom: 80px; /* Space for tab bar */
+}
+
+.tabbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 62px;
+    display: flex;
+    background: rgba(15, 23, 42, 0.97);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+}
+
+.tabbar a {
+    flex: 1;
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    font-size: 11px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    padding: 4px;
+}
+
+.tabbar a.active {
+    color: var(--primary);
+}
+
+.tabbar .ic {
+    font-size: 17px;
+    display: block;
+}
+
+/* Safe area insets for iOS */
+@supports (padding: max(0px)) {
+    .mobile-content {
+        padding-bottom: calc(80px + env(safe-area-inset-bottom));
+    }
+    .tabbar {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
+
+/* Touch targets - minimum 44px */
+.tabbar a {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* Mobile unlock screen */
+.mobile-unlock {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+.mobile-unlock .avatar {
+    font-size: 44px;
+    text-align: center;
+    margin: 30px 0 6px;
+    color: var(--primary);
+}
+
+.mobile-unlock h3 {
+    margin: 0;
+}
+
+.mobile-unlock input {
+    width: 100%;
+    text-align: center;
+    margin: 16px 0;
+}
+
+/* Mobile item list */
+.mobile-item-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mobile-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    cursor: pointer;
+}
+
+.mobile-item h4 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.mobile-item p {
+    margin: 2px 0 0;
+    font-size: 12px;
+}
+
+/* Mobile sheet (bottom drawer) */
+.sheet {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--surface-2);
+    border-radius: 22px 22px 0 0;
+    border-top: 1px solid var(--border);
+    padding: 20px;
+    z-index: 1000;
+    transform: translateY(105%);
+    transition: transform 0.25s ease;
+}
+
+.sheet.open {
+    transform: translateY(0);
+}
+
+.grab {
+    width: 42px;
+    height: 4px;
+    background: var(--surface);
+    border-radius: 4px;
+    margin: 0 auto 14px;
+}
+
+.kv {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.kv .btn {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+/* Mobile generator */
+.gen {
+    font-size: 17px;
+    letter-spacing: 0.05em;
+    text-align: center;
+    padding: 12px;
+}
+
+/* Mobile search */
+.mobile-search {
+    width: 100%;
+    margin-bottom: 12px;
+}

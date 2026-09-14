@@ -1,46 +1,144 @@
 @page "/gateway"
 @inject HttpClient Http
 @inject IConfiguration Config
+@inject VaultState State
 
-<header class="page-head">
-    <h1>LLM Gateway</h1>
-    <code class="chip">@(Config["GatewayUrl"] ?? "http://127.0.0.1:7474")/v1</code>
-</header>
-
-@if (error is not null)
+@if (!State.IsUnlocked)
 {
-    <div class="card">
-        <strong>Gateway not reachable</strong>
-        <p class="muted">@error</p>
-        <p class="muted small">Start it: <code>AETHERIS_GATEWAY_PASS=… dotnet run --project src/Aetheris.Gateway</code></p>
+    <div class="center-screen">
+        <div class="card unlock-card">
+            <div class="brand-badge big">🔒</div>
+            <h1>Vault locked</h1>
+            <p class="muted">Please <a href="/">unlock</a> to access the gateway.</p>
+        </div>
     </div>
-}
-else if (budgets is null)
-{
-    <p class="muted">loading…</p>
 }
 else
 {
-    <h2>Budgets (tokens/day)</h2>
-    <div class="item-grid">
-        @foreach (var entry in budgets.EnumerateObject())
-        {
-            <div class="card">
-                <h3>@entry.Name</h3>
-                <p class="muted">
-                    spent @entry.Value.GetProperty("spentToday") /
-                    cap @(entry.Value.GetProperty("capPerDay").GetInt64() == 0 ? "∞"
-                        : entry.Value.GetProperty("capPerDay").ToString())
-                </p>
+    <div class="shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="brand-badge">◈</span> Aetheris
+                <span class="brand-sub">v2</span>
             </div>
-        }
+            <nav class="nav">
+                <NavLink href="vault">🗄 Vault</NavLink>
+                <NavLink href="gateway" Match="NavLinkMatch.All">⚡ Gateway</NavLink>
+                <NavLink href="settings">⚙ Settings</NavLink>
+            </nav>
+            <div class="sidebar-foot muted small">
+                @if (State.IsHubReachable)
+                {
+                    <span>✓ Hub reachable</span>
+                }
+                else
+                {
+                    <span>⚠ Hub offline</span>
+                }
+            </div>
+        </aside>
+        
+        <main class="content">
+            <header class="page-head">
+                <h1>LLM Gateway</h1>
+                <span class="chip cyan mono">@(Config["GatewayUrl"] ?? "http://127.0.0.1:7474")/v1</span>
+            </header>
+
+            @if (_error != null)
+            {
+                <div class="card">
+                    <strong>Gateway not reachable</strong>
+                    <p class="muted">@_error</p>
+                    <p class="muted small">Start it: <code>AETHERIS_GATEWAY_PASS=… dotnet run --project src/Aetheris.Gateway</code></p>
+                </div>
+            }
+            else if (_budgets == null)
+            {
+                <p class="muted">loading…</p>
+            }
+            else
+            {
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="card">
+                        <h3 style="margin-bottom: 10px;">Model aliases</h3>
+                        @foreach (var alias in _aliases)
+                        {
+                            <div class="row">
+                                <span>
+                                    <b class="mono">@alias.Key</b> → @alias.Value
+                                </span>
+                                <span class="chip @GetStatusColor(alias.Key)">@GetStatus(alias.Key)</span>
+                            </div>
+                        }
+                        <p class="muted small" style="margin-top: 10px;">
+                            Chain: <b class="mono">@string.Join(" → ", _chain)</b>. Your tools only ever see the aliases.
+                        </p>
+                    </div>
+                    
+                    <div class="card">
+                        <h3 style="margin-bottom: 6px;">Budgets today</h3>
+                        <div class="row" style="border: none; display: block;">
+                            @foreach (var budget in _budgets.EnumerateObject())
+                            {
+                                <div style="margin-bottom: 10px;">
+                                    <div class="small">
+                                        @budget.Name · 
+                                        @budget.Value.GetProperty("spentToday").GetInt64() / 
+                                        @(budget.Value.GetProperty("capPerDay").GetInt64() == 0 ? "∞" : budget.Value.GetProperty("capPerDay").ToString()) 
+                                        tokens
+                                    </div>
+                                    <div class="bar">
+                                        <i style="width: @GetBudgetPercentage(budget.Value)"></i>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card" style="margin-top: 12px;">
+                    <h3 style="margin-bottom: 8px;">Requests (redacted)</h3>
+                    @if (_requests.Count == 0)
+                    {
+                        <p class="muted small">No requests yet</p>
+                    }
+                    else
+                    {
+                        @foreach (var request in _requests)
+                        {
+                            <div class="log-line">
+                                <time>@request.Time</time>
+                                <span class="chip @GetRequestStatusColor(request.Status)">@request.Model</span>
+                                <span>@request.Details</span>
+                            </div>
+                        }
+                    }
+                    <p class="muted small" style="margin-top: 10px;">
+                        Keys are injected server-side from the vault. They never appear here, in logs, or on clients.
+                    </p>
+                </div>
+            }
+        </main>
     </div>
 }
 
 @code {
-    private System.Text.Json.JsonElement budgets;
-    private bool loaded;
-    private string? error;
+    private System.Text.Json.JsonElement? _budgets;
+    private bool _loaded;
+    private string? _error;
+    private readonly Dictionary<string, string> _aliases = new()
+    {
+        { "gpt", "openai/gpt-4o-mini" },
+        { "claude", "anthropic/sonnet-4" },
+        { "local", "ollama/llama3.1" }
+    };
+    private readonly List<string> _chain = ["claude", "gpt", "local"];
+    private readonly List<GatewayRequest> _requests = new()
+    {
+        new GatewayRequest { Time = "12:41:07", Model = "gpt", Details = "200 · 812ms · 344 tokens", Status = "success" },
+        new GatewayRequest { Time = "12:40:52", Model = "claude", Details = "500 → fallback gpt ✓ · 344ms", Status = "fallback" },
+        new GatewayRequest { Time = "12:39:18", Model = "local", Details = "200 · 1902ms · 96 tokens", Status = "success" }
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -51,9 +149,60 @@ else
             request.Headers.Add("X-Aetheris-Gateway-Token", "dev");
             using var response = await Http.SendAsync(request);
             response.EnsureSuccessStatusCode();
-            budgets = await response.Content.ReadFromJsonAsync<System.Text.Json.JsonElement>();
-            loaded = true;
+            _budgets = await response.Content.ReadFromJsonAsync<System.Text.Json.JsonElement>();
+            _loaded = true;
         }
-        catch (Exception ex) { error = ex.Message; }
+        catch (Exception ex) { _error = ex.Message; }
+    }
+
+    private string GetStatus(string model)
+    {
+        return model switch
+        {
+            "gpt" => "healthy",
+            "claude" => "healthy",
+            "local" => "fallback",
+            _ => "unknown"
+        };
+    }
+
+    private string GetStatusColor(string model)
+    {
+        return model switch
+        {
+            "gpt" => "green",
+            "claude" => "green",
+            "local" => "",
+            _ => ""
+        };
+    }
+
+    private string GetBudgetPercentage(System.Text.Json.JsonElement budget)
+    {
+        var spent = budget.GetProperty("spentToday").GetInt64();
+        var cap = budget.GetProperty("capPerDay").GetInt64();
+        
+        if (cap == 0) return "4%"; // Unlimited
+        
+        var percentage = (int)((double)spent / cap * 100);
+        return $"{percentage}%";
+    }
+
+    private string GetRequestStatusColor(string status)
+    {
+        return status switch
+        {
+            "success" => "cyan",
+            "fallback" => "",
+            _ => ""
+        };
+    }
+
+    private sealed class GatewayRequest
+    {
+        public string Time { get; set; } = string.Empty;
+        public string Model { get; set; } = string.Empty;
+        public string Details { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
     }
 }

@@ -1,0 +1,248 @@
+@page "/vault/{ItemId}"
+@inject VaultState State
+@inject NavigationManager Nav
+
+@if (!State.IsUnlocked)
+{
+    <div class="center-screen">
+        <div class="card unlock-card">
+            <div class="brand-badge big">🔒</div>
+            <h1>Vault locked</h1>
+            <p class="muted">Please <a href="/">unlock</a> to view this item.</p>
+        </div>
+    </div>
+}
+else
+{
+    <div class="shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="brand-badge">◈</span> Aetheris
+                <span class="brand-sub">v2</span>
+            </div>
+            <nav class="nav">
+                <NavLink href="vault">🗄 Vault</NavLink>
+                <NavLink href="gateway">⚡ Gateway</NavLink>
+                <NavLink href="settings">⚙ Settings</NavLink>
+            </nav>
+            <div class="sidebar-foot muted small">
+                @if (State.IsHubReachable)
+                {
+                    <span>✓ Hub reachable</span>
+                }
+                else
+                {
+                    <span>⚠ Hub offline</span>
+                }
+            </div>
+        </aside>
+        
+        <main class="content">
+            <header class="page-head">
+                <button class="btn" @onclick="GoBack" style="margin-right: 12px;">← Back</button>
+                <h1>@_item?.Title</h1>
+            </header>
+
+            @if (_item == null)
+            {
+                <div class="card">
+                    <p class="muted">Item not found</p>
+                </div>
+            }
+            else
+            {
+                <div class="card" style="margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <span class="item-icon" style="font-size: 24px;">@GetItemIcon(_item.Type)</span>
+                        <div>
+                            <h2 style="margin: 0;">@_item.Title</h2>
+                            <p class="muted small">@_item.Type · Updated @_item.UpdatedAt.ToString("g")</p>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(_item.Username))
+                    {
+                        <div class="kv">
+                            <span class="muted small">Username</span>
+                            <span>@_item.Username</span>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(_item.Password))
+                    {
+                        <div class="kv">
+                            <span class="muted small">Password</span>
+                            <span>
+                                •••••••• 
+                                <button class="btn small" @onclick="CopyPassword" style="margin-left: 8px;">Copy</button>
+                            </span>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(_item.Url))
+                    {
+                        <div class="kv">
+                            <span class="muted small">URL</span>
+                            <span>@_item.Url</span>
+                        </div>
+                    }
+
+                    @if (_item.CustomFields != null && _item.CustomFields.Count > 0)
+                    {
+                        @foreach (var field in _item.CustomFields)
+                        {
+                            <div class="kv">
+                                <span class="muted small">@field.Key</span>
+                                <span>@field.Value</span>
+                            </div>
+                        }
+                    }
+
+                    @if (!string.IsNullOrEmpty(_item.TotpSecret))
+                    {
+                        <div class="kv" style="border: none;">
+                            <span class="muted small">TOTP</span>
+                            <span class="mono" style="color: var(--cyan); font-weight: 600; font-size: 18px; letter-spacing: 0.05em;">
+                                @_totpCode
+                            </span>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(_item.Notes))
+                    {
+                        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+                            <label class="muted small">Notes</label>
+                            <p style="margin: 8px 0 0;">@_item.Notes</p>
+                        </div>
+                    }
+
+                    @if (_item.Tags != null && _item.Tags.Count > 0)
+                    {
+                        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+                            <label class="muted small">Tags</label>
+                            <div style="display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;">
+                                @foreach (var tag in _item.Tags)
+                                {
+                                    <span class="chip">@tag</span>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn" @onclick="EditItem">Edit</button>
+                    <button class="btn" @onclick="CopyPassword" disabled="@(string.IsNullOrEmpty(_item.Password))">Copy Password</button>
+                    <button class="btn" @onclick="DeleteItem" style="color: #ef4444; margin-left: auto;">Delete</button>
+                </div>
+            }
+        </main>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string ItemId { get; set; } = string.Empty;
+
+    private VaultItem? _item;
+    private string _totpCode = "...";
+    private System.Timers.Timer? _totpTimer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (State.IsUnlocked)
+        {
+            _item = State.Items.FirstOrDefault(i => i.Id == ItemId);
+            await RefreshTotpCodeAsync();
+            StartTotpTimer();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (State.IsUnlocked)
+        {
+            _item = State.Items.FirstOrDefault(i => i.Id == ItemId);
+        }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            StopTotpTimer();
+        }
+        base.Dispose(disposing);
+    }
+
+    private void GoBack() => Nav.NavigateTo("/vault");
+
+    private async Task CopyPassword()
+    {
+        if (_item != null)
+        {
+            var text = _item.Password ?? _item.Username ?? _item.Title;
+            await State.CopyToClipboardAsync(text);
+        }
+    }
+
+    private void EditItem()
+    {
+        if (_item != null)
+        {
+            Nav.NavigateTo($"/vault/{_item.Id}/edit");
+        }
+    }
+
+    private void DeleteItem()
+    {
+        if (_item != null && confirm("Are you sure you want to delete this item?"))
+        {
+            State.DeleteItem(_item.Id);
+            Nav.NavigateTo("/vault");
+        }
+    }
+
+    private string GetItemIcon(string type) => type switch
+    {
+        "Password" => "🔑",
+        "ApiKey" => "🪄",
+        "Note" => "📝",
+        "Card" => "💳",
+        "Identity" => "👤",
+        _ => "📦"
+    };
+
+    private void StartTotpTimer()
+    {
+        StopTotpTimer();
+        _totpTimer = new System.Timers.Timer(1000);
+        _totpTimer.Elapsed += async (sender, e) => await RefreshTotpCodeAsync();
+        _totpTimer.AutoReset = true;
+        _totpTimer.Start();
+    }
+
+    private void StopTotpTimer()
+    {
+        if (_totpTimer != null)
+        {
+            _totpTimer.Stop();
+            _totpTimer.Elapsed -= async (sender, e) => await RefreshTotpCodeAsync();
+            _totpTimer.Dispose();
+            _totpTimer = null;
+        }
+    }
+
+    private async Task RefreshTotpCodeAsync()
+    {
+        if (_item != null && !string.IsNullOrEmpty(_item.TotpSecret))
+        {
+            var code = await State.GetTotpCodeAsync(_item.Id);
+            if (code != null)
+            {
+                _totpCode = code;
+                StateHasChanged();
+            }
+        }
+    }
+}

@@ -1,0 +1,71 @@
+@inherits LayoutComponentBase
+
+<div class="mobile-shell">
+    <div class="mobile-content">
+        @Body
+    </div>
+    
+    <nav class="tabbar">
+        <a href="/vault" class="@(_currentPage == "vault" ? "active" : "")">
+            <span class="ic">🗄</span>
+            <span>Vault</span>
+        </a>
+        <a href="/gateway" class="@(_currentPage == "gateway" ? "active" : "")">
+            <span class="ic">⚡</span>
+            <span>Gateway</span>
+        </a>
+        <a href="/settings" class="@(_currentPage == "settings" ? "active" : "")">
+            <span class="ic">⚙</span>
+            <span>Settings</span>
+        </a>
+        <a href="/" @onclick:preventDefault @onclick="LockVault" class="@(_currentPage == "lock" ? "active" : "")">
+            <span class="ic">🔒</span>
+            <span>Lock</span>
+        </a>
+    </nav>
+</div>
+
+@code {
+    private string _currentPage = "";
+    
+    [Inject]
+    private NavigationManager Nav { get; set; } = null!;
+    
+    [Inject]
+    private VaultState State { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        Nav.LocationChanged += OnLocationChanged;
+        UpdateCurrentPage();
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        UpdateCurrentPage();
+    }
+
+    private void UpdateCurrentPage()
+    {
+        var path = Nav.Uri.ToLowerInvariant();
+        if (path.Contains("/vault")) _currentPage = "vault";
+        else if (path.Contains("/gateway")) _currentPage = "gateway";
+        else if (path.Contains("/settings")) _currentPage = "settings";
+        else _currentPage = "";
+    }
+
+    private void LockVault()
+    {
+        State.Lock();
+        Nav.NavigateTo("/");
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            Nav.LocationChanged -= OnLocationChanged;
+        }
+        base.Dispose(disposing);
+    }
+}

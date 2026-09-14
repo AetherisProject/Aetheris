@@ -1,0 +1,68 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Aetheris.Desktop.ViewModels"
+        x:Class="Aetheris.Desktop.Views.AddItemDialog"
+        Title="Add Vault Item"
+        Width="500"
+        Height="400"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+    
+    <ScrollViewer>
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,1*" Margin="20">
+            <!-- Header -->
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="Add New Vault Item" 
+                       FontSize="18" FontWeight="Bold" 
+                       HorizontalAlignment="Center" Margin="0,0,0,20" />
+
+            <!-- Type -->
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Type:" VerticalAlignment="Center" />
+            <ComboBox Grid.Row="1" Grid.Column="1" 
+                      Items="{Binding ItemTypes}" 
+                      SelectedItem="{Binding SelectedType}" 
+                      Margin="0,0,0,10" />
+
+            <!-- Name -->
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Name:" VerticalAlignment="Center" />
+            <TextBox Grid.Row="2" Grid.Column="1" 
+                     Text="{Binding Name, Mode=TwoWay}" 
+                     Watermark="Item name..." 
+                     Margin="0,0,0,10" />
+
+            <!-- Username -->
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Username:" VerticalAlignment="Center" />
+            <TextBox Grid.Row="3" Grid.Column="1" 
+                     Text="{Binding Username, Mode=TwoWay}" 
+                     Watermark="Username..." 
+                     Margin="0,0,0,10" />
+
+            <!-- Password -->
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Password:" VerticalAlignment="Center" />
+            <PasswordBox Grid.Row="4" Grid.Column="1" 
+                         Password="{Binding Password, Mode=TwoWay}" 
+                         Watermark="Password..." 
+                         PasswordChar="•" 
+                         Margin="0,0,0,10" />
+
+            <!-- Host -->
+            <TextBlock Grid.Row="5" Grid.Column="0" Text="Host:" VerticalAlignment="Center" />
+            <TextBox Grid.Row="5" Grid.Column="1" 
+                     Text="{Binding Host, Mode=TwoWay}" 
+                     Watermark="Hostname or IP..." 
+                     Margin="0,0,0,10" />
+
+            <!-- Port -->
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="Port:" VerticalAlignment="Center" />
+            <TextBox Grid.Row="6" Grid.Column="1" 
+                     Text="{Binding Port, Mode=TwoWay}" 
+                     Watermark="Port number..." 
+                     Margin="0,0,0,20" />
+
+            <!-- Buttons -->
+            <StackPanel Grid.Row="7" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancel" Command="{Binding CancelCommand}" Margin="0,0,10,0" Width="80" />
+                <Button Content="Save" Command="{Binding SaveCommand}" IsDefault="True" Width="80" />
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Window>

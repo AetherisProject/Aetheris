@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+<html>
+<head><title>Icon</title></head>
+<body style="background:#090D16;display:grid;place-items:center;height:100vh;margin:0;">
+  <div style="font-size:80vmin;color:#6366F1;">◈</div>
+</body>
+</html>

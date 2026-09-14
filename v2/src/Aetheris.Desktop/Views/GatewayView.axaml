@@ -1,0 +1,64 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Aetheris.Desktop.ViewModels"
+             x:Class="Aetheris.Desktop.Views.GatewayView">
+    
+    <Grid RowDefinitions="Auto,Auto,1*,Auto" ColumnDefinitions="*">
+        <!-- Control Panel -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10" HorizontalAlignment="Stretch">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Host:" VerticalAlignment="Center" Margin="0,0,5,0" />
+                <TextBox Text="{Binding Host, Mode=TwoWay}" Width="150" Margin="0,0,10,0" />
+                <TextBlock Text="Port:" VerticalAlignment="Center" Margin="0,0,5,0" />
+                <TextBox Text="{Binding Port, Mode=TwoWay}" Width="80" Margin="0,0,10,0" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Start" Command="{Binding StartGatewayCommand}" IsEnabled="{Binding !IsRunning && !IsBusy}" Margin="0,0,10,0" />
+                <Button Content="Stop" Command="{Binding StopGatewayCommand}" IsEnabled="{Binding IsRunning && !IsBusy}" Margin="0,0,10,0" />
+                <Button Content="Restart" Command="{Binding RestartGatewayCommand}" IsEnabled="{Binding !IsBusy}" Margin="0,0,10,0" />
+                <Button Content="Refresh" Command="{Binding RefreshStatusCommand}" Margin="0,0,10,0" />
+                <Button Content="Open URL" Command="{Binding OpenGatewayUrlCommand}" IsEnabled="{Binding IsRunning}" />
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Status Panel -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10" HorizontalAlignment="Stretch">
+            <Border Background="{DynamicResource ThemeBrush-GrayBrush}" Padding="10" CornerRadius="5">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Status: " VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding Status}" VerticalAlignment="Center" FontWeight="Bold" />
+                </StackPanel>
+            </Border>
+            <Border Background="{DynamicResource ThemeBrush-GrayBrush}" Padding="10" CornerRadius="5" Margin="10,0,0,0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Health: " VerticalAlignment="Center" />
+                    <Ellipse Width="10" Height="10" Fill="{Binding HealthColor}" Margin="0,0,5,0" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding HealthStatus}" VerticalAlignment="Center" FontWeight="Bold" />
+                </StackPanel>
+            </Border>
+            <Border Background="{DynamicResource ThemeBrush-GrayBrush}" Padding="10" CornerRadius="5" Margin="10,0,0,0">
+                <TextBlock Text="{Binding BudgetInfo}" VerticalAlignment="Center" />
+            </Border>
+        </StackPanel>
+
+        <!-- Logs Area -->
+        <Border Grid.Row="2" Margin="10" BorderBrush="{DynamicResource ThemeBrush-GrayBrush}" BorderThickness="1">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <TextBox Text="{Binding Logs}" 
+                         AcceptsReturn="True" 
+                         IsReadOnly="True"
+                         FontFamily="Consolas, Courier New, monospace"
+                         FontSize="12"
+                         Background="Black"
+                         Foreground="White"
+                         Padding="10"
+                         TextWrapping="Wrap" />
+            </ScrollViewer>
+        </Border>
+
+        <!-- Clear Logs Button -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+            <Button Content="Clear Logs" Command="{Binding ClearLogsCommand}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,24 +1,127 @@
 @page "/"
 @inject VaultState State
 @inject NavigationManager Nav
+@inject CryptoService CryptoService
 
 <div class="center-screen">
     <div class="card unlock-card">
         <div class="brand-badge big">◈</div>
         <h1>Unlock vault</h1>
-        <p class="muted">Decryption happens on this device. The server only ever stores ciphertext.</p>
-        <input type="password" placeholder="master password" @bind="password" @bind:event="oninput" />
-        <button class="btn primary" @onclick="UnlockVault" disabled="@(password.Length == 0)">Unlock</button>
-        <p class="muted small">baseline build — any non-empty password unlocks demo data (W4 wires real crypto)</p>
+        <p class="muted small">Decryption happens on this device. The server only ever stores ciphertext.</p>
+        
+        @if (_error != null)
+        {
+            <div class="error-message" style="color: #ef4444; margin: 10px 0;">
+                @_error
+            </div>
+        }
+        
+        <input type="password" 
+               placeholder="master password" 
+               @bind="_password" 
+               @bind:event="oninput"
+               @onkeypress="HandleKeyPress" 
+               id="masterPassword"
+               autocomplete="current-password" />
+        
+        <button class="btn primary" 
+                @onclick="UnlockVault" 
+                disabled="@(_password.Length == 0 || _isUnlocking)">
+            @if (_isUnlocking)
+            {
+                <span>Unlocking…</span>
+            }
+            else
+            {
+                <span>Unlock</span>
+            }
+        </button>
+        
+        @if (State.IsUnlocked)
+        {
+            <p class="muted small" style="margin-top: 12px;">
+                <a href="/vault" style="color: var(--primary);">Go to vault →</a>
+            </p>
+        }
+        
+        <p class="muted small" style="margin-top: 16px;">
+            @if (State.IsHubReachable)
+            {
+                <span>✓ Hub reachable</span>
+            }
+            else
+            {
+                <span>⚠ Hub offline - offline mode</span>
+            }
+        </p>
     </div>
 </div>
 
 @code {
-    private string password = "";
+    private string _password = "";
+    private string? _error;
+    private bool _isUnlocking = false;
 
-    private void UnlockVault()
+    protected override async Task OnInitializedAsync()
     {
-        State.MarkUnlocked();
-        Nav.NavigateTo("/vault");
+        // Initialize crypto service
+        await CryptoService.InitializeAsync();
+        
+        // Check hub health
+        await State.CheckHubHealthAsync();
+        
+        // If already unlocked, redirect to vault
+        if (State.IsUnlocked)
+        {
+            Nav.NavigateTo("/vault");
+        }
+    }
+
+    private async Task UnlockVault()
+    {
+        if (_password.Length == 0)
+        {
+            _error = "Please enter your master password";
+            return;
+        }
+
+        _isUnlocking = true;
+        _error = null;
+        State.HasUnsavedChanges = false;
+
+        try
+        {
+            var success = await State.UnlockAsync(_password);
+            
+            if (success)
+            {
+                // Clear password from memory
+                _password = "";
+                
+                // Navigate to vault
+                Nav.NavigateTo("/vault");
+            }
+            else
+            {
+                _error = "Failed to unlock vault. Please check your password.";
+            }
+        }
+        catch (Exception ex)
+        {
+            _error = "Error: " + ex.Message;
+            Console.Error.WriteLine(ex);
+        }
+        finally
+        {
+            _isUnlocking = false;
+        }
+    }
+
+    private async Task HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && _password.Length > 0)
+        {
+            await UnlockVault();
+        }
     }
 }

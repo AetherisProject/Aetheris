@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="I built a local LLM gateway that keeps keys out of .env (C#/.NET 8, OSS)">
+    <title>I built a local LLM gateway that keeps keys out of .env (C#/.NET 8, OSS) | Aetheris</title>
+    <link rel="stylesheet" href="../landing/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: var(--bg);
+            color: var(--text);
+        }
+        .post-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+        .post-header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .post-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .post-meta {
+            color: var(--muted);
+            font-size: 14px;
+        }
+        .post-meta a {
+            color: var(--cyan);
+        }
+        .post-content {
+            font-size: 16px;
+            line-height: 1.8;
+        }
+        .post-content h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 40px 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .post-content h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 32px 0 16px;
+        }
+        .post-content h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 24px 0 12px;
+        }
+        .post-content p {
+            margin-bottom: 20px;
+            color: var(--muted);
+        }
+        .post-content ul,
+        .post-content ol {
+            margin-bottom: 20px;
+            padding-left: 24px;
+        }
+        .post-content li {
+            margin-bottom: 8px;
+        }
+        .post-content code {
+            background: var(--surface-2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+        }
+        .post-content pre {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        .post-content pre code {
+            background: transparent;
+            padding: 0;
+            font-size: 13px;
+        }
+        .post-content blockquote {
+            border-left: 4px solid var(--primary);
+            padding-left: 20px;
+            margin-left: 0;
+            color: var(--muted);
+            font-style: italic;
+        }
+        .post-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .post-content th,
+        .post-content td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .post-content th {
+            color: var(--text);
+            font-weight: 600;
+        }
+        .post-content a {
+            color: var(--cyan);
+            text-decoration: underline;
+        }
+        .post-content a:hover {
+            color: var(--primary);
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 40px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+        .back-link:hover {
+            color: var(--primary);
+        }
+        .tag {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <span class="glyph">◈</span>
+                <span class="name">Aetheris</span>
+            </div>
+            <nav class="nav">
+                <a href="../landing/index.html" class="nav-link">Home</a>
+                <a href="../landing/index.html#posts" class="nav-link">All Posts</a>
+            </nav>
+            <div class="header-actions">
+                <a href="../landing/index.html#waitlist" class="btn btn-primary">Join Waitlist</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <article class="post-container">
+            <header class="post-header">
+                <h1 class="post-title">I built a local LLM gateway that keeps keys out of .env (C#/.NET 8, OSS)</h1>
+                <div class="post-meta">
+                    <span>By Aetheris Team</span> | 
+                    <span>September 2026</span> | 
+                    <span class="tag">#csharp</span>
+                    <span class="tag">#dotnet</span>
+                    <span class="tag">#llm</span>
+                    <span class="tag">#security</span>
+                    <span class="tag">#opensource</span>
+                </div>
+            </header>
+
+            <div class="post-content">
+                <p><strong>Status:</strong> Draft for dev.to / HN</p>
+                <hr style="border-color: var(--border); margin: 40px 0;">
+
+                <h2>The Problem: API Keys Everywhere</h2>
+                <p>I have a problem. Actually, we all have this problem.</p>
+                <p>Every time I spin up a new LLM project, I end up with API keys scattered across:</p>
+                <ul>
+                    <li><code>.env</code> files in multiple repositories</li>
+                    <li>Docker compose files with <code>OPENAI_API_KEY=sk-...</code></li>
+                    <li>CI/CD secrets that need constant rotation</li>
+                    <li>Local development configs that accidentally get committed</li>
+                </ul>
+                <p>And the worst part? These keys have access to my credit card. One leaked key can mean thousands in unexpected charges.</p>
+                <p>I'm not alone. The r/selfhosted and r/LocalLLaMA subreddits are full of posts like:</p>
+                <ul>
+                    <li>"How do you manage your API keys?"</li>
+                    <li>"My key got leaked, what do I do?"</li>
+                    <li>"Is there a better way than .env files?"</li>
+                </ul>
+                <p><strong>There had to be a better way.</strong></p>
+
+                <h2>The Solution: Aetheris</h2>
+                <p>So I built <strong>Aetheris</strong> - a local LLM gateway with an encrypted vault that keeps your keys secure and accessible across all your devices.</p>
+
+                <h3>Core Principles</h3>
+                <ol>
+                    <li><strong>Your keys, your infrastructure</strong> - Everything runs locally or on your own servers</li>
+                    <li><strong>Zero knowledge</strong> - Even the sync service can't read your keys</li>
+                    <li><strong>Open source</strong> - MIT licensed, auditable, extensible</li>
+                    <li><strong>Multi-platform</strong> - Works on Windows, Linux, macOS, and even mobile via PWA</li>
+                </ol>
+
+                <h3>The Stack</h3>
+                <ul>
+                    <li><strong>Language:</strong> C#/.NET 8 (because I love the ecosystem and performance)</li>
+                    <li><strong>Crypto:</strong> BouncyCastle for Argon2id + XChaCha20-Poly1305</li>
+                    <li><strong>Frontend:</strong> PWA with HTML/CSS/JS (installable on any platform)</li>
+                    <li><strong>Desktop:</strong> Avalonia for cross-platform native apps</li>
+                    <li><strong>Sync:</strong> Zero-knowledge architecture with hosted hub</li>
+                </ul>
+
+                <h2>How It Works</h2>
+
+                <h3>1. The Vault</h3>
+                <p>At the heart of Aetheris is an encrypted vault. When you run <code>aeth init</code>, you create a new vault with a master password:</p>
+                <pre><code># Initialize a new vault
+aeth init
+# Enter master password: ********
+# Confirm master password: ********</code></pre>
+                <p>Your master password is used to derive an encryption key using <strong>Argon2id</strong> - a memory-hard key derivation function that's resistant to GPU/ASIC attacks.</p>
+
+                <h3>2. Adding Keys</h3>
+                <p>Store your API keys securely:</p>
+                <pre><code># Add an OpenAI key
+aeth add openai-key
+# Enter value: sk-...
+# Confirm value: sk-...
+
+# Add an Anthropic key  
+aeth add anthropic-key
+# Enter value: sk-ant-...
+</code></pre>
+                <p>Each key is encrypted with <strong>XChaCha20-Poly1305</strong> - a modern, secure authenticated encryption scheme. The encrypted data is stored in a local file that's useless without your master password.</p>
+
+                <h3>3. The Gateway</h3>
+                <p>Start the local gateway:</p>
+                <pre><code>aeth gateway
+# Gateway listening on http://localhost:8080</code></pre>
+                <p>The gateway acts as a proxy between your applications and LLM providers. When you make a request:</p>
+                <pre><code>curl http://localhost:8080/v1/chat/completions \
+  -H "Authorization: Bearer openai-key" \
+  -H "Content-Type: application/json" \
+  -d '{"model": "gpt-4", "messages": [{"role": "user", "content": "Hello"}]}'</code></pre>
+                <p>The gateway:</p>
+                <ol>
+                    <li>Validates your request</li>
+                    <li>Looks up the encrypted key for "openai-key"</li>
+                    <li>Decrypts it using your session</li>
+                    <li>Forwards the request to OpenAI</li>
+                    <li>Returns the response</li>
+                </ol>
+                <p>Your actual API key never leaves the gateway process.</p>
+
+                <h3>4. Using with Your Apps</h3>
+                <p>The magic happens with <code>aeth run</code>:</p>
+                <pre><code># Run any command with keys injected
+aeth run -- curl http://localhost:8080/v1/chat/completions \
+  -H "Authorization: Bearer openai-key" \
+  -d '{"model": "gpt-4", "messages": [{"role": "user", "content": "Hello"}]}'</code></pre>
+                <p>Or configure your applications to use the gateway directly.</p>
+
+                <h2>Security Deep Dive</h2>
+
+                <h3>Why Not Just Use .env?</h3>
+                <p>The <code>.env</code> approach has several problems:</p>
+                <ol>
+                    <li><strong>Accidental commits</strong> - Even with <code>.gitignore</code>, it happens</li>
+                    <li><strong>No encryption</strong> - Keys are stored in plaintext</li>
+                    <li><strong>No access control</strong> - Anyone with file access has all keys</li>
+                    <li><strong>No audit trail</strong> - Can't track who used what and when</li>
+                </ol>
+
+                <h3>Aetheris Security Model</h3>
+                <pre><code>┌─────────────────────────────────────────────────────────┐
+│                    Your Applications                         │
+└─────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────┐
+│                    Aetheris Gateway                          │
+│  ┌─────────────────────────────────────────────────────┐  │
+│  │  Request comes in: http://localhost:8080/v1/...      │  │
+│  │  - Validates authentication                         │  │
+│  │  - Looks up key reference                            │  │
+│  │  - Retrieves encrypted key from vault                │  │
+│  │  - Decrypts key using session                        │  │
+│  │  - Forwards request to provider with real key        │  │
+│  └─────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────┐
+│                    LLM Provider (OpenAI, etc.)               │
+└─────────────────────────────────────────────────────────┘</code></pre>
+
+                <h3>Cryptographic Primitives</h3>
+
+                <h4>Key Derivation: Argon2id</h4>
+                <pre><code>// Simplified key derivation
+var salt = GenerateRandomSalt(16);
+var derivedKey = Argon2id.Hash(
+    password: masterPassword,
+    salt: salt,
+    iterations: 3,
+    memorySize: 65536, // 64MB
+    parallelism: 4,
+    hashLength: 32
+);</code></pre>
+                <p>Parameters chosen to be resistant to both GPU and side-channel attacks while remaining usable on most hardware.</p>
+
+                <h4>Encryption: XChaCha20-Poly1305</h4>
+                <pre><code>// Encrypt a key
+var nonce = GenerateRandomNonce(24);
+var ciphertext = XChaCha20Poly1305.Encrypt(
+    plaintext: apiKey,
+    key: derivedKey,
+    nonce: nonce
+);
+// Store: nonce + ciphertext + tag</code></pre>
+                <p>XChaCha20-Poly1305 provides:</p>
+                <ul>
+                    <li>256-bit security level</li>
+                    <li>Authenticated encryption (confidentiality + integrity)</li>
+                    <li>Resistance to nonce reuse (unlike AES-GCM)</li>
+                    <li>Fast on modern CPUs</li>
+                </ul>
+
+                <h3>Threat Model</h3>
+                <p><strong>Aetheris protects against:</strong></p>
+                <ul>
+                    <li>✅ Local file access (keys are encrypted)</li>
+                    <li>✅ Accidental commits (vault file is binary, not text)</li>
+                    <li>✅ Memory scraping (keys are zeroed after use)</li>
+                    <li>✅ Network interception (all communication is local)</li>
+                </ul>
+                <p><strong>Aetheris does NOT protect against:</strong></p>
+                <ul>
+                    <li>❌ Keyloggers on your machine</li>
+                    <li>❌ Physical access to unlocked device</li>
+                    <li>❌ Malware with root access</li>
+                    <li>❌ Compromised LLM provider</li>
+                </ul>
+
+                <h2>Budget Tracking</h2>
+                <p>One of the most requested features - cost control:</p>
+                <pre><code># Set a budget for OpenAI
+aeth budget set openai-key --monthly 100
+
+# Check current usage
+aeth budget check openai-key
+# OpenAI: $45.23 / $100.00 (45.23%)
+
+# Get alerts at 80%
+aeth budget alert openai-key --threshold 80</code></pre>
+                <p>The gateway tracks every request and calculates costs based on provider pricing. You get real-time feedback on your spending.</p>
+
+                <h2>Multi-Device Sync (Coming Soon)</h2>
+                <p>The Sync tier (€5/month or €49/year) adds:</p>
+                <ol>
+                    <li><strong>Hosted Hub</strong> - A service that syncs your vault across devices</li>
+                    <li><strong>Zero-Knowledge</strong> - Your keys are encrypted before leaving your device</li>
+                    <li><strong>End-to-End Encryption</strong> - Only you can decrypt your data</li>
+                    <li><strong>Automatic Backups</strong> - Never lose your keys</li>
+                </ol>
+
+                <h3>How Sync Works</h3>
+                <pre><code>Device A                          Hub                          Device B
+   │                              │                              │
+   │  Encrypted Vault            │                              │
+   │──────────────────────────>│                              │
+   │  (only encrypted data)      │                              │
+   │                            │                              │
+   │                            │──────────────────────────>│
+   │                            │  Encrypted Vault            │
+   │                            │                              │</code></pre>
+                <p>The hub never sees your plaintext keys. It only stores and forwards encrypted blobs.</p>
+
+                <h2>Desktop Pro (Coming Soon)</h2>
+                <p>For power users who want a native experience:</p>
+                <ul>
+                    <li><strong>SSH Terminal</strong> - Full terminal with vault-key authentication</li>
+                    <li><strong>SFTP Support</strong> - Secure file transfer using your encrypted credentials</li>
+                    <li><strong>Avalonia UI</strong> - Native look and feel on Windows, macOS, Linux</li>
+                    <li><strong>Lifetime License</strong> - €89 one-time payment</li>
+                </ul>
+
+                <h2>Getting Started</h2>
+
+                <h3>Prerequisites</h3>
+                <ul>
+                    <li>.NET 8 SDK</li>
+                    <li>Git</li>
+                </ul>
+
+                <h3>Installation</h3>
+                <pre><code># Clone the repo
+git clone https://github.com/Aetheris/Aetheris.git
+cd Aetheris
+
+# Build
+dotnet build
+
+# Install CLI
+dotnet tool install --global --from-path ./src/Aetheris.Cli
+
+# Initialize
+aeth init</code></pre>
+
+                <h3>Quick Demo</h3>
+                <pre><code># Add a test key
+aeth add test-key --value "test-value"
+
+# Start gateway
+aeth gateway &
+
+# Test it
+curl http://localhost:8080/api/keys/test-key \
+  -H "Authorization: Bearer test-key"</code></pre>
+
+                <h2>Roadmap</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Status</th>
+                            <th>ETA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Core Gateway</td>
+                            <td>✅ Done</td>
+                            <td>Now</td>
+                        </tr>
+                        <tr>
+                            <td>CLI Tool</td>
+                            <td>✅ Done</td>
+                            <td>Now</td>
+                        </tr>
+                        <tr>
+                            <td>PWA Client</td>
+                            <td>✅ Done</td>
+                            <td>Now</td>
+                        </tr>
+                        <tr>
+                            <td>Budget Tracking</td>
+                            <td>✅ Done</td>
+                            <td>Now</td>
+                        </tr>
+                        <tr>
+                            <td>Sync Tier</td>
+                            <td>🚧 Building</td>
+                            <td>Q4 2026</td>
+                        </tr>
+                        <tr>
+                            <td>Desktop Pro</td>
+                            <td>🚧 Building</td>
+                            <td>Q4 2026</td>
+                        </tr>
+                        <tr>
+                            <td>Compliance Tier</td>
+                            <td>📋 Planned</td>
+                            <td>2027</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>Contributing</h2>
+                <p>Aetheris is open source under the MIT license. Contributions are welcome!</p>
+                <ul>
+                    <li><strong>Code:</strong> Check out the <a href="https://github.com/Aetheris/Aetheris">GitHub repo</a></li>
+                    <li><strong>Issues:</strong> Report bugs or request features</li>
+                    <li><strong>Discussions:</strong> Join the conversation</li>
+                    <li><strong>Stars:</strong> ⭐ if you find it useful</li>
+                </ul>
+
+                <h2>Alternatives</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tool</th>
+                            <th>Self-Hosted</th>
+                            <th>Encryption</th>
+                            <th>Multi-Device</th>
+                            <th>Open Source</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Aetheris</td>
+                            <td>✅ Yes</td>
+                            <td>✅ Yes</td>
+                            <td>✅ (Sync)</td>
+                            <td>✅ Yes</td>
+                        </tr>
+                        <tr>
+                            <td>Doppler</td>
+                            <td>❌ No</td>
+                            <td>✅ Yes</td>
+                            <td>✅ Yes</td>
+                            <td>❌ No</td>
+                        </tr>
+                        <tr>
+                            <td>Infisical</td>
+                            <td>✅ Yes</td>
+                            <td>✅ Yes</td>
+                            <td>✅ Yes</td>
+                            <td>✅ Yes</td>
+                        </tr>
+                        <tr>
+                            <td>Vault by HashiCorp</td>
+                            <td>✅ Yes</td>
+                            <td>✅ Yes</td>
+                            <td>❌ No</td>
+                            <td>✅ Yes</td>
+                        </tr>
+                        <tr>
+                            <td>AWS Secrets Manager</td>
+                            <td>❌ No</td>
+                            <td>✅ Yes</td>
+                            <td>✅ Yes</td>
+                            <td>❌ No</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>Aetheris fills a unique niche: <strong>self-hosted, encrypted, multi-device, open source, with LLM-specific features</strong>.</p>
+
+                <h2>Conclusion</h2>
+                <p>I built Aetheris because I was tired of the security risks and inconvenience of managing LLM API keys. The response from the community has been incredible, and I'm excited to see where this goes.</p>
+                <blockquote>
+                    <p><strong>Your LLM keys never live in .env again.</strong></p>
+                </blockquote>
+                <p>Try it out: <a href="https://github.com/Aetheris/Aetheris">https://github.com/Aetheris/Aetheris</a></p>
+                <p>Join the waitlist for Sync tier: <a href="../landing/index.html#waitlist">https://aetheris.dev/#waitlist</a></p>
+
+                <hr style="border-color: var(--border); margin: 40px 0;">
+                <p><em>Discussion: What's your biggest pain point with API key management? Let me know in the comments!</em></p>
+                <p><em>Follow: <a href="https://twitter.com/AetherisDev">@AetherisDev</a> for updates</em></p>
+                <p><em>License: MIT</em></p>
+            </div>
+
+            <div class="back-link">
+                <a href="../landing/index.html#posts">← Back to all posts</a>
+            </div>
+        </article>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="glyph">◈</span>
+                    <span class="name">Aetheris</span>
+                    <p class="footer-tagline">Your LLM keys never live in .env again</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Aetheris. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

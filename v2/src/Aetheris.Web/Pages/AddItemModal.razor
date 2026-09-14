@@ -1,0 +1,307 @@
+@using Aetheris.Web.Services
+
+<div class="modal-back" @onclick="OnBackgroundClick">
+    <div class="modal" @onclick:stopPropagation>
+        <h2 style="margin: 0 0 16px;">Add Item</h2>
+        
+        <div style="margin-bottom: 16px;">
+            <label class="muted small">Type</label>
+            <div style="display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap;">
+                @foreach (var itemType in _itemTypes)
+                {
+                    <button class="btn @(_selectedType == itemType ? "primary" : "")" 
+                            @onclick="() => _selectedType = itemType">
+                        @GetTypeIcon(itemType) @itemType
+                    </button>
+                }
+            </div>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+            <label class="muted small">Title</label>
+            <input type="text" 
+                   @bind="_title" 
+                   placeholder="e.g., GitHub, Bank Account" 
+                   style="width: 100%; margin-top: 6px;" />
+        </div>
+
+        @if (_selectedType == "Password" || _selectedType == "ApiKey" || _selectedType == "Identity")
+        {
+            <div style="margin-bottom: 16px;">
+                <label class="muted small">Username</label>
+                <input type="text" 
+                       @bind="_username" 
+                       placeholder="Username or email" 
+                       style="width: 100%; margin-top: 6px;" />
+            </div>
+        }
+
+        @if (_selectedType == "Password" || _selectedType == "ApiKey")
+        {
+            <div style="margin-bottom: 16px;">
+                <label class="muted small">Password / API Key</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="@(_showPassword ? "text" : "password")" 
+                           @bind="_password" 
+                           placeholder="Enter password or API key" 
+                           style="flex: 1;" />
+                    <button class="btn" @onclick="_showPassword = !_showPassword" style="flex: none;">
+                        @(_showPassword ? "👁️" : "🔒")
+                    </button>
+                </div>
+                <button class="btn small" @onclick="GeneratePassword" style="margin-top: 6px;">
+                    🎲 Generate
+                </button>
+            </div>
+        }
+
+        @if (_selectedType == "Password" || _selectedType == "ApiKey")
+        {
+            <div style="margin-bottom: 16px;">
+                <label class="muted small">URL</label>
+                <input type="url" 
+                       @bind="_url" 
+                       placeholder="https://example.com" 
+                       style="width: 100%; margin-top: 6px;" />
+            </div>
+        }
+
+        @if (_selectedType == "Card")
+        {
+            <div style="margin-bottom: 16px;">
+                <label class="muted small">Card Number</label>
+                <input type="text" 
+                       @bind="_cardNumber" 
+                       placeholder="1234 5678 9012 3456" 
+                       style="width: 100%; margin-top: 6px;" />
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                <div>
+                    <label class="muted small">Expiry</label>
+                    <input type="text" 
+                           @bind="_cardExpiry" 
+                           placeholder="MM/YY" 
+                           style="width: 100%; margin-top: 6px;" />
+                </div>
+                <div>
+                    <label class="muted small">CVV</label>
+                    <input type="text" 
+                           @bind="_cardCvv" 
+                           placeholder="123" 
+                           style="width: 100%; margin-top: 6px;" />
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <label class="muted small">Cardholder Name</label>
+                <input type="text" 
+                       @bind="_cardName" 
+                       placeholder="John Doe" 
+                       style="width: 100%; margin-top: 6px;" />
+            </div>
+        }
+
+        @if (_selectedType == "Identity")
+        {
+            <div style="margin-bottom: 16px;">
+                <label class="muted small">Full Name</label>
+                <input type="text" 
+                       @bind="_fullName" 
+                       placeholder="John Doe" 
+                       style="width: 100%; margin-top: 6px;" />
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <label class="muted small">Email</label>
+                <input type="email" 
+                       @bind="_email" 
+                       placeholder="john@example.com" 
+                       style="width: 100%; margin-top: 6px;" />
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <label class="muted small">Phone</label>
+                <input type="tel" 
+                       @bind="_phone" 
+                       placeholder="+1 (555) 123-4567" 
+                       style="width: 100%; margin-top: 6px;" />
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <label class="muted small">Address</label>
+                <textarea @bind="_address" 
+                          placeholder="123 Main St, City, Country" 
+                          style="width: 100%; margin-top: 6px; min-height: 80px;" /></textarea>
+            </div>
+        }
+
+        <div style="margin-bottom: 16px;">
+            <label class="muted small">Notes</label>
+            <textarea @bind="_notes" 
+                      placeholder="Additional notes or information" 
+                      style="width: 100%; margin-top: 6px; min-height: 80px;" /></textarea>
+        </div>
+
+        @if (_selectedType == "Password" || _selectedType == "ApiKey")
+        {
+            <div style="margin-bottom: 16px;">
+                <label class="muted small">TOTP Secret (optional)</label>
+                <input type="text" 
+                       @bind="_totpSecret" 
+                       placeholder="Base32 encoded TOTP secret" 
+                       style="width: 100%; margin-top: 6px;" />
+            </div>
+        }
+
+        <div style="margin-bottom: 16px;">
+            <label class="muted small">Tags</label>
+            <input type="text" 
+                   @bind="_tagsInput" 
+                   placeholder="comma, separated, tags" 
+                   style="width: 100%; margin-top: 6px;" />
+        </div>
+
+        <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px;">
+            <button class="btn" @onclick="OnClose">Cancel</button>
+            <button class="btn primary" 
+                    @onclick="SaveItem" 
+                    disabled="@(!CanSave)">
+                Save
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private readonly List<string> _itemTypes = ["Password", "ApiKey", "Note", "Card", "Identity"];
+    private string _selectedType = "Password";
+    private string _title = "";
+    private string _username = "";
+    private string _password = "";
+    private string _url = "";
+    private string _notes = "";
+    private string _totpSecret = "";
+    private string _tagsInput = "";
+    private bool _showPassword = false;
+
+    // Card fields
+    private string _cardNumber = "";
+    private string _cardExpiry = "";
+    private string _cardCvv = "";
+    private string _cardName = "";
+
+    // Identity fields
+    private string _fullName = "";
+    private string _email = "";
+    private string _phone = "";
+    private string _address = "";
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    [Parameter]
+    public EventCallback<VaultItem> OnSave { get; set; }
+
+    private bool CanSave => !string.IsNullOrWhiteSpace(_title);
+
+    private void OnBackgroundClick()
+    {
+        OnClose.InvokeAsync();
+    }
+
+    private async Task SaveItem()
+    {
+        if (!CanSave) return;
+
+        var tags = _tagsInput.Split(',')
+            .Select(t => t.Trim())
+            .Where(t => !string.IsNullOrEmpty(t))
+            .ToList();
+
+        var item = new VaultItem
+        {
+            Id = Guid.NewGuid().ToString(),
+            Type = _selectedType,
+            Title = _title,
+            Username = string.IsNullOrEmpty(_username) ? null : _username,
+            Password = string.IsNullOrEmpty(_password) ? null : _password,
+            Url = string.IsNullOrEmpty(_url) ? null : _url,
+            Notes = string.IsNullOrEmpty(_notes) ? null : _notes,
+            TotpSecret = string.IsNullOrEmpty(_totpSecret) ? null : _totpSecret,
+            Tags = tags.Count == 0 ? null : tags,
+            CustomFields = GetCustomFields(),
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        await OnSave.InvokeAsync(item);
+        ResetForm();
+    }
+
+    private Dictionary<string, string> GetCustomFields()
+    {
+        var fields = new Dictionary<string, string>();
+        
+        if (_selectedType == "Card")
+        {
+            if (!string.IsNullOrEmpty(_cardNumber)) fields["cardNumber"] = _cardNumber;
+            if (!string.IsNullOrEmpty(_cardExpiry)) fields["expiry"] = _cardExpiry;
+            if (!string.IsNullOrEmpty(_cardCvv)) fields["cvv"] = _cardCvv;
+            if (!string.IsNullOrEmpty(_cardName)) fields["cardholderName"] = _cardName;
+        }
+        else if (_selectedType == "Identity")
+        {
+            if (!string.IsNullOrEmpty(_fullName)) fields["fullName"] = _fullName;
+            if (!string.IsNullOrEmpty(_email)) fields["email"] = _email;
+            if (!string.IsNullOrEmpty(_phone)) fields["phone"] = _phone;
+            if (!string.IsNullOrEmpty(_address)) fields["address"] = _address;
+        }
+        
+        return fields.Count == 0 ? null : fields;
+    }
+
+    private void ResetForm()
+    {
+        _title = "";
+        _username = "";
+        _password = "";
+        _url = "";
+        _notes = "";
+        _totpSecret = "";
+        _tagsInput = "";
+        _cardNumber = "";
+        _cardExpiry = "";
+        _cardCvv = "";
+        _cardName = "";
+        _fullName = "";
+        _email = "";
+        _phone = "";
+        _address = "";
+        _selectedType = "Password";
+        _showPassword = false;
+    }
+
+    private async Task GeneratePassword()
+    {
+        // Generate a random password
+        const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?";
+        var random = new Random();
+        var password = "";
+        for (int i = 0; i < 16; i++)
+        {
+            password += chars[random.Next(chars.Length)];
+        }
+        _password = password;
+    }
+
+    private string GetTypeIcon(string type) => type switch
+    {
+        "Password" => "🔑",
+        "ApiKey" => "🪄",
+        "Note" => "📝",
+        "Card" => "💳",
+        "Identity" => "👤",
+        _ => "📦"
+    };
+}

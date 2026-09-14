@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Aetheris Blog Posts - Technical deep dives on crypto, architecture, and more">
+    <title>Blog Posts | Aetheris</title>
+    <link rel="stylesheet" href="../landing/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: var(--bg);
+            color: var(--text);
+        }
+        .posts-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+        .posts-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .posts-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .posts-subtitle {
+            color: var(--muted);
+            font-size: 18px;
+        }
+        .posts-grid {
+            display: grid;
+            gap: 24px;
+        }
+        .post-card {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .post-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .post-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .post-card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .post-card-excerpt {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .post-card-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+        .post-card-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .tag {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .read-more {
+            color: var(--cyan);
+            font-weight: 500;
+            font-size: 13px;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 40px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+        .back-link:hover {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <span class="glyph">◈</span>
+                <span class="name">Aetheris</span>
+            </div>
+            <nav class="nav">
+                <a href="../landing/index.html" class="nav-link">Home</a>
+            </nav>
+            <div class="header-actions">
+                <a href="../landing/index.html#waitlist" class="btn btn-primary">Join Waitlist</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="posts-container">
+            <header class="posts-header">
+                <h1 class="posts-title">Blog Posts</h1>
+                <p class="posts-subtitle">Technical deep dives on crypto, architecture, and more</p>
+            </header>
+
+            <div class="posts-grid">
+                <a href="aetheris-crypto-deep-dive.html" class="post-card">
+                    <div class="post-card-header">
+                        <span class="tag">Technical</span>
+                        <span style="color: var(--muted); font-size: 13px;">September 2026</span>
+                    </div>
+                    <h3 class="post-card-title">I built a local LLM gateway that keeps keys out of .env (C#/.NET 8, OSS)</h3>
+                    <p class="post-card-excerpt">
+                        How I built Aetheris to solve the problem of scattered API keys and the security risks of storing them in .env files.
+                    </p>
+                    <div class="post-card-meta">
+                        <span class="read-more">Read More →</span>
+                    </div>
+                </a>
+
+                <a href="architecture-overview.html" class="post-card">
+                    <div class="post-card-header">
+                        <span class="tag">Cryptography</span>
+                        <span style="color: var(--muted); font-size: 13px;">September 2026</span>
+                    </div>
+                    <h3 class="post-card-title">Designing an encrypted vault over BouncyCastle: Argon2id + XChaCha20</h3>
+                    <p class="post-card-excerpt">
+                        A deep dive into the cryptographic primitives that power Aetheris vault encryption and key derivation.
+                    </p>
+                    <div class="post-card-meta">
+                        <span class="read-more">Read More →</span>
+                    </div>
+                </a>
+
+                <a href="zero-knowledge-sync.html" class="post-card">
+                    <div class="post-card-header">
+                        <span class="tag">Architecture</span>
+                        <span style="color: var(--muted); font-size: 13px;">September 2026</span>
+                    </div>
+                    <h3 class="post-card-title">One PWA, every platform: how the vault sync stays zero-knowledge</h3>
+                    <p class="post-card-excerpt">
+                        How Aetheris achieves zero-knowledge sync across all platforms using modern cryptographic techniques.
+                    </p>
+                    <div class="post-card-meta">
+                        <span class="read-more">Read More →</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="back-link">
+                <a href="../landing/index.html">← Back to Home</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="glyph">◈</span>
+                    <span class="name">Aetheris</span>
+                    <p class="footer-tagline">Your LLM keys never live in .env again</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Aetheris. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

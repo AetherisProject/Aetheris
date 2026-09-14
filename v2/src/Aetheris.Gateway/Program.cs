@@ -1,6 +1,6 @@
 using System.Diagnostics;
-using System.Text.Json;
 using Aetheris.Gateway;
+using Aetheris.Gateway.Services;
 
 // ============================================================
 //  Aetheris.Gateway — the wedge product.
@@ -11,26 +11,56 @@ using Aetheris.Gateway;
 // ============================================================
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddHttpClient();
-var app = builder.Build();
-var logger = app.Logger;
 
+// Configuration
 var config = new GatewayConfig();
-app.Configuration.GetSection("Gateway").Bind(config);
+builder.Configuration.GetSection("Gateway").Bind(config);
+builder.Services.AddSingleton(config);
 
-// ---- services ----
-using var keyringVault = VaultKeyring.TryOpen(config.KeyStorePath,
-    Environment.GetEnvironmentVariable("AETHERIS_GATEWAY_PASS"), logger);
-IKeyring keyring = keyringVault ?? new EmptyKeyring();
+// Core services
+builder.Services.AddHttpClient();
 
+// Register new services (3.2, 3.3, 3.4, 3.7)
+builder.Services.AddSingleton<ProviderService>();
+builder.Services.AddSingleton<BudgetService>(sp =>
+    new BudgetService(Path.Combine("data", "budgets.json"), config.BudgetTokensPerDay));
+builder.Services.AddSingleton<HealthCheckService>();
+
+// Register VaultService as IKeyring (3.2 - hot keystore)
+builder.Services.AddSingleton<IKeyring, VaultService>(sp =>
+    new VaultService(
+        config.KeyStorePath,
+        Environment.GetEnvironmentVariable("AETHERIS_GATEWAY_PASS"),
+        sp.GetRequiredService<ILogger<VaultService>>()));
+
+// Register providers
 var providers = new Dictionary<string, ILlmProvider>(StringComparer.OrdinalIgnoreCase)
 {
     ["openai"] = new OpenAiProvider(),
     ["anthropic"] = new AnthropicProvider(),
     ["ollama"] = new OllamaProvider(),
 };
-var budgets = new BudgetTracker(Path.Combine("data", "budgets.json"), config.BudgetTokensPerDay);
-var requestLog = new GatewayLog();
+builder.Services.AddSingleton(providers);
+
+// Register request log
+builder.Services.AddSingleton<GatewayLog>();
+
+// Register controllers (3.1, 3.6)
+builder.Services.AddControllers();
+
+var app = builder.Build();
+var logger = app.Logger;
+
+// Start hot keystore watching (3.2)
+var vaultService = app.Services.GetRequiredService<IKeyring>() as VaultService;
+vaultService?.StartWatching();
+
+// Initialize and start health check service (3.3)
+var healthCheckService = app.Services.GetRequiredService<HealthCheckService>();
+var httpFactory = app.Services.GetRequiredService<IHttpClientFactory>();
+var keyring = app.Services.GetRequiredService<IKeyring>();
+healthCheckService.Initialize(providers, keyring, httpFactory, logger);
+healthCheckService.Start();
 
 // ---- access gate ----
 app.Use(async (ctx, next) =>
@@ -45,77 +75,22 @@ app.Use(async (ctx, next) =>
     await next();
 });
 
-app.MapGet("/v1/gateway/health", () => Results.Ok(new { ok = true, service = "aetheris-gateway" }));
+// ---- endpoints ----
+// Health endpoint with per-provider status (3.3)
+app.MapGet("/v1/gateway/health", () => healthCheckService.GetStatus());
 
-// ---- model catalog: aliases + provider models ----
-app.MapGet("/v1/models", () => Results.Ok(new
-{
-    aliases = config.Aliases.Select(a => new
-    {
-        id = a.Key,
-        provider = a.Value.Provider,
-        model = a.Value.Model,
-        fallback = a.Value.FallbackTo,
-    }),
-    providers = providers.Select(p => new { id = p.Key, models = p.Value.KnownModels.Keys }),
-}));
+// Model catalog: aliases + provider models (3.6)
+var providerService = app.Services.GetRequiredService<ProviderService>();
+app.MapGet("/v1/models", () => Results.Ok(providerService.GetCatalog()));
 
-// ---- chat completions (OpenAI-compatible), with fallback chain ----
-app.MapPost("/v1/chat/completions", async (ChatRequest request, HttpContext ctx, IHttpClientFactory httpFactory) =>
-{
-    if (request.Stream == true)
-        return Results.BadRequest(new { error = "streaming lands in W3 — send stream:false for now" });
-
-    var alias = request.Model;
-    if (!config.Aliases.TryGetValue(alias, out var target))
-        return Results.NotFound(new { error = $"unknown alias '{alias}'", hint = "GET /v1/models" });
-
-    var http = httpFactory.CreateClient();
-    var sw = Stopwatch.StartNew();
-    var visited = new HashSet<string>();
-
-    // Resilience: walk the fallback chain (a → b → …), each hop once.
-    while (true)
-    {
-        if (!visited.Add(alias))
-            return Results.Problem("fallback loop detected in alias chain");
-        if (!providers.TryGetValue(target.Provider, out var provider))
-            return Results.Problem($"alias '{alias}' points at unknown provider '{target.Provider}'");
-
-        // Cheap estimate for the budget gate; real usage is reported from the response.
-        var estimated = request.Messages.Sum(m => m.Content.Length / 4) + (request.MaxTokens ?? 512);
-        if (!budgets.Allow(alias, estimated))
-        {
-            requestLog.Add(new GatewayLogEntry(DateTimeOffset.UtcNow, alias, provider.Id, 402, sw.ElapsedMilliseconds, null, null));
-            return Results.Json(new { error = $"budget_exceeded", alias, reset = "midnight UTC" }, statusCode: 402);
-        }
-
-        var result = await provider.ChatAsync(http, target.Model, request, keyring.GetKey(provider.Id), ctx.RequestAborted);
-        requestLog.Add(new GatewayLogEntry(DateTimeOffset.UtcNow, alias, provider.Id, result.Status, sw.ElapsedMilliseconds, result.Usage.In, result.Usage.Out));
-
-        if (result.Usage.In is not null || result.Usage.Out is not null)
-            budgets.Report(alias, (result.Usage.In ?? 0) + (result.Usage.Out ?? 0));
-
-        if (result.Status is >= 200 and < 300)
-            return Results.Json(result.Body);
-
-        // Server-side failure with a configured fallback → hop to the next alias.
-        if (result.Status >= 500 && target.FallbackTo is not null && config.Aliases.TryGetValue(target.FallbackTo, out var next))
-        {
-            logger.LogWarning("alias {Alias} failed ({Status}) → falling back to {Fallback}", alias, result.Status, target.FallbackTo);
-            alias = target.FallbackTo;
-            target = next;
-            continue;
-        }
-
-        if (!string.IsNullOrEmpty(result.Error))
-            return Results.Json(new { error = result.Error, alias }, statusCode: 424);
-        return Results.Json(result.Body, statusCode: result.Status);
-    }
-});
+// ---- Register controllers (replaces inline implementations) ----
+app.MapControllers();
 
 // ---- operator surfaces (redacted) ----
-app.MapGet("/v1/gateway/budgets", () => Results.Ok(budgets.Snapshot()));
+var budgetService = app.Services.GetRequiredService<BudgetService>();
+var requestLog = app.Services.GetRequiredService<GatewayLog>();
+
+app.MapGet("/v1/gateway/budgets", () => Results.Ok(budgetService.Snapshot()));
 app.MapGet("/v1/gateway/logs", () => Results.Ok(requestLog.Entries.OrderByDescending(e => e.At)));
 
 app.Run(config.Listen);
