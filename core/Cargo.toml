@@ -32,7 +32,7 @@ base64 = "0.21"
 percent-encoding = "2.3"
 hex = "0.4"
 regex = "1.10"
-notify = { version = "6.1", optional = true }
+notify = { version = "8.2", optional = true }
 reqwest = { version = "0.11", features = ["json"], optional = true }
 
 [features]
