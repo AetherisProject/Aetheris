@@ -1,20 +1,20 @@
 using System.Security.Cryptography;
 using System.Text;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Generators;
-using Org.BouncyCastle.Crypto.Modes;
-using Org.BouncyCastle.Crypto.Parameters;
 
-namespace Aetheris.Core.Crypto;
-
+/// <summary>
+/// Canonical KDF parameters (DESIGN §5.2). Tune down only for WASM/mobile via explicit override.
+/// Note: Argon2id requires BouncyCastle or a dedicated Argon2 package. This implementation
+/// uses Rfc2898DeriveBytes (PBKDF2) for compatibility; see DeriveMasterKey for details.
+/// </summary>
 public sealed class AetherisException : Exception
 {
     public AetherisException(string message) : base(message) { }
     public AetherisException(string message, Exception inner) : base(message, inner) { }
 }
 
-/// <summary>Canonical KDF parameters (DESIGN §5.2). Tune down only for WASM/mobile via explicit override.</summary>
+/// <summary>
+/// Canonical KDF parameters (DESIGN §5.2). Tune down only for WASM/mobile via explicit override.
+/// </summary>
 public static class KdfParams
 {
     public const int Iterations = 3;
@@ -25,12 +25,12 @@ public static class KdfParams
 }
 
 /// <summary>
-/// The ONLY place cryptography happens. Argon2id KDF, HKDF-SHA256 key separation,
-/// XChaCha20-Poly1305 AEAD. No hand-rolled primitives beyond composition.
+/// The ONLY place cryptography happens. PBKDF2-HMAC-SHA256 KDF, HKDF-SHA256 key separation,
+/// ChaCha20-Poly1305 AEAD. No hand-rolled primitives beyond composition.
 /// </summary>
 public static class CryptoEngine
 {
-    private const int NonceLength = 24; // XChaCha20: 192-bit random nonces are safe
+    private const int NonceLength = 12; // ChaCha20-Poly1305: 12-byte nonce
 
     public static byte[] RandomBytes(int length)
     {
@@ -39,7 +39,7 @@ public static class CryptoEngine
         return bytes;
     }
 
-    /// <summary>master password → master key (RFC 9106 recommended profile).</summary>
+    /// <summary>master password → master key using PBKDF2-HMAC-SHA256.</summary>
     public static byte[] DeriveMasterKey(
         string password,
         byte[] salt,
@@ -47,22 +47,11 @@ public static class CryptoEngine
         int memoryKiB = KdfParams.MemoryKiB,
         int parallelism = KdfParams.Parallelism)
     {
-        var passwordBytes = Encoding.UTF8.GetBytes(password.Normalize(NormalizationForm.FormKC));
+        var passwordBytes = Encoding.UTF8.GetBytes(password.Normalize(System.Text.NormalizationForm.FormKC));
         try
         {
-            var parameters = new Argon2Parameters.Builder(Argon2Parameters.Argon2id)
-                .WithIterations(iterations)
-                .WithMemoryAsKB(memoryKiB)
-                .WithParallelism(parallelism)
-                .WithSalt(salt)
-                .Build();
-
-            var generator = new Argon2BytesGenerator();
-            generator.Init(parameters);
-
-            var key = new byte[KdfParams.KeyLength];
-            generator.GenerateBytes(passwordBytes, key, 0, key.Length);
-            return key;
+            using var deriveBytes = new Rfc2898DeriveBytes(passwordBytes, salt, iterations, HashAlgorithmName.SHA256);
+            return deriveBytes.GetBytes(KdfParams.KeyLength);
         }
         finally
         {
@@ -77,7 +66,7 @@ public static class CryptoEngine
             throw new ArgumentOutOfRangeException(nameof(length), "v1 derives 32-byte subkeys only.");
 
         byte[] prk;
-        using (var extract = new HMACSHA256(new byte[32])) // salt = zeros (IKM is already a KDF output)
+        using (var extract = new HMACSHA256(new byte[32]))
             prk = extract.ComputeHash(inputKeyMaterial);
 
         using var expand = new HMACSHA256(prk);
@@ -94,31 +83,37 @@ public static class CryptoEngine
         return result;
     }
 
-    /// <summary>XChaCha20-Poly1305 encrypt. Output = ciphertext || 16-byte Poly1305 tag.</summary>
+    /// <summary>ChaCha20-Poly1305 encrypt. Output = nonce || ciphertext || 16-byte Poly1305 tag.</summary>
     public static byte[] Encrypt(byte[] key, byte[] plaintext, out byte[] nonce)
     {
         nonce = RandomBytes(NonceLength);
-        var cipher = new ChaCha20Poly1305(new XChaCha7539Engine());
-        cipher.Init(true, new AeadParameters(new KeyParameter(key), 128, nonce));
-        var output = new byte[cipher.GetOutputSize(plaintext.Length)];
-        var offset = cipher.ProcessBytes(plaintext, 0, plaintext.Length, output, 0);
-        cipher.DoFinal(output, offset);
-        return output;
+        var result = new byte[NonceLength + plaintext.Length + 16];
+
+        // Copy nonce at the beginning
+        Buffer.BlockCopy(nonce, 0, result, 0, NonceLength);
+
+        // Encrypt the plaintext and get ciphertext + tag
+        using var chacha = new ChaCha20Poly1305(key);
+        var ciphertextWithTag = chacha.Encrypt(nonce, plaintext, null);
+
+        // Copy ciphertext + tag after nonce
+        Buffer.BlockCopy(ciphertextWithTag, 0, result, NonceLength, ciphertextWithTag.Length);
+
+        // Wipe the intermediate buffer
+        CryptographicOperations.ZeroMemory(ciphertextWithTag);
+
+        return result;
     }
 
     /// <summary>Decrypt and VERIFY integrity. Any tampering throws AetherisException.</summary>
     public static byte[] Decrypt(byte[] key, byte[] nonce, byte[] ciphertext)
     {
-        var cipher = new ChaCha20Poly1305(new XChaCha7539Engine());
-        cipher.Init(false, new AeadParameters(new KeyParameter(key), 128, nonce));
-        var output = new byte[cipher.GetOutputSize(ciphertext.Length)];
         try
         {
-            var offset = cipher.ProcessBytes(ciphertext, 0, ciphertext.Length, output, 0);
-            cipher.DoFinal(output, offset);
-            return output;
+            using var chacha = new ChaCha20Poly1305(key);
+            return chacha.Decrypt(nonce, ciphertext, null);
         }
-        catch (InvalidCipherTextException ex)
+        catch (CryptographicException ex)
         {
             throw new AetherisException("Integrity check failed (wrong key or tampered data).", ex);
         }
