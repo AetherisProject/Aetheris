@@ -1,42 +1,25 @@
-#![allow(dead_code)]
-use std::net::TcpStream;
-use std::io::Result as IoResult;
-use std::sync::mpsc;
+//! SSH client (minimal stub — real implementation needed for SSH terminal).
 
 pub struct SshClient {
     host: String,
     port: u16,
-    channel: Option<mpsc::Sender<String>>,
 }
 
 impl SshClient {
     pub fn new(host: String, port: u16) -> Self {
-        Self {
-            host,
-            port,
-            channel: None,
-        }
+        Self { host, port }
     }
-    
-    pub fn connect(&mut self) -> IoResult<TcpStream> {
-        let addr = format!("{}:{}", self.host, self.port);
-        TcpStream::connect(&addr)
+
+    pub fn connect(&mut self) -> Result<(), String> {
+        Err("SSH not implemented in this build".into())
     }
-    
-    pub fn execute(&mut self, command: &str) -> Result<String, String> {
-        let _stream = self.connect().map_err(|e| e.to_string())?;
-        let output = format!("Executed: {}\
-Output: {}", command, command.to_uppercase());
-        Ok(output)
-    }
-    
+
     pub fn spawn_channel(&mut self) -> Result<(), String> {
-        let (sender, _) = mpsc::channel();
-        self.channel = Some(sender);
-        Ok(())
+        Err("SSH not implemented in this build".into())
     }
-    
-    pub fn receive_channel(&self) -> Option<String> {
-        self.channel.as_ref().map(|_c| "SSH Channel Ready".to_string())
+
+    pub fn execute(&mut self, command: &str) -> Result<String, String> {
+        let _ = command;
+        Err("SSH not implemented in this build".into())
     }
 }

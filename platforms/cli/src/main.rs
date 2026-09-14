@@ -1,152 +1,279 @@
-use clap::{Command, Arg, ArgAction};
-use aetheris_core::{VaultItem, CryptoEngine, SshClient};
+use clap::{Command, Arg};
 
-fn to_hex(bytes: &[u8]) -> String {
-    use std::fmt::Write;
-    let mut hex = String::new();
-    for b in bytes {
-        write!(&mut hex, "{:02x}", b).expect("write to string");
+use aetheris_core::{
+    env::scanner::scan_for_api_keys,
+    env::reader::{read_all_env, read_env_vars, EnvScope},
+    env::conflict::detect_user_system_conflicts,
+    vault::store::VaultStore,
+};
+
+fn scan_env() {
+    println!("Scanning environment for API keys...");
+    let vars = read_all_env().unwrap_or_default();
+    let pairs: Vec<(String, String)> = vars.into_iter().map(|v| (v.name, v.value)).collect();
+    match scan_for_api_keys(&pairs) {
+        Ok(findings) => {
+            if findings.is_empty() {
+                println!("No API keys detected in environment.");
+            } else {
+                println!("Found {} potential API key(s):", findings.len());
+                for f in &findings {
+                    println!("  - {} ({})", f.var_name, f.provider);
+                }
+            }
+        }
+        Err(e) => eprintln!("Scan failed: {}", e),
     }
-    hex
 }
 
-fn from_hex_or_raw(input: &str) -> Vec<u8> {
-    let hex: String = input.chars().filter(|c| !c.is_whitespace()).collect();
-    if hex.len().is_multiple_of(2) && hex.chars().all(|c| c.is_ascii_hexdigit()) {
-        (0..hex.len())
-            .step_by(2)
-            .map(|i| u8::from_str_radix(&hex[i..i + 2], 16).unwrap_or(0))
-            .collect()
-    } else {
-        input.as_bytes().to_vec()
+fn sync_to_vault(vault_path: &str, password: &str) {
+    let store = match VaultStore::open(vault_path, password) {
+        Ok(s) => s,
+        Err(e) => {
+            eprintln!("Failed to open vault: {}", e);
+            return;
+        }
+    };
+    let vars = read_all_env().unwrap_or_default();
+    let pairs: Vec<(String, String)> = vars.iter().map(|v| (v.name.clone(), v.value.clone())).collect();
+    let findings = match scan_for_api_keys(&pairs) {
+        Ok(f) => f,
+        Err(e) => {
+            eprintln!("Scan failed: {}", e);
+            return;
+        }
+    };
+    let mut synced = 0;
+    for finding in &findings {
+        if let Some(var) = vars.iter().find(|v| v.name == finding.var_name) {
+            match store.insert(&var.name, &var.value) {
+                Ok(()) => {
+                    synced += 1;
+                    println!("  ✓ {}", var.name);
+                }
+                Err(e) => eprintln!("  ✗ {}: {}", var.name, e),
+            }
+        }
+    }
+    println!("Synced {} key(s) to vault.", synced);
+}
+
+fn show_conflicts() {
+    let user = read_env_vars(EnvScope::User).unwrap_or_default();
+    let system = read_env_vars(EnvScope::System).unwrap_or_default();
+    match detect_user_system_conflicts(&user, &system) {
+        Ok(conflicts) => {
+            if conflicts.is_empty() {
+                println!("No user/system conflicts detected.");
+            } else {
+                for c in conflicts {
+                    println!("  ! [{:?}] {}", c.conflict_type, c.name);
+                }
+            }
+        }
+        Err(e) => eprintln!("Conflict detection failed: {}", e),
     }
 }
 
-fn print_bytes(prefix: &str, bytes: &[u8]) {
-    println!("{}: {}", prefix, to_hex(bytes));
+fn export_env(path: &str) {
+    let vars = read_all_env().unwrap_or_default();
+    let content: String = vars.iter()
+        .map(|v| format!("{}={}", v.name, v.value))
+        .collect::<Vec<_>>()
+        .join("\n");
+    match std::fs::write(path, &content) {
+        Ok(()) => println!("Exported {} vars to {}", vars.len(), path),
+        Err(e) => eprintln!("Export failed: {}", e),
+    }
 }
 
-fn generate_keypair() -> Result<(), String> {
-    let engine = CryptoEngine::new()?;
-    let (pk, sk) = engine.generate_kyber_keypair()?;
-    print_bytes("public_key", &pk);
-    print_bytes("secret_key", &sk);
-    Ok(())
+fn list_vault_keys(vault_path: &str, password: &str) {
+    let store = match VaultStore::open(vault_path, password) {
+        Ok(s) => s,
+        Err(e) => {
+            eprintln!("Failed to open vault: {}", e);
+            return;
+        }
+    };
+    match store.list() {
+        Ok(items) => {
+            if items.is_empty() {
+                println!("Vault is empty.");
+            } else {
+                for item in items {
+                    println!("  {} ({})", item.name, item.scope);
+                }
+            }
+        }
+        Err(e) => eprintln!("List failed: {}", e),
+    }
 }
 
-fn encrypt(data: &str, public_key: &str) -> Result<(), String> {
-    let engine = CryptoEngine::new()?;
-    let key = from_hex_or_raw(public_key);
-    let ciphertext = engine.hybrid_encrypt(data.as_bytes(), &key)?;
-    print_bytes("ciphertext", &ciphertext);
-    Ok(())
+fn snapshot_vault(vault_path: &str, password: &str, label: &str) {
+    let store = match VaultStore::open(vault_path, password) {
+        Ok(s) => s,
+        Err(e) => {
+            eprintln!("Failed to open vault: {}", e);
+            return;
+        }
+    };
+    match store.snapshot(label) {
+        Ok(snap) => println!("Snapshot '{}' (id: {}, items: {})", snap.label, snap.id, snap.item_count),
+        Err(e) => eprintln!("Snapshot failed: {}", e),
+    }
 }
 
-fn decrypt(ciphertext: &str, secret_key: &str) -> Result<(), String> {
-    let engine = CryptoEngine::new()?;
-    let ct = from_hex_or_raw(ciphertext);
-    let key = from_hex_or_raw(secret_key);
-    let plaintext = engine.hybrid_decrypt(&ct, &key)?;
-    println!("plaintext: {}", String::from_utf8_lossy(&plaintext));
-    Ok(())
+fn rollback_vault(vault_path: &str, password: &str, snapshot_id: &str) {
+    let store = match VaultStore::open(vault_path, password) {
+        Ok(s) => s,
+        Err(e) => {
+            eprintln!("Failed to open vault: {}", e);
+            return;
+        }
+    };
+    match store.rollback(snapshot_id) {
+        Ok(()) => println!("Rolled back to {}", snapshot_id),
+        Err(e) => eprintln!("Rollback failed: {}", e),
+    }
 }
 
-fn vault_add(name: &str, data: &str, tags: &[&str]) -> Result<(), String> {
-    let item = VaultItem::new(name.to_string(), data.as_bytes().to_vec(), tags.iter().map(|t| t.to_string()).collect());
-    print_bytes("serialized", &item.serialize()?);
-    Ok(())
+fn list_snapshots(vault_path: &str, password: &str) {
+    let store = match VaultStore::open(vault_path, password) {
+        Ok(s) => s,
+        Err(e) => {
+            eprintln!("Failed to open vault: {}", e);
+            return;
+        }
+    };
+    match store.list_snapshots() {
+        Ok(snaps) => {
+            if snaps.is_empty() {
+                println!("No snapshots found.");
+            } else {
+                for s in snaps {
+                    println!("  [{}] {} ({} items)", s.id, s.label, s.item_count);
+                }
+            }
+        }
+        Err(e) => eprintln!("List snapshots failed: {}", e),
+    }
 }
 
-fn vault_get(serialized: &str) -> Result<(), String> {
-    let bytes = from_hex_or_raw(serialized);
-    let item = VaultItem::deserialize(&bytes)?;
-    println!("id: {}", item.id);
-    println!("name: {}", item.name);
-    println!("data: {}", String::from_utf8_lossy(&item.data));
-    println!("tags: {:?}", item.tags);
-    println!("created_at: {}", item.created_at);
-    println!("updated_at: {}", item.updated_at);
-    Ok(())
+fn vault_add(vault_path: &str, password: &str, name: &str, value: &str) {
+    let store = match VaultStore::open(vault_path, password) {
+        Ok(s) => s,
+        Err(e) => {
+            eprintln!("Failed to open vault: {}", e);
+            return;
+        }
+    };
+    match store.insert(name, value) {
+        Ok(()) => println!("Stored {}", name),
+        Err(e) => eprintln!("Insert failed: {}", e),
+    }
 }
 
-fn ssh_execute(host: &str, port: u16, command: &str) -> Result<(), String> {
-    let mut client = SshClient::new(host.to_string(), port);
-    client.spawn_channel()?;
-    println!("{}", client.execute(command)?);
-    Ok(())
+fn vault_get(vault_path: &str, password: &str, name: &str) {
+    let store = match VaultStore::open(vault_path, password) {
+        Ok(s) => s,
+        Err(e) => {
+            eprintln!("Failed to open vault: {}", e);
+            return;
+        }
+    };
+    match store.get(name) {
+        Ok(item) => println!("{} = {}", item.name, item.value),
+        Err(e) => eprintln!("Get failed: {}", e),
+    }
 }
 
 fn main() -> Result<(), String> {
     let matches = Command::new("aetheris-cli")
-        .version(env!("CARGO_PKG_VERSION"))
+        .version("0.1.0")
         .about("Aetheris secrets management CLI")
         .subcommand_required(true)
         .arg_required_else_help(true)
-        .subcommand(
-            Command::new("generate-keypair")
-                .about("Generate a Kyber keypair")
+        .arg(
+            Arg::new("vault-path")
+                .long("vault-path")
+                .default_value(".aetheris/vault")
+                .global(true)
+        )
+        .arg(
+            Arg::new("password")
+                .long("password")
+                .global(true)
         )
         .subcommand(
-            Command::new("encrypt")
-                .about("Encrypt data with a public key")
-                .arg(Arg::new("data").required(true).index(1))
-                .arg(Arg::new("public_key").required(true).index(2))
+            Command::new("env")
+                .about("Environment variable management")
+                .subcommand(Command::new("scan").about("Scan for API keys in env vars"))
+                .subcommand(Command::new("sync").about("Sync detected API keys into vault"))
+                .subcommand(Command::new("conflicts").about("Show user/system env conflicts"))
+                .subcommand(Command::new("export").about("Export env vars to file").arg(
+                    Arg::new("output").required(true).help("Output file path")
+                ))
         )
         .subcommand(
-            Command::new("decrypt")
-                .about("Decrypt ciphertext with a secret key")
-                .arg(Arg::new("ciphertext").required(true).index(1))
-                .arg(Arg::new("secret_key").required(true).index(2))
-        )
-        .subcommand(
-            Command::new("vault-add")
-                .about("Create a new vault item")
-                .arg(Arg::new("name").required(true).index(1))
-                .arg(Arg::new("data").required(true).index(2))
-                .arg(Arg::new("tags").num_args(0..).action(ArgAction::Append))
-        )
-        .subcommand(
-            Command::new("vault-get")
-                .about("Deserialize a serialized vault item")
-                .arg(Arg::new("serialized").required(true).index(1))
-        )
-        .subcommand(
-            Command::new("ssh")
-                .about("Connect to an SSH host and run a command")
-                .arg(Arg::new("host").required(true).index(1))
-                .arg(Arg::new("port").required(true).index(2))
-                .arg(Arg::new("command").required(true).index(3))
+            Command::new("vault")
+                .about("Vault operations")
+                .subcommand(Command::new("list").about("List all vault keys"))
+                .subcommand(Command::new("add").about("Add a key").arg(
+                    Arg::new("name").required(true)
+                ).arg(
+                    Arg::new("value").required(true)
+                ))
+                .subcommand(Command::new("get").about("Get a key").arg(
+                    Arg::new("name").required(true)
+                ))
+                .subcommand(Command::new("snapshot").about("Create vault snapshot").arg(
+                    Arg::new("label").required(true)
+                ))
+                .subcommand(Command::new("snapshots").about("List snapshots"))
+                .subcommand(Command::new("rollback").about("Rollback to snapshot").arg(
+                    Arg::new("id").required(true)
+                ))
         )
         .get_matches();
 
+    let vault_path = matches.get_one::<String>("vault-path").unwrap().clone();
+    let password = matches.get_one::<String>("password").cloned().unwrap_or_default();
+
     match matches.subcommand() {
-        Some(("generate-keypair", _)) => generate_keypair(),
-        Some(("encrypt", sub)) => {
-            let data = sub.get_one::<String>("data").expect("data required");
-            let key = sub.get_one::<String>("public_key").expect("public key required");
-            encrypt(data, key)
-        }
-        Some(("decrypt", sub)) => {
-            let ct = sub.get_one::<String>("ciphertext").expect("ciphertext required");
-            let key = sub.get_one::<String>("secret_key").expect("secret key required");
-            decrypt(ct, key)
-        }
-        Some(("vault-add", sub)) => {
-            let name = sub.get_one::<String>("name").expect("name required");
-            let data = sub.get_one::<String>("data").expect("data required");
-            let tags: Vec<&str> = sub.get_many::<String>("tags").map(|v| v.map(|s| s.as_str()).collect()).unwrap_or_default();
-            vault_add(name, data, &tags)
-        }
-        Some(("vault-get", sub)) => {
-            let serialized = sub.get_one::<String>("serialized").expect("serialized required");
-            vault_get(serialized)
-        }
-        Some(("ssh", sub)) => {
-            let host = sub.get_one::<String>("host").expect("host required");
-            let port: u16 = sub.get_one::<String>("port").expect("port required").parse().map_err(|e| format!("invalid port: {}", e))?;
-            let command = sub.get_one::<String>("command").expect("command required");
-            ssh_execute(host, port, command)
-        }
-        _ => Err("no subcommand provided".to_string()),
+        Some(("env", env_matches)) => match env_matches.subcommand() {
+            Some(("scan", _)) => scan_env(),
+            Some(("sync", _)) => sync_to_vault(&vault_path, &password),
+            Some(("conflicts", _)) => show_conflicts(),
+            Some(("export", export_matches)) => {
+                let output = export_matches.get_one::<String>("output").unwrap();
+                export_env(output);
+            }
+            _ => eprintln!("Unknown env subcommand"),
+        },
+        Some(("vault", vault_matches)) => match vault_matches.subcommand() {
+            Some(("list", _)) => list_vault_keys(&vault_path, &password),
+            Some(("add", add_matches)) => {
+                let name = add_matches.get_one::<String>("name").unwrap();
+                let value = add_matches.get_one::<String>("value").unwrap();
+                vault_add(&vault_path, &password, name, value);
+            }
+            Some(("get", get_matches)) => {
+                let name = get_matches.get_one::<String>("name").unwrap();
+                vault_get(&vault_path, &password, name);
+            }
+            Some(("snapshot", snap_matches)) => {
+                let label = snap_matches.get_one::<String>("label").unwrap();
+                snapshot_vault(&vault_path, &password, label);
+            }
+            Some(("snapshots", _)) => list_snapshots(&vault_path, &password),
+            Some(("rollback", rollback_matches)) => {
+                let id = rollback_matches.get_one::<String>("id").unwrap();
+                rollback_vault(&vault_path, &password, id);
+            }
+            _ => eprintln!("Unknown vault subcommand"),
+        },
+        _ => eprintln!("Unknown command"),
     }
+
+    Ok(())
 }

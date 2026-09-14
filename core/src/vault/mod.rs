@@ -1,5 +1,10 @@
-#![allow(dead_code)]
-use serde::{Serialize, Deserialize};
+//! Vault module — persistent encrypted store and legacy item types.
+
+pub mod store;
+
+pub use store::{ApiKeyItem, Snapshot, VaultStore};
+
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 use chrono::Utc;
 use bincode::{serialize, deserialize};

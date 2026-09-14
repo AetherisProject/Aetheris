@@ -8,11 +8,11 @@ name = "aetheris_core"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-oqs = { version = "0.11.0", features = ["kyber", "dilithium"] }
 zeroize = { version = "1.9.0", features = ["derive"] }
 subtle = "2.6.1"
 secrecy = "0.8.0"
 serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 bincode = "1.3.3"
 tokio = { version = "1.0", features = ["full"] }
 tracing = "0.1"
@@ -22,11 +22,24 @@ anyhow = "1.0"
 uuid = { version = "1.0", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
 sled = "0.34"
+argon2 = "0.5"
+aes-gcm = "0.10"
+rand = { version = "0.8", features = ["std", "std_rng"] }
+sha2 = "0.10"
+sha1 = "0.10"
+hmac = "0.12"
+base64 = "0.21"
+percent-encoding = "2.3"
+hex = "0.4"
+regex = "1.10"
+notify = { version = "6.1", optional = true }
+reqwest = { version = "0.11", features = ["json"], optional = true }
 
 [features]
-default = []
+default = ["sync"]
 wasm = ["wasm-bindgen"]
 ffi = ["libc", "jni"]
+sync = ["reqwest"]
 
 [target.'cfg(unix)'.dependencies]
 libc = { version = "0.2", optional = true }
@@ -37,3 +50,13 @@ jni = { version = "0.21.1", optional = true }
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = { version = "0.2", optional = true }
 web-sys = { version = "0.3", features = ["Window", "Document", "HtmlElement", "console"], optional = true }
+
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.56", features = [
+    "Win32_System_Registry",
+    "Win32_Foundation",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_System_Threading",
+    "Win32_Security",
+    "Win32_System_Memory",
+] }
