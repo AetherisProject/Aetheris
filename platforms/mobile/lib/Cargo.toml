@@ -10,7 +10,7 @@ crate-type = ["cdylib"]
 [dependencies]
 aetheris-core = { path = "../../../core" }
 flutter_rust_bridge = "1.82.0"
-jni = { version = "0.21.1", features = ["invocation"] }
+jni = { version = "0.22.4", features = ["invocation"] }
 libc = "0.2"
 reqwest = { version = "0.12", features = ["json"] }
 serde = { version = "1.0", features = ["derive"] }
