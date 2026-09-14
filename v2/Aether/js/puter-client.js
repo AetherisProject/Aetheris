@@ -24,7 +24,7 @@ const PuterClient = (function() {
             if (window.puter && window.puter.ai) {
                 puterInstance = window.puter;
                 isInitialized = true;
-                console.log('Puter already loaded, using existing instance');
+                
                 resolve(puterInstance);
                 return;
             }
@@ -44,20 +44,20 @@ const PuterClient = (function() {
                         throw new Error('Puter loaded but AI module not available');
                     }
                     
-                    console.log('Puter.js initialized successfully');
+                    
                     
                     // Load models cache
                     await loadModels();
                     
                     resolve(puterInstance);
                 } catch (error) {
-                    console.error('Failed to initialize Puter:', error);
+                    
                     reject(error);
                 }
             };
             
             script.onerror = () => {
-                console.error('Failed to load Puter script');
+                
                 reject(new Error('Failed to load Puter.js'));
             };
             
@@ -75,7 +75,7 @@ const PuterClient = (function() {
             // Check if models method exists
             if (puterInstance.ai.models) {
                 modelsCache = await puterInstance.ai.models();
-                console.log('Loaded models:', modelsCache.length || Object.keys(modelsCache).length);
+                
             } else {
                 // Default models for Puter.js v2
                 modelsCache = [
@@ -94,7 +94,7 @@ const PuterClient = (function() {
             
             return modelsCache;
         } catch (error) {
-            console.log('Could not load models, using defaults:', error);
+            
             modelsCache = null;
             return [];
         }
@@ -118,7 +118,7 @@ const PuterClient = (function() {
             const response = await puterInstance.ai.chat(prompt, options);
             return formatResponse(response);
         } catch (error) {
-            console.error('Chat error:', error);
+            
             throw formatError(error);
         }
     }
@@ -134,7 +134,7 @@ const PuterClient = (function() {
             const blob = await puterInstance.ai.txt2img(prompt, options);
             return blob;
         } catch (error) {
-            console.error('Image generation error:', error);
+            
             throw formatError(error);
         }
     }
@@ -158,7 +158,7 @@ const PuterClient = (function() {
             const response = await puterInstance.ai.complete(prompt, options);
             return formatResponse(response);
         } catch (error) {
-            console.error('Completion error:', error);
+            
             throw formatError(error);
         }
     }
@@ -174,7 +174,7 @@ const PuterClient = (function() {
             const response = await puterInstance.ai.embed(text, options);
             return response;
         } catch (error) {
-            console.error('Embedding error:', error);
+            
             throw formatError(error);
         }
     }
@@ -190,7 +190,7 @@ const PuterClient = (function() {
             const response = await puterInstance.ai.classify(text, categories, options);
             return response;
         } catch (error) {
-            console.error('Classification error:', error);
+            
             throw formatError(error);
         }
     }
@@ -213,7 +213,7 @@ const PuterClient = (function() {
         
         if (timeSinceLast < REQUEST_DELAY) {
             const waitTime = Math.ceil((REQUEST_DELAY - timeSinceLast) / 10);
-            console.log(`Rate limiting: waiting ${waitTime}ms`);
+            
             // In a real app, you might want to actually wait
             // For now, just log it
         }
@@ -311,9 +311,9 @@ if (typeof module !== 'undefined' && module.exports) {
 
 // Auto-initialize when DOM is ready
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    PuterClient.init().catch(console.error);
+    PuterClient.init().catch(() => {});
 } else {
     document.addEventListener('DOMContentLoaded', () => {
-        PuterClient.init().catch(console.error);
+        PuterClient.init().catch(() => {});
     });
 }

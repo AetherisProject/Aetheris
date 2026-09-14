@@ -128,7 +128,7 @@ async function loadModels() {
             setCurrentModel(models[0].id);
         }
     } catch (error) {
-        console.error('Failed to load models:', error);
+        
         showError('model-list', 'Failed to load models. Please refresh the page.');
     }
 }
@@ -460,7 +460,7 @@ async function sendMessage() {
             });
         }
     } catch (error) {
-        console.error('Chat error:', error);
+        
         showToast('Failed to get response. Please try again.', 'error');
         addMessage({
             role: 'assistant',
@@ -521,7 +521,7 @@ async function streamChat(prompt, settings) {
                 });
             },
             onerror: (error) => {
-                console.error('Stream error:', error);
+                
                 updateMessage(messageId, { 
                     content: 'Sorry, I encountered an error. Please try again.',
                     streaming: false,
@@ -530,7 +530,7 @@ async function streamChat(prompt, settings) {
             }
         });
     } catch (error) {
-        console.error('Stream chat error:', error);
+        
         updateMessage(messageId, { 
             content: 'Sorry, I encountered an error. Please try again.',
             streaming: false,
@@ -701,7 +701,7 @@ function loadChatState() {
                 updateCurrentModelDisplay(ChatState.currentModel);
             }
         } catch (error) {
-            console.error('Failed to load chat state:', error);
+            
         }
     }
 }
@@ -713,7 +713,7 @@ function saveChatState() {
     try {
         localStorage.setItem('aether-chat-state', JSON.stringify(ChatState));
     } catch (error) {
-        console.error('Failed to save chat state:', error);
+        
     }
 }
 

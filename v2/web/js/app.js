@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const client = getPuterClient();
     if (!client.isInitialized) {
         client.init().then(() => {
-            console.log('Puter client initialized');
+            
             // Update UI with model count
             updateModelCount();
         });
@@ -152,7 +152,7 @@ function loadState() {
             const state = JSON.parse(savedState);
             Object.assign(AppState, state);
         } catch (error) {
-            console.error('Failed to load state:', error);
+            
         }
     }
 }
@@ -164,7 +164,7 @@ function saveState() {
     try {
         localStorage.setItem('aether-state', JSON.stringify(AppState));
     } catch (error) {
-        console.error('Failed to save state:', error);
+        
     }
 }
 

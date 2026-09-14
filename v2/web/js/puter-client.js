@@ -19,17 +19,17 @@ class PuterClient {
         try {
             // Check if Puter is available
             if (!this.puter) {
-                console.error('Puter.js not loaded');
+                
                 return false;
             }
 
             // List available models
             this.models = await this.listModels();
             this.isInitialized = true;
-            console.log(`Puter client initialized with ${this.models.length} models`);
+            
             return true;
         } catch (error) {
-            console.error('Failed to initialize Puter client:', error);
+            
             return false;
         }
     }
@@ -42,7 +42,7 @@ class PuterClient {
             const models = await this.puter.ai.listModels();
             return models || [];
         } catch (error) {
-            console.error('Failed to list models:', error);
+            
             // Return a fallback list of known models
             return this.getFallbackModels();
         }
@@ -425,7 +425,7 @@ class PuterClient {
                 return response;
             }
         } catch (error) {
-            console.error('Chat error:', error);
+            
             throw error;
         }
     }
@@ -442,7 +442,7 @@ class PuterClient {
             });
             return response;
         } catch (error) {
-            console.error('Generate text error:', error);
+            
             throw error;
         }
     }
@@ -455,7 +455,7 @@ class PuterClient {
             const response = await this.puter.ai.txt2img(prompt, options);
             return response;
         } catch (error) {
-            console.error('Generate image error:', error);
+            
             throw error;
         }
     }
@@ -468,7 +468,7 @@ class PuterClient {
             const response = await this.puter.ai.img2img(image, prompt, options);
             return response;
         } catch (error) {
-            console.error('Edit image error:', error);
+            
             throw error;
         }
     }
@@ -481,7 +481,7 @@ class PuterClient {
             const response = await this.puter.ai.audio2text(audio, options);
             return response;
         } catch (error) {
-            console.error('Transcribe error:', error);
+            
             throw error;
         }
     }
@@ -494,7 +494,7 @@ class PuterClient {
             const response = await this.puter.ai.text2audio(text, options);
             return response;
         } catch (error) {
-            console.error('Generate speech error:', error);
+            
             throw error;
         }
     }
@@ -507,7 +507,7 @@ class PuterClient {
             const files = await this.puter.fs.readdir(path);
             return files;
         } catch (error) {
-            console.error('List files error:', error);
+            
             throw error;
         }
     }
@@ -517,7 +517,7 @@ class PuterClient {
             const content = await this.puter.fs.readFile(path);
             return content;
         } catch (error) {
-            console.error('Read file error:', error);
+            
             throw error;
         }
     }
@@ -527,7 +527,7 @@ class PuterClient {
             await this.puter.fs.writeFile(path, content);
             return true;
         } catch (error) {
-            console.error('Write file error:', error);
+            
             throw error;
         }
     }
@@ -537,7 +537,7 @@ class PuterClient {
             await this.puter.fs.deleteFile(path);
             return true;
         } catch (error) {
-            console.error('Delete file error:', error);
+            
             throw error;
         }
     }
@@ -547,7 +547,7 @@ class PuterClient {
             const result = await this.puter.fs.upload(file);
             return result;
         } catch (error) {
-            console.error('Upload file error:', error);
+            
             throw error;
         }
     }
@@ -557,7 +557,7 @@ class PuterClient {
             const url = await this.puter.fs.getDownloadLink(path);
             return url;
         } catch (error) {
-            console.error('Download file error:', error);
+            
             throw error;
         }
     }
@@ -572,7 +572,7 @@ class PuterClient {
             const response = await this.chat(prompt, options);
             return response;
         } catch (error) {
-            console.error('Search error:', error);
+            
             throw error;
         }
     }
@@ -583,7 +583,7 @@ class PuterClient {
             const response = await this.chat(prompt, options);
             return response;
         } catch (error) {
-            console.error('Summarize error:', error);
+            
             throw error;
         }
     }
@@ -594,7 +594,7 @@ class PuterClient {
             const response = await this.chat(prompt, options);
             return response;
         } catch (error) {
-            console.error('Translate error:', error);
+            
             throw error;
         }
     }
@@ -622,7 +622,7 @@ class PuterClient {
             const response = await this.chat(prompt, options);
             return response;
         } catch (error) {
-            console.error('Analyze error:', error);
+            
             throw error;
         }
     }
@@ -651,7 +651,7 @@ class PuterClient {
             const response = await this.chat(prompt, options);
             return response;
         } catch (error) {
-            console.error('Code review error:', error);
+            
             throw error;
         }
     }

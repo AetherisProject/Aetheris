@@ -193,7 +193,7 @@ async function init() {
     // Add scroll animations
     setupScrollAnimations();
     
-    console.log('Aether app initialized');
+    
 }
 
 /**
@@ -211,11 +211,11 @@ async function loadPuter() {
         script.src = 'https://js.puter.com/v2/';
         script.onload = () => {
             puter = window.puter;
-            console.log('Puter loaded successfully');
+            
             resolve();
         };
         script.onerror = () => {
-            console.error('Failed to load Puter');
+            
             // Create a mock puter for demo purposes
             puter = {
                 ai: {
@@ -254,7 +254,7 @@ async function loadModels() {
         updateModelSelector();
         modelsLoaded = true;
     } catch (error) {
-        console.log('Could not load models:', error);
+        
         // Use default models
         updateModelSelector();
     }
@@ -367,7 +367,7 @@ async function runDemo() {
         demoOutput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         
     } catch (error) {
-        console.error('Demo error:', error);
+        
         showError(`Error: ${error.message || String(error)}`);
     } finally {
         isRunning = false;

@@ -331,7 +331,7 @@ async function runTool() {
         // Save to history
         saveToHistory(tool, ResearchState.inputData, result);
     } catch (error) {
-        console.error('Tool error:', error);
+        
         showError('output-content', error.message || 'Failed to process request');
         showToast('Failed to process request', 'error');
     } finally {
@@ -875,7 +875,7 @@ function saveResearchState() {
     try {
         localStorage.setItem('aether-research-state', JSON.stringify(ResearchState));
     } catch (error) {
-        console.error('Failed to save research state:', error);
+        
     }
 }
 
@@ -889,7 +889,7 @@ function loadResearchState() {
             const state = JSON.parse(savedState);
             Object.assign(ResearchState, state);
         } catch (error) {
-            console.error('Failed to load research state:', error);
+            
         }
     }
 }
